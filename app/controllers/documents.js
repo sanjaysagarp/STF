@@ -1,4 +1,6 @@
 //shows all documents in public/docs
+//allows for the user to traverse the docs tree and
+//share documents by copying a url
 
 var express = require('express');
 var	router = express.Router();

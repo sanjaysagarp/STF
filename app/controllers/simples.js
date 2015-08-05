@@ -1,4 +1,5 @@
 //faq, about, contact and other likewise simple, static pages
+//this document also holds the data that is displayed on the pages
 
 var express = require('express');
 var	router = express.Router();
@@ -7,12 +8,16 @@ module.exports = function(app) {
 	app.use('/', router);
 };
 
+
+//displays the hellowworld page
 router.get('/helloworld', function serveHelloWorld(req, res) {
 	res.render('simples/helloworld',
 		{title : 'heheheh'}
 	);
 });
 
+
+//displays the about page
 router.get('/about', function serveAbout(req, res) {
 	res.render('simples/about', {
 		title : 'About',
@@ -31,6 +36,8 @@ router.get('/about', function serveAbout(req, res) {
 	});
 });
 
+
+//displays the contact page
 router.get('/contact', function serveContact(req, res) {
 	res.render('simples/contact', {
 		title : 'Contact Us',
@@ -51,6 +58,8 @@ router.get('/contact', function serveContact(req, res) {
 	});
 });
 
+
+//displays the faq page. 
 router.get('/faq', function serveFaq(req, res) {
 	res.render('simples/faq', {
 		title : 'Frequently Asked Questions',

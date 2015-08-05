@@ -1,3 +1,5 @@
+//displays a 
+
 var express = require('express');
 var	router = express.Router();
 var	db = require('../models');
@@ -7,36 +9,20 @@ module.exports = function(app) {
 	app.use('/', router);
 };
 
-/*router.get('/proposals', function(req, res, next) {
-	res.render('proposals');
+//FAILS
+router.get('/proposals', function(req, res, next) {
+	//TODO requires data on all proposals
+	//index does metric data.
+	res.render('proposals/index.jade');
 });
-*/
 
 
-router.get('/proposals/create', function(req, res, next) {
+//WORKS
+router.get('/proposals/create', function createProposal(req, res, next) {
 	res.render('proposals/create');
 });
 
-router.get('/proposals/:id', function(req, res) {
-	db.Proposal.find({
-		where: {
-			id: req.params.id
-		}
-	}).then(function(proposal) {
-		db.Item.findAll({
-			where: {
-				ProposalCode: req.params.id
-			}
-		}).then(function(item){
-			//console.log("item:");
-			//console.log(item)
-			res.render('proposals/update', {
-				proposal: proposal,
-				items: item
-			});
-		});
-	});
-});
+
 
 
 router.post('/proposals/:id', function(req, res) {
@@ -216,6 +202,29 @@ router.get('/proposal/:id', function(req,res,next) {
 			res.render('proposals/proposal', {
 				proposal : proposal,
 				data : data
+			});
+		});
+	});
+});
+
+
+
+router.get('/proposals/:id', function(req, res) {
+	db.Proposal.find({
+		where: {
+			id: req.params.id
+		}
+	}).then(function(proposal) {
+		db.Item.findAll({
+			where: {
+				ProposalCode: req.params.id
+			}
+		}).then(function(item){
+			//console.log("item:");
+			//console.log(item)
+			res.render('proposals/update', {
+				proposal: proposal,
+				items: item
 			});
 		});
 	});
