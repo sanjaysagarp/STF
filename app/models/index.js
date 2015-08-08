@@ -1,6 +1,6 @@
 var fs = require('fs');
 var path = require('path');
-var sequelize = require('sequelize');
+var Sequelize = require('sequelize');
 var config = require('../../config/config');
 var db = {};
 
@@ -10,7 +10,7 @@ var db = {};
 // });
 
 //connect to the database
-var sequelize = new sequelize('test', 'root', 'STFP@ss', {
+var sequelize = new Sequelize('test', 'root', 'STFP@ss', {
 	host: "127.0.0.1",
 	port: 3306
 })
@@ -31,5 +31,6 @@ Object.keys(db).forEach(function (modelName) {
 });
 
 db.sequelize = sequelize;
+db.Sequelize = Sequelize;
 
 module.exports = db;

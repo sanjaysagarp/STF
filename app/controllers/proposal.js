@@ -13,7 +13,7 @@ module.exports = function(app) {
 router.get('/proposals', function(req, res, next) {
 	//TODO requires data on all proposals
 	//index does metric data.
-	res.render('proposals/index.jade');
+	res.render('proposals/index');
 });
 
 
@@ -171,7 +171,10 @@ router.post('/proposals', function(req, res, next) {
 
 
 router.get('/proposals/browse', function(req, res, next) {
-	db.Proposal.findAll().success(function(proposals) {
+	db.Proposal.findAll({
+			where: {
+				id : 0
+			}}).success(function(proposals) {
 		res.render('proposals/browse',{
 			proposals: proposals
 		});
