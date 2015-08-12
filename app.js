@@ -19,8 +19,7 @@ var app = express(); //let's get started!
 
 //authentication for uwnetid shibboleth communication
 var loginURL = '/login';
-var loginCallbackURL = '/session/callback';
-var domain = "https://uwstf.org";
+var loginCallbackURL = '/login/callback';
 var httpPort = process.env.HTTPPORT || 80;
 var httpsPort = process.env.HTTPSPORT || 443;
 //load certificate files
@@ -46,18 +45,19 @@ app.use(express.static(config.root + '/public'));
 
 app.use(cookieParser('secret'));
 app.use(session({
-	secret: "MySecretKeyIDontEvenKnow",
+	secret: "TemporarySecretKey",
     key: fs.readFileSync('security/session-secret.txt', 'utf-8'),
     cookie: {secret: true}
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 //create teh strategy for passport and have it use it
+console.log(config.domain + loginCallbackURL);
 var strat = new shib.Strategy({
-	entityID : config.domain,
+	entityId : "https://uwstf.org",
 	privateKey : privKey,
 	callbackUrl : loginCallbackURL,
-	domain : config.domain
+	domain : "uwstf.org"
 });
 passport.use(strat);
 
@@ -69,20 +69,20 @@ passport.deserializeUser(function(user, done) {
 	done(null, user);
 });
 
+//app.post(loginURL, passport.authenticate(strat.name), shib.backToUrl()); is broken.
+//the current code just redirects to the homepage, but can and should be fixed later
+//as walled sections of the site reveal themselves. ## TODO ##
 //user login, login callback, and metadata routes for netid
-app.get(loginURL, passport.authenticate(strat.name), shib.backToUrl());
-app.get(loginCallbackURL, function(req, res) {
-	console.log("helloaoasoasoaso");
-})
-app.post(loginCallbackURL, passport.authenticate(strat.name), shib.backToUrl());
+app.get(loginURL, passport.authenticate(strat.name), function(req, res) {res.redirect('/')});
+app.post(loginCallbackURL, passport.authenticate(strat.name), function(req, res) {res.redirect('/')});
 app.get(shib.urls.metadata, shib.metadataRoute(strat, pubCert));
 
 //require auth on all pages
 //app.use(shib.ensureAuth(loginURL));
 //or just the ones I want 
-/* app.get('protected/thing', shib.ensureAuth(loginURL), function(req, response) {
+ app.get('protected/thing', shib.ensureAuth(loginURL), function(req, response) {
 	//routing
-}); */
+}); 
 
 
 //removes evil trailing slashes off of requests for pages. This fixes
