@@ -3,6 +3,9 @@
 
 var express = require('express');
 var	router = express.Router();
+var fs = require('fs');
+var shib = require('passport-uwshib');
+
 
 module.exports = function(app) {
 	app.use('/', router);
@@ -10,9 +13,9 @@ module.exports = function(app) {
 
 
 //displays the hellowworld page
-router.get('/helloworld', function serveHelloWorld(req, res) {
+router.get('/helloworld', shib.ensureAuth('/login'), shib.ensureAuth('/login'), function serveHelloWorld(req, res) {
 	res.render('simples/helloworld',
-		{title : 'heheheh'}
+		{data : req.user.regId}
 	);
 });
 
@@ -85,7 +88,7 @@ router.get('/faq', function serveFaq(req, res) {
 				a : 'Funds are sent out after Spring Quarter ends. You can expect them to arrive sometime during Summer Quarter. If you were on Fast Track, you will hear back from us within a week of voting, and should receive your funds within several weeks.'
 			} , {
 				q : 'Will You Fund My Department\'s Basic Technological Needs?',
-				a : 'Likely, no. The STF exists to supplement student technological needs, not as a crutch for departments. It is expected that a fictional Department of Underwater Basket Weaving would provide its students with wicker and water, which seem rather essential to the education of that department\'s students. The Committee expects departments to fund such basic requirements. A good rule of thumb is if the answer to the question "Could my students learn without [item]" is yes, the Committee will likely ask the department to fund the item. More information is available in the policy section'
+				a : 'Likely, no. The STF exists to supplement student technological needs, not as a crutch for departments. It is expected that a fictional Department of Underwater Basket Weaving would provide its students with wicker and water, which seem rather essential to the education of that department\'s students. The Committee expects departments to fund such basic requirements. A good rule of thumb is if the answer to the question "Could my students learn without [item]" is yes, the Committee will likely ask the department to fund the item. More information is available in the policy section of the documents link'
 			} , {
 				q : 'How Can I Best Present to the Committee?',
 				a : 'A good presentation quickly goes over what the proposal is, the purpose of the proposal, how many students will use the funded proposal, any past similar proposals, any similar funded proposals already on campus, and departmental support.'

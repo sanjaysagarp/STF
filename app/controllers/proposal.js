@@ -1,5 +1,5 @@
 //displays a 
-
+var promise = require('bluebird')
 var express = require('express');
 var	router = express.Router();
 var	db = require('../models');
@@ -15,7 +15,6 @@ router.get('/proposals', function(req, res, next) {
 	//index does metric data.
 	res.render('proposals/index');
 });
-
 
 //WORKS
 router.get('/proposals/create', function createProposal(req, res, next) {
@@ -171,10 +170,12 @@ router.post('/proposals', function(req, res, next) {
 
 
 router.get('/proposals/browse', function(req, res, next) {
+	console.log(db.Proposal);
 	db.Proposal.findAll({
-			where: {
-				id : 0
-			}}).success(function(proposals) {
+		where: {
+			id : 1
+		}
+	}).then(function(proposals) {
 		res.render('proposals/browse',{
 			proposals: proposals
 		});

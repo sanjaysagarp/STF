@@ -46,13 +46,12 @@ app.use(express.static(config.root + '/public'));
 app.use(cookieParser('secret'));
 app.use(session({
 	secret: "TemporarySecretKey",
-    key: fs.readFileSync('security/session-secret.txt', 'utf-8'),
-    cookie: {secret: true}
+/*    key: fs.readFileSync('security/session-secret.txt', 'utf-8'),
+    cookie: {secret: true}*/
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 //create teh strategy for passport and have it use it
-console.log(config.domain + loginCallbackURL);
 var strat = new shib.Strategy({
 	entityId : "https://uwstf.org",
 	privateKey : privKey,
@@ -63,10 +62,11 @@ passport.use(strat);
 
 //serialize and deserialize the user's session
 passport.serializeUser(function(user, done) {
-	done(null, user);
+  done(null, user);
 });
+ 
 passport.deserializeUser(function(user, done) {
-	done(null, user);
+    done(null, user);
 });
 
 //app.post(loginURL, passport.authenticate(strat.name), shib.backToUrl()); is broken.
@@ -74,15 +74,19 @@ passport.deserializeUser(function(user, done) {
 //as walled sections of the site reveal themselves. ## TODO ##
 //user login, login callback, and metadata routes for netid
 app.get(loginURL, passport.authenticate(strat.name), function(req, res) {res.redirect('/')});
-app.post(loginCallbackURL, passport.authenticate(strat.name), function(req, res) {res.redirect('/')});
+app.post(loginCallbackURL, passport.authenticate(strat.name), function(req, res) {
+	console.log(req);
+	res.redirect('/');
+	console.log(req.user);
+});
 app.get(shib.urls.metadata, shib.metadataRoute(strat, pubCert));
 
 //require auth on all pages
 //app.use(shib.ensureAuth(loginURL));
 //or just the ones I want 
- app.get('protected/thing', shib.ensureAuth(loginURL), function(req, response) {
+/* app.get('protected/thing', shib.ensureAuth('login'), function(req, response) {
 	//routing
-}); 
+}); */
 
 
 //removes evil trailing slashes off of requests for pages. This fixes
@@ -96,6 +100,16 @@ app.use(function removeTrailingSlashes(req, res, next) {
 	} else {
 		next();
 	}
+});
+
+//assigns either "login" or the user's name to the response locals
+app.use(function passUserName(req, res, next) {
+	var fullName = null;
+	if (req.user && req.user.givenName && req.user.surname) {
+		var fullName = req.user.givenName + ' ' + req.user.surname;
+	}
+	res.locals.fullName = fullName;
+	next();
 });
 
 //grabs all the controllers in the folder, and adds them to the controllers

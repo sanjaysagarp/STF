@@ -11,6 +11,7 @@ module.exports = function(sequelize, DataTypes) {
 		ProposalTitle: DataTypes.STRING,
 		Category: DataTypes.STRING,
 		Department: DataTypes.STRING,
+		PrimaryRegId: DataTypes.STRING,
 		PrimaryName: DataTypes.STRING,
 		PrimaryTitle: DataTypes.STRING,
 		PrimaryPhone: DataTypes.STRING,

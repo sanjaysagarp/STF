@@ -54,6 +54,11 @@ nav.navbar.navbar-default.sub-nav
 					a(href='/about') About
 				li
 					a(href='/contact') Contact
-				li.active
-					a(href='/login') Login
+				if fullName
+					li.active
+						a(href='/user')= fullName
+				else
+					li.active
+						a(href='/login') Login
+
 		// /.nav-collapse

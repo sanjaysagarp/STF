@@ -8,7 +8,7 @@ module.exports = function(app) {
 	app.use('/', router);
 };
 
-router.get('/login/callback', function login(req, res) {
+/*router.get('/login/callback', function login(req, res) {
 	res.render("simples/helloworld");
 	console.log("GET REQUEST");
 });
@@ -16,7 +16,7 @@ router.get('/login/callback', function login(req, res) {
 router.post("/login/callback", function(req, res) {
 	console.log("POST REQUEST");
 	res.render("simples/helloworld");
-})
+})*/
 
 //login
 
