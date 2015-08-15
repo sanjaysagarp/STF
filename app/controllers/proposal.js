@@ -3,28 +3,25 @@ var promise = require('bluebird')
 var express = require('express');
 var	router = express.Router();
 var	db = require('../models');
+var shib = require('passport-uwshib');
 
 
 module.exports = function(app) {
 	app.use('/', router);
 };
 
-//FAILS
+//
 router.get('/proposals', function(req, res, next) {
-	//TODO requires data on all proposals
-	//index does metric data.
 	res.render('proposals/index');
 });
 
 //WORKS
-router.get('/proposals/create', function createProposal(req, res, next) {
+router.get('/proposals/create', shib.ensureAuth('/login'), function createProposal(req, res, next) {
 	res.render('proposals/create');
 });
 
-
-
-
-router.post('/proposals/:id', function(req, res) {
+//TODO check that the user is the right one
+router.post('/proposals/:id', shib.ensureAuth('/login'), function(req, res) {
 	db.Proposal.find({
 		where: {
 			id: req.params.id
@@ -32,6 +29,8 @@ router.post('/proposals/:id', function(req, res) {
 	}).then(function(proposal) {
 		if (!proposal) {
 			res.send(404);
+		} if (req.user.regId != proposal.PrimaryRegId) {
+			res.send(403);
 		}
 
 		var fromForm = {
@@ -89,12 +88,14 @@ router.post('/proposals/:id', function(req, res) {
 
 
 
-router.post('/proposals', function(req, res, next) {
+router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 	// Get our form values. These rely on the "name" attributes
 	var ProposalTitle = req.body.title;
 	var Category = req.body.category;
 	var Department = req.body.department;
 	//Contacts
+	var PrimaryRegId = req.user.regId;
+	var PrimaryNetId = req.user.netId;
 	var PrimaryName = req.body["PrimaryName"];
 	var PrimaryTitle = req.body["primary-title"];
 	var PrimaryEmail = req.body["primary-email"];
@@ -105,12 +106,12 @@ router.post('/proposals', function(req, res, next) {
 	var BudgetEmail = req.body["budget-email"];
 	var BudgetPhone = req.body["budget-phone"];
 	var BudgetMail = req.body["budget-mail"];
-	var DeanName=req.body["ddh-name"];
+	var DeanName = req.body["ddh-name"];
 	var DeanTitle = req.body["ddh-title"];
 	var DeanEmail = req.body["ddh-email"];
 	var DeanPhone = req.body["ddh-phone"];
 	var DeanMail = req.body["ddh-mail"];
-	var StudentName=req.body["stu-name"];
+	var StudentName = req.body["stu-name"];
 	var StudentTitle = req.body["stu-title"];
 	var StudentEmail = req.body["stu-email"];
 	var StudentPhone = req.body["stu-phone"];
@@ -121,8 +122,8 @@ router.post('/proposals', function(req, res, next) {
 	var Benefits = req.body["Benefits"];
 	var AccessRestrictions = req.body["AccessRestrictions"];
 	var Hours = req.body["Hours"];
-	if(Hours===''){
-		Hours=0;
+	if (Hours === '') {
+		Hours = 0;
 	}
 	var Days = req.body["Days"];
 	var DepartmentalResources = req.body["DepartmentalResources"];
@@ -134,6 +135,8 @@ router.post('/proposals', function(req, res, next) {
 		ProposalTitle: ProposalTitle,
 		Category: Category,
 		Department: Department,
+		PrimaryRegId: PrimaryRegId,
+		PrimaryNetId: PrimaryNetId,
 		PrimaryName: PrimaryName,
 		PrimaryTitle: PrimaryTitle,
 		PrimaryPhone: PrimaryPhone,

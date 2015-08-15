@@ -36,9 +36,12 @@ block content
 					th Department
 					th Category
 			tbody
-				- each proposal in proposals
-					tr
-						td #{proposal.id}
-						td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle} 
-						td: a(href='#') #{proposal.Department}																	 
-						td: a(href='#') #{proposal.Category}
+				if proposals
+					- each proposal in proposals
+						tr
+							td #{proposal.id}
+							td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle} 
+							td: a(href='#') #{proposal.Department}																	 
+							td: a(href='#') #{proposal.Category}
+				else 
+					p There are no proposals yet!
