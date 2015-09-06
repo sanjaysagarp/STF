@@ -267,6 +267,8 @@ router.get('/proposals/:id', function(req, res) {
 			var months = ["January", "February", "March", "April", "May", "June", "July", 
 			              "August", "September", "October", "November", "December"];
 			var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
+			console.log(proposal);
+
 			res.render('proposals/view', {
 				proposal: proposal,
 				created: day,

@@ -10,7 +10,7 @@ append css
 block content
 	.container
 		h2.title= proposal.ProposalTitle
-		p.category In #{proposal.Category}
+		p.subtitle In #{proposal.Category}
 		.row
 			.col-sm-12.col-md-4
 				h3 Basic Info
@@ -111,3 +111,16 @@ block content
 								tr
 									th Mailbox
 									td= proposal.StudentMail
+		h3 Abstract
+		p= proposal.Abstract
+		h3 Background
+		p= proposal.Background
+		h3 Category Justification
+		p= proposal.CategoryJustification
+		h3 Benefits to Students and University
+		p= proposal.Benefits
+		h3.title Access Restrictions
+		p.subtitle Access available #{proposal.Days} between #{proposal.Hours}
+		p= proposal.AccessRestrictions
+		h3 Student Endorsements
+		p PLACEHOLDER some each stuff here

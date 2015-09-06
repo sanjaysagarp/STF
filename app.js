@@ -27,7 +27,6 @@ var pubCert = fs.readFileSync(config.root + 'security/server-cert.pem', 'utf-8')
 var privKey = fs.readFileSync(config.root + 'security/server-pvk.pem', 'utf-8');
 
 
-
 app.set('views', config.root + '/app/views');
 app.set('view engine', 'jade');
 

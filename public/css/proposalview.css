@@ -1,12 +1,12 @@
-.category {
+.subtitle {
 	padding-top: 0px;
 	margin-top: 4px;
 	font-style: italic;
-	color: #444444;
+	color: #555555;
 }
 
 .title {
-	margin-bottom: 5px;
+	margin-bottom: 4px;
 } 
 
 .basic tr * {
