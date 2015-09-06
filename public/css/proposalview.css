@@ -1,0 +1,43 @@
+.category {
+	padding-top: 0px;
+	margin-top: 4px;
+	font-style: italic;
+	color: #444444;
+}
+
+.title {
+	margin-bottom: 5px;
+} 
+
+.basic tr * {
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+td {
+	padding-top: 2px;
+}
+
+.contacts > div > table > tbody > th {
+	padding: 3px;
+}
+
+.contactType {
+	color: #000000 !important;
+	padding-bottom: 4px !important;
+	padding-left: 0px;
+}
+
+.contacts tbody > tr > th {
+	font-weight: bold;
+	color: rgb(75, 46, 131);
+}
+
+.contacts tbody > tr > * {
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+.contacts tbody > tr:last-child * {
+	padding-bottom: 10px !important;
+}

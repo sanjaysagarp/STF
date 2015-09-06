@@ -16,12 +16,26 @@ router.get('/proposals', function(req, res, next) {
 });
 
 //WORKS
-router.get('/proposals/create', shib.ensureAuth('/login'), function createProposal(req, res, next) {
+router.get('/proposals/create', shib.ensureAuth('/login'), function createProposal(req, res) {
 	res.render('proposals/create');
 });
 
+router.get('/proposals/myproposals', shib.ensureAuth('/login'), function myProposals(req, res) {
+	db.Proposal.findAll({
+		where: {
+			PrimaryRegId : req.user.regId
+		}
+	}).then(function(proposals) {
+		console.log(proposals);
+		res.render('proposals/browse',{
+			proposals: proposals,
+			title: "My Proposals"
+		});
+	});
+});
+
 //TODO check that the user is the right one
-router.post('/proposals/:id', shib.ensureAuth('/login'), function(req, res) {
+router.post('/proposals/:id', shib.ensureAuth('/login'), function postProposal(req, res) {
 	db.Proposal.find({
 		where: {
 			id: req.params.id
@@ -180,7 +194,8 @@ router.get('/proposals/browse', function(req, res, next) {
 		}
 	}).then(function(proposals) {
 		res.render('proposals/browse',{
-			proposals: proposals
+			proposals: proposals,
+			title: "Browse all Proposals"
 		});
 	});
 });
@@ -215,8 +230,7 @@ router.get('/proposal/:id', function(req,res,next) {
 });
 
 
-
-router.get('/proposals/:id', function(req, res) {
+router.get('/proposals/update/:id', function(req, res) {
 	db.Proposal.find({
 		where: {
 			id: req.params.id
@@ -231,6 +245,31 @@ router.get('/proposals/:id', function(req, res) {
 			//console.log(item)
 			res.render('proposals/update', {
 				proposal: proposal,
+				items: item
+			});
+		});
+	});
+});
+
+
+router.get('/proposals/:id', function(req, res) {
+	db.Proposal.find({
+		where: {
+			id: req.params.id
+		}
+	}).then(function(proposal) {
+		db.Item.findAll({
+			where: {
+				ProposalCode: req.params.id
+			}
+		}).then(function(item){
+			var cr = new Date(proposal.createdAt);
+			var months = ["January", "February", "March", "April", "May", "June", "July", 
+			              "August", "September", "October", "November", "December"];
+			var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
+			res.render('proposals/view', {
+				proposal: proposal,
+				created: day,
 				items: item
 			});
 		});

@@ -14,8 +14,9 @@ module.exports = function(app) {
 
 //displays the hellowworld page
 router.get('/helloworld', shib.ensureAuth('/login'), shib.ensureAuth('/login'), function serveHelloWorld(req, res) {
+	console.log(req.user);
 	res.render('simples/helloworld',
-		{data : req.user.regId}
+		{data : req.user.toString()}
 	);
 });
 

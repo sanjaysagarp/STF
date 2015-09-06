@@ -34,7 +34,7 @@ nav.navbar.navbar-default.sub-nav
 						li
 							a(href='/proposals/create') Create New
 						li
-							a(href='#') My Proposals
+							a(href='/proposals/myproposals') My Proposals
 				li.dropdown
 					a.dropdown-toggle(href='#', data-toggle='dropdown') Committee 
 						span.caret
@@ -54,9 +54,9 @@ nav.navbar.navbar-default.sub-nav
 					a(href='/about') About
 				li
 					a(href='/contact') Contact
-				if fullName
+				if netId
 					li.active
-						a(href='/user')= fullName
+						a(href='/user')= netId
 				else
 					li.active
 						a(href='/login') Login

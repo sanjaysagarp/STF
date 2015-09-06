@@ -84,7 +84,7 @@ app.get(shib.urls.metadata, shib.metadataRoute(strat, pubCert));
 //require auth on all pages
 //app.use(shib.ensureAuth(loginURL));
 //or just the ones I want 
-/* app.get('protected/thing', shib.ensureAuth('login'), function(req, response) {
+/* app.get('protected/thing', shib.ensureAuth('/login'), function(req, response) {
 	//routing
 }); */
 
@@ -104,11 +104,11 @@ app.use(function removeTrailingSlashes(req, res, next) {
 
 //assigns either "login" or the user's name to the response locals
 app.use(function passUserName(req, res, next) {
-	var fullName = null;
-	if (req.user && req.user.givenName && req.user.surname) {
-		var fullName = req.user.givenName + ' ' + req.user.surname;
+	var netId = null;
+	if (req.user && req.user.netId) {
+		var netId = req.user.netId;
 	}
-	res.locals.fullName = fullName;
+	res.locals.netId = netId;
 	next();
 });
 

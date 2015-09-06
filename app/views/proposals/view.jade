@@ -1,0 +1,113 @@
+extends ../head
+
+append js
+	script(src='/js/vendor/toastr.js')
+	script(src='/js/proposals.js')
+
+append css
+	link(rel='stylesheet', href='/css/proposalview.css')
+
+block content
+	.container
+		h2.title= proposal.ProposalTitle
+		p.category In #{proposal.Category}
+		.row
+			.col-sm-12.col-md-4
+				h3 Basic Info
+				table.basic
+					tbody
+						tr
+							th Proposal ID
+							td= proposal.id
+						tr
+							th Created
+							td= created
+						tr
+							th Department
+							td= proposal.Department
+						tr
+							th Fund Status
+							td= proposal.Status
+						tr
+							th Metrics
+							td PLACEHOLDER
+
+			.col-sm-12.col-md-8
+				h3 Contact Info
+				.row.contacts
+					.col-xs-12.col-sm-6.col-md-6
+						table
+							tbody
+								th.contactType Primary
+								tr
+									th Name
+									td= proposal.PrimaryName
+								tr
+									th Title
+									td= proposal.PrimaryTitle
+								tr
+									th Phone
+									td= proposal.PrimaryPhone
+								tr
+									th Email
+									td= proposal.PrimaryEmail
+								tr
+									th Mailbox
+									td= proposal.PrimaryMail
+					.col-xs-12.col-sm-6.col-md-6
+						table
+							tbody
+								th.contactType Budget
+								tr
+									th Name
+									td= proposal.BudgetName
+								tr
+									th Title
+									td= proposal.BudgetTitle
+								tr
+									th Phone
+									td= proposal.BudgetPhone
+								tr
+									th Email
+									td= proposal.BudgetEmail
+								tr
+									th Mailbox
+									td= proposal.BudgetMail
+					.col-xs-12.col-sm-6.col-md-6
+						table
+							tbody
+								th.contactType Dean
+								tr
+									th Name
+									td= proposal.DeanName
+								tr
+									th Title
+									td= proposal.DeanTitle
+								tr
+									th Phone
+									td= proposal.DeanPhone
+								tr
+									th Email
+									td= proposal.DeanEmail
+								tr
+									th Mailbox
+									td= proposal.DeanMail
+					.col-xs-12.col-sm-6.col-md-6
+						table
+							tbody
+								th.contactType Student
+								tr
+									th Name
+									td= proposal.StudentName
+								tr
+									th Title
+									td= proposal.StudentTitle
+								tr
+									th Phone
+									td= proposal.StudentPhone
+								tr
+									th Email
+									td= proposal.StudentEmail
+								tr
+									th Mailbox
+									td= proposal.StudentMail

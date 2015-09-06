@@ -1,0 +1,259 @@
+extends ../head
+
+append css
+	link(rel='stylesheet', href='/css/toastr.css')
+
+append js
+	script(src='/js/vendor/toastr.js')
+	script(src='/js/proposals.js')
+
+block content
+	.container
+		.col-sm-3.fixed
+				h2 Metrics  
+				#accordion.panel-group
+					if data
+						if data.Collaborative
+								.panel.panel-default
+									.panel-heading
+										h4.panel-title
+											a(data-toggle='collapse', data-parent='#accordion', href='#collapse1') Collaborative         
+									#collapse1.panel-collapse.collapse.collapse
+										.panel-body
+											if data.Collaborative
+												each metric in data.Collaborative
+														p=metric.Metric
+														input.sliderMetric(data-slider-id='ex1Slider', type='number', data-type='range',
+															data-slider-min='0', data-slider-max='5', 
+															data-slider-step='1', data-slider-value='3',value=3, tooltip='always') 
+
+						if data.ComputerLabs
+								.panel.panel-default
+									.panel-heading
+										h4.panel-title
+											a(data-toggle='collapse', data-parent='#accordion', href='#collapse2') Computer Labs
+			
+									#collapse2.panel-collapse.collapse
+										.panel-body
+											if data.ComputerLabs
+												each metric in data.ComputerLabs
+													p=metric.Metric
+													input.sliderMetric(data-slider-id='ex1Slider', type='number', data-type='range',
+															data-slider-min='0', data-slider-max='5', 
+															data-slider-step='1', data-slider-value='3',value=3, tooltip='always')
+									
+						.panel.panel-default
+							.panel-heading
+								h4.panel-title
+									a(data-toggle='collapse', data-parent='#accordion', href='#collapse3') General Cost Benefit
+								
+							#collapse3.panel-collapse.collapse
+								.panel-body
+									if data.GeneralCostBenefit
+										each metric in data.GeneralCostBenefit
+											p=metric.Metric
+											input.sliderMetric(data-slider-id='ex1Slider', type='number', data-type='range',
+															data-slider-min='0', data-slider-max='5', 
+															data-slider-step='1', data-slider-value='3',value=3, tooltip='always')
+
+						.panel.panel-default
+							.panel-heading
+								h4.panel-title
+									a(data-toggle='collapse', data-parent='#accordion', href='#collapse4') General Departmental Support And Responsibility         
+							#collapse4.panel-collapse.collapse.collapse
+								.panel-body
+									if data.GeneralDepartmentalSupportAndResponsibility
+										each metric in data.GeneralDepartmentalSupportAndResponsibility
+											p=metric.Metric 
+											input.sliderMetric(data-slider-id='ex1Slider', type='number', data-type='range',
+															data-slider-min='0', data-slider-max='5', 
+															data-slider-step='1', data-slider-value='3',value=3, tooltip='always')         
+						.panel.panel-default
+							.panel-heading
+								h4.panel-title
+									a(data-toggle='collapse', data-parent='#accordion', href='#collapse5') General Scholarship
+												
+							#collapse5.panel-collapse.collapse
+								.panel-body
+									if data.GeneralScholarship
+										each metric in data.GeneralScholarship
+											p=metric.Metric 
+											input.sliderMetric(data-slider-id='ex1Slider', type='number', data-type='range',
+															data-slider-min='0', data-slider-max='5', 
+															data-slider-step='1', data-slider-value='3',value=3, tooltip='always')         
+						.panel.panel-default
+							.panel-heading
+								h4.panel-title
+									a(data-toggle='collapse', data-parent='#accordion', href='#collapse6') General Student Access
+												
+							#collapse6.panel-collapse.collapse
+								.panel-body
+									if data.GeneralStudentAccess
+										each metric in data.GeneralStudentAccess
+											p=metric.Metric
+											input.sliderMetric(data-slider-id='ex1Slider', type='number', data-type='range',
+															data-slider-min='0', data-slider-max='5', 
+															data-slider-step='1', data-slider-value='3',value=3, tooltip='always')
+						if data.MachineResearch
+								.panel.panel-default
+									.panel-heading
+										h4.panel-title
+											a(data-toggle='collapse', data-parent='#accordion', href='#collapse7') Machine/Research
+														
+									#collapse7.panel-collapse.collapse
+										.panel-body
+											if data.MachineResearch
+												each metric in data.MachineResearch
+													p=metric.Metric
+													input.sliderMetric(data-slider-id='ex1Slider', type='number', data-type='range',
+															data-slider-min='0', data-slider-max='5', 
+															data-slider-step='1', data-slider-value='3',value=3, tooltip='always')
+					
+						if data.Portable
+								.panel.panel-default
+									.panel-heading
+										h4.panel-title
+											a(data-toggle='collapse', data-parent='#accordion', href='#collapse8') Portable
+														
+									#collapse8.panel-collapse.collapse
+										.panel-body
+											if data.Portable
+												each metric in data.Portable
+													p=metric.Metric
+													input.sliderMetric(data-slider-id='ex1Slider', type='number', data-type='range',
+															data-slider-min='0', data-slider-max='5', 
+															data-slider-step='1', data-slider-value='3',value=3, tooltip='always')
+						
+						if data.RemoteComputing
+								.panel.panel-default
+									.panel-heading
+										h4.panel-title
+											a(data-toggle='collapse', data-parent='#accordion', href='#collapse9') Remote Computing
+														
+									#collapse9.panel-collapse.collapse
+										.panel-body
+											if data.RemoteComputing
+												each metric in data.RemoteComputing
+													p=metric.Metric
+													input.sliderMetric(data-slider-id='ex1Slider', type='number', data-type='range',
+															data-slider-min='0', data-slider-max='5', 
+															data-slider-step='1', data-slider-value='3',value=3, tooltip='always')
+				label.col-md-4.scoreLable(for='totalScore') Score: 
+				input#totalScore.totalScore(type=text, disabled=true, value=0) 
+		.col-sm-2
+		.col-sm-7.scroll
+				h2 #{proposal.ProposalTitle}
+				table
+						tbody
+							tr
+								th Introduction
+							tr
+								table
+									tbody
+										tr
+											td Proposal ID  
+											td #{proposal.id}
+										tr
+											td Submitted
+											td #{proposal.createdAt}
+										tr
+											td Owner
+											td dhurley
+										tr
+											td Department
+											td Biology
+										tr
+											td Category
+											td #{proposal.Category}
+										tr
+											td Funding Status
+											td Pending
+										tr
+											td Metric Score 
+											td None
+							tr
+								th Contacts
+							tr
+								th Primary
+							tr
+								td Name
+								td #{proposal.PrimaryName}
+							tr
+								td Title
+								td #{proposal.PrimaryTitle}
+							tr
+								td Email
+								td #{proposal.PrimaryEmail}
+							tr
+								td Phone
+								td #{proposal.PrimaryPhone}
+							tr
+								td Mailbox
+								td #{proposal.PrimaryMail}
+							tr
+								th Budget
+							tr
+								td Name
+								td #{proposal.BudgetName}
+							tr
+								td Title
+								td #{proposal.BudgetTitle}
+							tr
+								td Email
+								td #{proposal.BudgetEmail}
+							tr
+								td Phone
+								td #{proposal.BudgetPhone}
+							tr
+								td Mailbox
+								td #{proposal.BudgetMail}
+							tr
+								th Dean
+							tr
+								td Name
+								td #{proposal.DeanName}
+							tr
+								td Title
+								td #{proposal.DeanTitle}
+							tr
+								td Email
+								td #{proposal.DeanEmail}
+							tr
+								td Phone
+								td #{proposal.DeanPhone}
+							tr
+								td Mailbox
+								td #{proposal.DeanMail}
+							tr
+								th Description
+							tr
+								th Abstract
+							tr
+								td #{proposal.Abstract}
+							tr
+								th Category Justification
+							tr
+								td #{proposal.CategoryJustification}
+							tr
+								th Background
+							tr
+								td #{proposal.Background}
+							tr
+								th Benefits to Students and the University
+							tr
+								td #{proposal.Benefits}
+							tr
+								th Installation Timeline
+							tr
+								td #{proposal.InstallationTimeline}
+							tr
+								th Resources Provided by Department
+							tr
+								td #{proposal.DepartmentalResources}
+							tr
+								th Access Restrictions
+							tr
+								td #{proposal.AccessRestrictions}
+								td Hours: #{proposal.Hours}
+								td Days: #{proposal.Days}
+

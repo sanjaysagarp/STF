@@ -9,7 +9,7 @@ block content
 
 	.container
 		.proposals-header
-			h2(style='float:left; padding-left: 40px')  Proposals 
+			h2(style='float:left; padding-left: 40px')= title 
 			.dropdown.proposals-dropdown
 				button#dropdownMenu1.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='true', style='margin: 20px') All Years
 					span.caret
@@ -29,19 +29,19 @@ block content
 
 	.container
 		table
-			thead
-				tr
-					th ID 
-					th Title
-					th Department
-					th Category
-			tbody
-				if proposals
+			if proposals.length != 0
+				thead
+					tr
+						th ID 
+						th Title
+						th Department
+						th Category
+				tbody
 					- each proposal in proposals
 						tr
 							td #{proposal.id}
 							td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle} 
 							td: a(href='#') #{proposal.Department}																	 
 							td: a(href='#') #{proposal.Category}
-				else 
-					p There are no proposals yet!
+			else 
+				p There are no proposals yet!
