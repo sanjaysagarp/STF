@@ -262,17 +262,24 @@ router.get('/proposals/:id', function(req, res) {
 			where: {
 				ProposalCode: req.params.id
 			}
-		}).then(function(item){
-			var cr = new Date(proposal.createdAt);
-			var months = ["January", "February", "March", "April", "May", "June", "July", 
-			              "August", "September", "October", "November", "December"];
-			var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
-			console.log(proposal);
+		}).then(function(items){
+			db.Endorsement.findAll({
+				where: {
+					ProposalID: req.params.id
+				}
+			}).then(function(endorsements){
+				var cr = new Date(proposal.createdAt);
+				var months = ["January", "February", "March", "April", "May", "June", "July", 
+				              "August", "September", "October", "November", "December"];
+				var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
+				console.log(proposal);
 
-			res.render('proposals/view', {
-				proposal: proposal,
-				created: day,
-				items: item
+				res.render('proposals/view', {
+					proposal: proposal,
+					created: day,
+					items: items,
+					endorsements: endorsements
+				});
 			});
 		});
 	});

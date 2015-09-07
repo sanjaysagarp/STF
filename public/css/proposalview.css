@@ -41,3 +41,53 @@ td {
 .contacts tbody > tr:last-child * {
 	padding-bottom: 10px !important;
 }
+
+.endorsement {
+	border-radius: 6px;
+	padding: 10px;
+	background-color: #EEEEEE;
+	margin: 8px;
+}
+
+.items {
+	margin: 8px;
+	border-radius: 6px;
+}
+
+.items h4 {
+	font-weight: bold;
+}
+
+.items > tbody > tr:nth-child(6n+2),
+.items > tbody > tr:nth-child(6n+3),
+.items > tbody > tr:nth-child(6n+4) {
+	background-color: #DDDDDD;
+}
+
+.item-head {
+	background-color: #EEEEEE; 
+	font-size: 1.2em;
+}
+
+.item-info {
+	background-color: #EEEEEE;
+}
+
+.item-info > td {
+	padding-bottom: 0px;
+	padding-top: 0px;
+}
+
+.info-first-line > td {
+	padding-bottom: 6px;
+	padding-top: 5px;
+}
+
+.item-info span {
+	color: rgb(75, 46, 131);
+	font-weight: bold;
+}
+
+.info-last-line > td {
+	padding-bottom: 10px;
+}

@@ -123,4 +123,51 @@ block content
 		p.subtitle Access available #{proposal.Days} between #{proposal.Hours}
 		p= proposal.AccessRestrictions
 		h3 Student Endorsements
-		p PLACEHOLDER some each stuff here
+
+		each endorsement in endorsements
+			.endorsement
+				-var date = new Date(endorsement.createdAt);
+				h4= endorsement.Name + " (" + endorsement.NetId + ") on " + (date.getMonth() + 1) + "/" + date.getDate()
+				p= endorsement.Message
+
+		h3 Items
+		-var total = 0;
+		table.items
+			tbody
+				tr.item-head
+					th Item
+					th Group
+					th Unit Price
+					th Quantity
+					th Subtotal
+
+				each item in items
+					tr.item-info.info-first-line
+						td: h4= item.ItemName
+						td= item.Group
+						td= "$" + item.Price
+						td= item.Quantity
+						td= "$" + item.Price * item.Quantity
+					tr.item-info
+						td(colspan='5')
+							span Description: 
+							| #{item.Description}
+					tr.item-info.info-last-line
+						td(colspan='5')
+							span Justification: 
+							| #{item.Justification}
+
+					-total+= item.Price * item.Quantity;
+
+				tr.item-head
+					td: h3 Summary
+					td 
+					td 
+					td 
+					td Total
+				tr
+					td
+					td
+					td
+					td
+					td= "$" + total
