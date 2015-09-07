@@ -122,13 +122,17 @@ block content
 		h3.title Access Restrictions
 		p.subtitle Access available #{proposal.Days} between #{proposal.Hours}
 		p= proposal.AccessRestrictions
+		
 		h3 Student Endorsements
-
-		each endorsement in endorsements
-			.endorsement
-				-var date = new Date(endorsement.createdAt);
-				h4= endorsement.Name + " (" + endorsement.NetId + ") on " + (date.getMonth() + 1) + "/" + date.getDate()
-				p= endorsement.Message
+		if endorsements
+			each endorsement in endorsements
+				.endorsement
+					-var date = new Date(endorsement.createdAt);
+					h4= endorsement.Name + " (" + endorsement.NetId + ") on " + (date.getMonth() + 1) + "/" + date.getDate()
+					p= endorsement.Message
+		else 
+			p There are no endorsements for this proposal
+		a(href="/proposals/endorsements/#{proposal.id}") Write an endorsement
 
 		h3 Items
 		-var total = 0;

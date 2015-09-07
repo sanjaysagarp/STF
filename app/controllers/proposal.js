@@ -284,6 +284,35 @@ router.get('/proposals/:id', function(req, res) {
 		});
 	});
 });
+
+router.get('/proposals/endorsements/:id', shib.ensureAuth('/login'), function(req, res) {
+	db.Proposal.find({
+		where: {
+			id: req.params.id
+		}
+	}).then(function(proposal) {
+		res.render('proposals/writeendorsement', {
+			proposal: proposal
+		});
+	});
+});
+
+router.post('/proposals/endorsements/:id', shib.ensureAuth('/login'), function(req, res) {
+	console.log(req.body.message);
+	console.log(req.user);
+	db.Endorsement.create({
+		ProposalID: req.params.id,
+		RegId: req.user.regId,
+		NetId: req.user.netId,
+		Name: req.user.givenName + " " + req.user.surname,
+		Message: req.body.message,
+	}).then(function(proposal) {
+		res.redirect('/proposals/' + req.params.id);
+	});
+});
+
+
+
 // router.get('/article', function(req, res, next) {
 //   db.Article.findAll().success(function(articles) {
 //     res.render('article', {
