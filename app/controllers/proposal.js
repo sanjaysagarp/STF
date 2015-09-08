@@ -181,18 +181,14 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 		DepartmentalResources: DepartmentalResources,
 		InstallationTimeline: InstallationTimeline
 	}).then(function(proposal) {
-		res.redirect('/proposals/' + proposal.id);
+		res.redirect('/proposals/update/' + proposal.id);
 	});
 });
 
 
 router.get('/proposals/browse', function(req, res, next) {
 	console.log(db.Proposal);
-	db.Proposal.findAll({
-		where: {
-			id : 1
-		}
-	}).then(function(proposals) {
+	db.Proposal.findAll().then(function(proposals) {
 		res.render('proposals/browse',{
 			proposals: proposals,
 			title: "Browse all Proposals"
