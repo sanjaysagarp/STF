@@ -53,16 +53,16 @@ block content
 										.col-md-5
 											input#title.form-control.input-md(name='title', type='text', placeholder='title')
 
-											span.help-block Title for your proposal
+											span.help-block Title for your proposal. Must be longer than 10 chars
 									// Select Basic
 									.form-group
 										label.col-md-4.control-label(for='category') Category
 
 										.col-md-4
 											select#category.form-control(name='category')
-												option(value='optionOneValue') Option one
+												each val, index in categories
+													option(value='#{index}')= val.name
 
-												option(value='optionTwoValue') Option two
 									// Select Basic
 									.form-group
 										label.col-md-4.control-label(for='department') Department
@@ -78,5 +78,5 @@ block content
 										br
 										.col-md-4
 										.col-md-4
-											button#create.btn.btn-primary.form-button(type='submit', name='saveAndContinue') Create
+											button#create.disabled.btn.btn-primary.form-button(type='submit', name='saveAndContinue') Create
 											//button.next-button#activate-step-2.btn.btn-default.form-button(name='next') Next

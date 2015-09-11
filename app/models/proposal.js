@@ -42,20 +42,15 @@ module.exports = function(sequelize, DataTypes) {
 		Days: DataTypes.STRING,
 		DepartmentalResources: DataTypes.TEXT(4000), 
 		InstallationTimeline: DataTypes.STRING(45),
-		Status: DataTypes.STRING(45)
-	}
-
-	// , {
-	//   classMethods: {
-	//     associate: function(models) {
-	//       Proposal.hasMany(models.Item);
-	//       // example on how to add relations
-	//       // Article.hasMany(models.Comments);
-	//     }
-	//   }
-	// }
-
-	);
+		Status: 'TINYINT'
+	});
 
 	return Proposal;
 };
+
+/* proposal status cosdes
+   0 = working proposal
+   1 = submitted proposal
+   2 = cancelled proposal (by user)
+   3 = cancelled proposal (by admin)
+*/

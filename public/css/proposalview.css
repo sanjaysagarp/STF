@@ -5,6 +5,13 @@
 	color: #555555;
 }
 
+.draft-alert {
+	padding: 5px;
+	background-color: #FF4499;
+	color: white;
+	border-radius: 5px;
+}
+
 .title {
 	margin-bottom: 4px;
 } 

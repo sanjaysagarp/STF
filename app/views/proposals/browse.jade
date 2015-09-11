@@ -34,14 +34,24 @@ block content
 					tr
 						th ID 
 						th Title
-						th Department
+						th Status
 						th Category
+						th Department
 				tbody
 					- each proposal in proposals
 						tr
 							td #{proposal.id}
-							td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle} 
-							td: a(href='#') #{proposal.Department}																	 
-							td: a(href='#') #{proposal.Category}
+							if proposal.Status == 0
+								td: a(href='/proposals/update/#{proposal.id}') #{proposal.ProposalTitle} 
+								td Unsubmitted
+							if proposal.Status == 1
+								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle} 
+								td Submitted
+							if proposal.Status == 2
+								td #{proposal.ProposalTitle}
+								td Cancelled by User
+
+							td: a(href='#') #{categories[proposal.Category].name}
+							td: a(href='#') #{proposal.Department}
 			else 
 				p There are no proposals yet!

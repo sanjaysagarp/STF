@@ -10,7 +10,9 @@ append css
 block content
 	.container
 		h2.title= proposal.ProposalTitle
-		p.subtitle In #{proposal.Category}
+		p.subtitle In #{categories[proposal.Category].name}
+		if proposal.Status == 0
+			p.draft-alert This is a draft proposal, and has not been submitted yet. Information is subject to change.
 		.row
 			.col-sm-12.col-md-4
 				h3 Basic Info
@@ -30,7 +32,7 @@ block content
 							td= proposal.Status
 						tr
 							th Metrics
-							td PLACEHOLDER
+							td: a(href='/metrics/#{proposal.id}') View Metrics
 
 			.col-sm-12.col-md-8
 				h3 Contact Info

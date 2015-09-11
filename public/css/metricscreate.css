@@ -1,0 +1,52 @@
+.cols {
+	height: 100%;
+	display: flex;
+	height: auto; 
+	flex: 1 1 auto;
+}
+
+.row {
+	overflow: hidden;
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+	margin-top: 10px;
+}
+
+.question-wrap {
+	background-color: #EEEEEE;
+	margin-bottom: 10px;
+	padding: 3px;
+	border-radius: 6px;
+	display: flex;
+	flex: 1;
+	align-items: stretch;
+	flex-direction: column;
+} 
+
+
+.input-wrap-outer {
+	display: flex;
+	flex: 1;
+	align-items: flex-end;
+	justify-content: center;
+}
+
+h4 {
+	margin-top: 2px;
+}
+
+.score{
+	color: #666666;
+	padding: 0px;
+	margin-bottom: 2px;
+}
+
+.text-wrap {
+	padding: 8px;
+}
+
+textarea {
+	width: 100%;
+	height: 10em;
+}

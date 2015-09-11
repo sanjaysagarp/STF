@@ -4,20 +4,23 @@ var express = require('express');
 var	router = express.Router();
 var	db = require('../models');
 var shib = require('passport-uwshib');
+var categories = require('../../config/categories');
 
 
 module.exports = function(app) {
 	app.use('/', router);
 };
 
-//
+
 router.get('/proposals', function(req, res, next) {
 	res.render('proposals/index');
 });
 
 //WORKS
 router.get('/proposals/create', shib.ensureAuth('/login'), function createProposal(req, res) {
-	res.render('proposals/create');
+	res.render('proposals/create', {
+		categories: categories
+	});
 });
 
 router.get('/proposals/myproposals', shib.ensureAuth('/login'), function myProposals(req, res) {
@@ -29,7 +32,8 @@ router.get('/proposals/myproposals', shib.ensureAuth('/login'), function myPropo
 		console.log(proposals);
 		res.render('proposals/browse',{
 			proposals: proposals,
-			title: "My Proposals"
+			title: "My Proposals",
+			categories: categories
 		});
 	});
 });
@@ -45,6 +49,8 @@ router.post('/proposals/:id', shib.ensureAuth('/login'), function postProposal(r
 			res.send(404);
 		} if (req.user.regId != proposal.PrimaryRegId) {
 			res.send(403);
+		} if (proposal.Status == 1) {
+			res.render('error', {message: 'This proposal has been submitted and cannot be updated'});
 		}
 
 		var fromForm = {
@@ -188,10 +194,16 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 
 router.get('/proposals/browse', function(req, res, next) {
 	console.log(db.Proposal);
-	db.Proposal.findAll().then(function(proposals) {
+	db.Proposal.findAll({
+		where: {
+			Status: 1
+		}
+	}).then(function(proposals) {
+		console.log(proposals);
 		res.render('proposals/browse',{
 			proposals: proposals,
-			title: "Browse all Proposals"
+			title: "Browse all Proposals",
+			categories: categories
 		});
 	});
 });
@@ -226,24 +238,40 @@ router.get('/proposal/:id', function(req,res,next) {
 });
 
 
-router.get('/proposals/update/:id', function(req, res) {
+router.get('/proposals/update/:id', shib.ensureAuth('/login'), function(req, res) {
 	db.Proposal.find({
 		where: {
 			id: req.params.id
 		}
 	}).then(function(proposal) {
-		db.Item.findAll({
-			where: {
-				ProposalCode: req.params.id
-			}
-		}).then(function(item){
-			//console.log("item:");
-			//console.log(item)
-			res.render('proposals/update', {
-				proposal: proposal,
-				items: item
+
+		if (req.user.regId == proposal.PrimaryRegId && proposal.Status == 0) {
+			db.Item.findAll({
+				where: {
+					ProposalCode: req.params.id
+				}
+			}).then(function(item){
+				//console.log("item:");
+				console.log(item)
+				res.render('proposals/update', {
+					proposal: proposal,
+					items: item,
+					categories: categories
+				});
 			});
-		});
+		} else {
+			if (proposal.Status == 1) {
+				res.render('error', {
+					message: 'This proposal has been submitted and cannot be updated',
+					error: {status: "Access denied"}
+				});
+			} else {
+				res.render('error', {
+					message: 'You do not have permission to edit that proposal',
+					error: {status: 'Access denied'}
+				});
+			}
+		}
 	});
 });
 
@@ -274,7 +302,8 @@ router.get('/proposals/:id', function(req, res) {
 					proposal: proposal,
 					created: day,
 					items: items,
-					endorsements: endorsements
+					endorsements: endorsements,
+					categories: categories
 				});
 			});
 		});

@@ -1,0 +1,45 @@
+extends ../head
+
+append css
+	link(rel='stylesheet', href='/css/metricscreate.css')
+
+block content
+	.container
+		form
+			h2 Metrics for #{proposal.ProposalTitle}
+			a(href='/proposals/#{proposal.id}') Return to proposal
+			.row
+				each val, index in questions.general
+					- var n = 1
+					- var count = 0
+					- for (i in questions.general[index]) {
+					- 	count++;
+					- }
+					while n < count
+						.col-lg-3.col-md-4.col-sm-6.col-xs-12.cols
+							.question-wrap
+								h4= val.name
+								p #{val[n]}
+								.input-wrap-outer
+									p.score score: 
+										input(type='text' size='3')
+						- n++ 
+				- var n = 1
+				- var count = 0
+				- for (i in questions.special[proposal.Category]) {
+				- 	count++
+				- }
+				while n < count
+					.col-lg-3.col-md-4.col-sm-6.col-xs-12.cols
+						.question-wrap
+							h4= questions.special[proposal.Category].name
+							p #{questions.special[proposal.Category][n]}
+							.input-wrap-outer
+								p.score score: 
+									input(type='text' size='3')
+					- n++
+				.col-xs-12
+					.question-wrap
+						h4 Additional Notes
+						.text-wrap: textarea
+			button(action='submit' value='Submit').btn.btn-default.form-button Submit Metrics

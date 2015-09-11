@@ -11,23 +11,23 @@ block content
 			.col-xs-12
 				ul.nav.nav-pills.nav-justified.thumbnail.setup-panel.form-ul
 					li.active
-						a(href='#step-1')
+						a(href='#step-1').step-1
 							h4.list-group-item-heading Introduction
 							p.list-group-item-text First step description
-					li.disabled
-						a(href='#step-2')
+					li
+						a(href='#step-2').step-2
 							h4.list-group-item-heading Contact
 							p.list-group-item-text Second step description
-					li.disabled
-						a(href='#step-3')
+					li
+						a(href='#step-3').step-3
 							h4.list-group-item-heading Description
 							p.list-group-item-text Third step description
-					li.disabled
-						a(href='#step-4')
-							h4.list-group-item-heading Item
+					li
+						a(href='#step-4').step-4
+							h4.list-group-item-heading Items
 							p.list-group-item-text Fourth step description
-					li.disabled
-						a(href='#step-5')
+					li
+						a(href='#step-5').step-5
 							h4.list-group-item-heading Signature Page
 							p.list-group-item-text Final step description
 		div
@@ -36,7 +36,6 @@ block content
 				#step-1.setup-content
 					.col-xs-12
 						.col-md-12.well
-							h3 #{proposal.id}
 							//Introduction Form
 							.form-horizontal(data-toggle='formcache', name='proposalForm')
 								fieldset
@@ -49,16 +48,17 @@ block content
 										.col-md-5
 											input#title.form-control.input-md(name='title', type='text', placeholder='title', value="#{proposal.ProposalTitle}")
 
-											span.help-block Title for your proposal
+											span.help-block Title for your proposal. Must be longer than 10 chars
 									// Select Basic
 									.form-group
 										label.col-md-4.control-label(for='category') Category
 										.col-md-4
 											select#category.form-control(name='category')
-												if proposal.Category==='optionOneValue'
-													option(value='optionOneValue', selected='selected') Option one
-												else
-													option(value='optionOneValue') Option one
+												option(value='#{proposal.Category}', selected) #{categories[proposal.Category].name}
+												each val, index in categories
+													if index != proposal.Category
+														option(value='#{index}')= val.name
+
 												if proposal.Category==='optionTwoValue'
 													option(value='optionTwoValue', selected='selected') Option two
 												else
@@ -79,15 +79,15 @@ block content
 													option(value='optionTwoValue') Option two
 									// Button (Double)
 									.form-group
-										label.col-md-4.control-label(for='saveAndContinue')
+										label.col-md-4.control-label(for='save')
 
 										br
 
 										.col-md-4
 
 										.col-md-4
-											button#activate-step-2.btn.btn-primary.form-button(type='submit', name='saveAndContinue') Save and Continue
-											//button.next-button#activate-step-2.btn.btn-default.form-button(name='next') Next
+											button.btn.btn-primary.form-button(type='submit', name='save') Save
+											//button.next-button.btn.btn-default.form-button(name='next') Next
 					// <button id="activate-step-2" class="btn btn-primary btn-lg">Activate Step
 				#step-2.row.setup-content
 					.col-xs-12
@@ -242,13 +242,12 @@ block content
 												span.help-block help
 										// Button (Three)
 										.form-group
-											label.col-md-4.control-label(for='saveAndContinue')
+											label.col-md-4.control-label(for='save')
 											br
 											.col-md-4
 											.col-md-4
-												button.next-button#activate-step-1.btn.btn-default.form-button(name='back') Back
-												button#activate-step-3.btn.btn-default.form-button(name='saveAndContinue' type='submit') Save and Continue
-												//button.next-button#activate-step-3.btn.btn-default.form-button(name='next') Next
+												button.btn.btn-default.form-button(name='save' type='submit') Save
+												//button.next-button.btn.btn-default.form-button(name='next') Next
 				#step-3.row.setup-content
 					.form-horizontal(data-toggle='formcache', name='description')
 						.col-xs-12
@@ -302,183 +301,33 @@ block content
 												textarea#timeline.form-control(name='InstallationTimeline') #{proposal.InstallationTimeline}
 										// Button (Double)
 										.form-group
-											label.col-md-4.control-label(for='saveAndContinue')
+											label.col-md-4.control-label(for='save')
 											br
 											.col-md-4
 											.col-md-4
-												button.next-button#activate-step-2.btn.btn-default.form-button(name='back') Back
-												button#activate-step-4.btn.btn-default.form-button(name='saveAndContinue' type='submit') Save and Continue
-												//button.next-button#activate-step-4.btn.btn-default.form-button(name='next') Next
+												button.btn.btn-default.form-button(name='save' type='submit') Save
+												//button.next-button.btn.btn-default.form-button(name='next') Next
 											.col-md-4
 		div
 			form.form-horizontal#createItem(data-toggle='formcache', name='proposalForm',
 				method='post', action='/items/new')
 				#step-4.row.setup-content
-					if item
-						.col-xs-12
-							.col-md-12.well
-								.form-horizontal
-									fieldset
-										// Form Name
-										legend
-										// Text input
-										.form-group
-											label.col-md-4.control-label(for='ItemName') Name
-											.col-md-4
-												input#ItemName.form-control.input-md(name='ItemName', type='text', placeholder='...', value="#{item.ItemName}")
-												input#ItemProposalCode(name='ProposalCode', type='hidden', value='#{proposal.id}')
-												span.help-block help
-										// Text input
-										.form-group
-											label.col-md-4.control-label(for='Group') Group
-											.col-md-4
-												input#Group.form-control.input-md(name='Group', type='text', placeholder='...', value="#{item.Group}")
-												span.help-block help
-										// Text input
-										.form-group
-											label.col-md-4.control-label(for='Quantity') Quantity
-											.col-md-4
-												input#Quantity.form-control.input-md(name='Quantity', type='text', placeholder='1,2,3', value="#{item.Quantity}")
-												span.help-block help
-										// Text input
-										.form-group
-											label.col-md-4.control-label(for='Price') Price
-											.col-md-4
-												input#Price.form-control.input-md(name='Price', type='text', placeholder='$', value="#{item.Price}")
-												span.help-block help
-										// Select Basic
-										.form-group
-											label.col-md-4.control-label(for='Type') Type
-											.col-md-4
-												select#Type.form-control(name='Type', value="#{item.Type}")
-													option(value='1') Option one
-													option(value='2') Option two
-													option(value='') Other
-										// Text input
-										.form-group
-											label.col-md-4.control-label(for='OtherType') Other
-											.col-md-4
-												input#OtherType.form-control.input-md(name='OtherType', type='text', placeholder='...', value="#{item.OtherType}")
-												span.help-block help
-										// Textarea
-										.form-group
-											label.col-md-4.control-label(for='Justification') Justification
-											.col-md-4
-												textarea#Justification.form-control(name='Justification', value="#{item.Justification}") 
-										// Textarea
-										.form-group
-											label.col-md-4.control-label(for='Description') Description
-											.col-md-4
-												textarea#Description.form-control(name='Description', value="#{item.Description}") 
-										// Button
-										.form-group
-											label.col-md-4.control-label(for='addItem')
-											.col-md-4
-												button#addItem.btn.btn-default(name='addItem', type="submit") + Save
-										// Button (Double)
-										.row
-											.col-md-4
-											.col-md-4
-												br
-												button.next-button#activate-step-3.btn.btn-default.form-button(name='back') Back
-												button#activate-step-5.btn.btn-default.form-button(name='saveAndContinue', type='submit') Save and Continue
-												//button.next-button#activate-step-5.btn.btn-default.form-button(name='next') Next
-											.col-md-4
-					if items
-						.col-xs-12
-							.col-md-9.well
-								.form-horizontal
-									fieldset
-										// Form Name
-										legend
-										// Text input
-										.form-group
-											label.col-md-4.control-label(for='ItemName') Name
-											.col-md-4
-												input#ItemName.form-control.input-md(name='ItemName', type='text', placeholder='...')
-												span.help-block help
-												input#ItemProposalCode(name='ProposalCode', type='hidden', value='#{proposal.id}')
-										// Text input
-										.form-group
-											label.col-md-4.control-label(for='Group') Group
-											.col-md-4
-												input#Group.form-control.input-md(name='Group', type='text', placeholder='...')
-												span.help-block help
-										// Text input
-										.form-group
-											label.col-md-4.control-label(for='Quantity') Quantity
-											.col-md-4
-												input#Quantity.form-control.input-md(name='Quantity', type='text', placeholder='1,2,3')
-												span.help-block help
-										// Text input
-										.form-group
-											label.col-md-4.control-label(for='Price') Price
-											.col-md-4
-												input#Price.form-control.input-md(name='Price', type='text', placeholder='$')
-												span.help-block help
-										// Select Basic
-										.form-group
-											label.col-md-4.control-label(for='Type') Type
-											.col-md-4
-												select#Type.form-control(name='Type')
-													option(value='1') Option one
-													option(value='2') Option two
-													option(value='') Other
-										// Text input
-										.form-group
-											label.col-md-4.control-label(for='OtherType') Other
-											.col-md-4
-												input#OtherType.form-control.input-md(name='OtherType', type='text', placeholder='...')
-												span.help-block help
-										// Textarea
-										.form-group
-											label.col-md-4.control-label(for='Justification') Justification
-											.col-md-4
-												textarea#Justification.form-control(name='Justification') ...
-										// Textarea
-										.form-group
-											label.col-md-4.control-label(for='Description') Description
-											.col-md-4
-												textarea#Description.form-control(name='Description') ...
-										// Button
-										.form-group
-											label.col-md-4.control-label(for='addItem')
-											.col-md-4
-												button#addItem.btn.btn-default(name='addItem', type='submit') +Add Another Item
-										// Button (Double)
-										.row
-											.col-md-4
-											.col-md-4
-												br
-												button.next-button#activate-step-3.btn.btn-default.form-button(name='back') Back
-												button#activate-step-5.btn.btn-default.form-button(name='saveAndContinue', type='submit') Save and Continue
-												//button.next-button#activate-step-5.btn.btn-default.form-button(name='next') Next
-											.col-md-4
-							.col-md-3
-								div#itemsList
-									if items
-										h3  Items             
-										ol
-											- each item in items
-												li 
-													a(href='/item/#{item.id}') #{item.ItemName}
-					else
-						.col-xs-12
-						.col-md-12.well
+					.col-xs-12
+						.col-md-9.well
 							.form-horizontal
 								fieldset
 									// Form Name
 									legend
 									// Text input
 									.form-group
-										label.col-md-4.control-label(for='item-name') Name
+										label.col-md-4.control-label(for='ItemName') Name
 										.col-md-4
 											input#ItemName.form-control.input-md(name='ItemName', type='text', placeholder='...')
 											span.help-block help
 											input#ItemProposalCode(name='ProposalCode', type='hidden', value='#{proposal.id}')
 									// Text input
 									.form-group
-										label.col-md-4.control-label(for='group') Group
+										label.col-md-4.control-label(for='Group') Group
 										.col-md-4
 											input#Group.form-control.input-md(name='Group', type='text', placeholder='...')
 											span.help-block help
@@ -512,24 +361,27 @@ block content
 									.form-group
 										label.col-md-4.control-label(for='Justification') Justification
 										.col-md-4
-											textarea#Justification.form-control(name='Justification')
+											textarea#Justification.form-control(name='Justification', placeholder='...')
 									// Textarea
 									.form-group
 										label.col-md-4.control-label(for='Description') Description
 										.col-md-4
-											textarea#Description.form-control(name='Description')
+											textarea#Description.form-control(name='Description', placeholder='...')
 									// Button
 									.form-group
 										label.col-md-4.control-label(for='addItem')
 										.col-md-4
-											button#addItem.btn.btn-default(name='addItem', type='submit') +Add Another Item
-									// Button (Double)
-									.row
-										.col-md-4
-										.col-md-4
-											br
-											button.next-button#activate-step-3.btn.btn-default.form-button(name='back') Back
-											button#activate-step-5.btn.btn-default.form-button(name='saveAndContinue', type='submit') Save and Continue
-											//button.next-button#activate-step-5.btn.btn-default.form-button(name='next') Next
-										.col-md-4
+											button#addItem.btn.btn-default.disabled(name='addItem', type='submit') +Add Item
 
+						.col-md-3
+							div#itemsList
+								if items
+									h3 All Items
+									p.subtitle Click to view/edit             
+									ol
+										- each item in items
+											li 
+												if item.ItemName.length != 0
+													a(href='/item/#{item.id}') #{item.ItemName}
+												else 
+													a(href='/item/#{item.id}') (No Item Name)
