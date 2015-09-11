@@ -68,16 +68,9 @@ passport.deserializeUser(function(user, done) {
     done(null, user);
 });
 
-//app.post(loginURL, passport.authenticate(strat.name), shib.backToUrl()); is broken.
-//the current code just redirects to the homepage, but can and should be fixed later
-//as walled sections of the site reveal themselves. ## TODO ##
 //user login, login callback, and metadata routes for netid
-app.get(loginURL, passport.authenticate(strat.name), function(req, res) {res.redirect('/')});
-app.post(loginCallbackURL, passport.authenticate(strat.name), function(req, res) {
-	console.log(req);
-	res.redirect('/');
-	console.log(req.user);
-});
+app.get(loginURL, passport.authenticate(strat.name), shib.backToUrl());
+app.post(loginCallbackURL, passport.authenticate(strat.name), shib.backToUrl());
 app.get(shib.urls.metadata, shib.metadataRoute(strat, pubCert));
 
 //require auth on all pages

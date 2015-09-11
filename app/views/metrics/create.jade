@@ -5,7 +5,7 @@ append css
 
 block content
 	.container
-		form
+		form(method='post')
 			h2 Metrics for #{proposal.ProposalTitle}
 			a(href='/metrics/#{proposal.id}') Return to Metrics
 			|  / 
@@ -24,7 +24,11 @@ block content
 								p #{val[n]}
 								.input-wrap-outer
 									p.score score: 
-										input(type='text' size='3')
+										//-p= metric[index + n]
+										if n == 1
+											input(name='#{index + n}' type='number' size='3' autofocus='autofocus' required='required' min='1' max='5' value='#{(metric) ? metric[index + n] : ""}')
+										else
+											input(name='#{index + n}' type='number' size='3' required='required' min='1' max='5' value='#{(metric) ? metric[index + n] : ""}')
 						- n++ 
 				- var n = 1
 				- var count = 0
@@ -38,10 +42,13 @@ block content
 							p #{questions.special[proposal.Category][n]}
 							.input-wrap-outer
 								p.score score: 
-									input(type='text' size='3')
+									input(name= '#{"X" + n}' type='number' size='3' required='required' min='1' max='5')
 					- n++
 				.col-xs-12
 					.question-wrap
 						h4 Additional Notes
-						.text-wrap: textarea
+						.text-wrap: textarea(name="Notes")
+			p.subtitle Jump to proposal ID 
+				input(name='Next' type='number' size='4')
+				|  on submit
 			button(action='submit' value='Submit').btn.btn-default.form-button Submit Metrics

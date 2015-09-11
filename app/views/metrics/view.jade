@@ -8,22 +8,24 @@ block content
 		h2 Metrics for #{proposal.ProposalTitle}
 		a(href='/proposals/#{proposal.id}') View Proposal
 		|  / 
-		a(href='/metrics/#{proposal.id}/create') Write Metrics
+		a(href='/metrics/#{proposal.id}/create') Write or Update Metrics
 
-		table.table: tbody
-			tr
-				th User
-
-				each val, index in list
-					th= index
-
-				th Notes
-
-			each metric in metrics
+		if metrics.length == 0
+			p There are not yet metrics for this proposal
+		else 
+			table.table: tbody
 				tr
-					td= users[metric.AuthorId - 1].NetId
+					th User
+
 					each val, index in list
-						td= metric[index]
-						-j++
-					td= metric.Notes
-		p= list
+						th= index
+
+					th Notes
+
+				each metric in metrics
+					tr
+						td= users[metric.AuthorId - 1].NetId
+						each val, index in list
+							td= metric[index]
+							-j++
+						td= metric.Notes

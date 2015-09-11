@@ -48,17 +48,6 @@ router.get('/metrics/:id', function(req, res, next) {
 				}
 				console.log(questionList);
 
-
-	/*			questions.general.forEach(function(typeElem, typeIndex) {
-					typeElem.forEach(function(quesElem, quesIndex) {
-						if (quesIndex != 'name') {
-							questionList[typeIndex + quesIndex] = quesElem;
-						} 
-					});
-				});
-				console.log(questionList);*/
-
-
 				res.render('metrics/view', {
 					proposal: proposal,
 					metrics: metrics,
@@ -71,19 +60,77 @@ router.get('/metrics/:id', function(req, res, next) {
 	});
 });
 
+router.post('/metrics/:id', shib.ensureAuth('/login'), function(re, res) {
+
+});
+
 router.get('/metrics/:id/create', shib.ensureAuth('/login'), function(req, res, next) {
 	db.Proposal.find({
 		where: {
 			id: req.params.id
 		}
 	}).then(function(proposal) {
-		res.render('metrics/create', {
-			proposal: proposal,
-			questions: questions
+		db.User.find({
+			where: {
+				RegId: req.user.regId
+			}
+		}).then(function(user) {
+			db.Metrics.find({
+				where: {
+					AuthorId: user.id
+				}
+			}).then(function(metric) {
+				if (user) {
+					res.render('metrics/create', {
+						proposal: proposal,
+						questions: questions,
+						metric: metric
+					});
+				} else {
+					res.render('error', {
+						message: 'You do not have permission to write metrics on proposals',
+						error: {status: "Access denied"}
+					});
+				}
+			});
 		});
 	});
 });
 
-router.post('/metrics/:id/create'), shib.ensureAuth('/login'), function(req, res) {
+router.post('/metrics/:id/create', shib.ensureAuth('/login'), function(req, res, next) {
+	console.log('request made!');
+	db.User.find({
+		where: {
+			RegId: req.user.regId
+		}
+	}).then(function(user){
+		if (user) {
+			var metric = {};
+			for (name in req.body) {
+				metric[name] = req.body[name];
+			}
+			console.log(metric);
+			metric.ProposalId =  req.params.id,
+			metric.AuthorId =  user.id,
 
-}
+			console.log(metric);
+
+			db.Metrics.upsert(
+				metric
+			).then(function() {
+				if (req.body["Next"]) {
+					res.redirect('/metrics/' + req.body["Next"] + '/create');
+				} else {
+					res.redirect('/metrics/' + req.params.id);
+				}
+			});
+		} else {
+			res.render('error', {
+				message: 'You do not have permission to write metrics on proposals',
+				error: {status: "Access denied"}
+			});
+		}
+	});
+
+	
+});
