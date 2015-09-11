@@ -6,5 +6,24 @@ append css
 block content
 	.container
 		h2 Metrics for #{proposal.ProposalTitle}
-		a(href='/proposals/proposal/#{proposal.id}') View proposal
+		a(href='/proposals/#{proposal.id}') View Proposal
+		|  / 
 		a(href='/metrics/#{proposal.id}/create') Write Metrics
+
+		table.table: tbody
+			tr
+				th User
+
+				each val, index in list
+					th= index
+
+				th Notes
+
+			each metric in metrics
+				tr
+					td= users[metric.AuthorId - 1].NetId
+					each val, index in list
+						td= metric[index]
+						-j++
+					td= metric.Notes
+		p= list

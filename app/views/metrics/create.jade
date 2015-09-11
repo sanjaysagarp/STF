@@ -7,7 +7,9 @@ block content
 	.container
 		form
 			h2 Metrics for #{proposal.ProposalTitle}
-			a(href='/proposals/#{proposal.id}') Return to proposal
+			a(href='/metrics/#{proposal.id}') Return to Metrics
+			|  / 
+			a(href='/proposals/#{proposal.id}') View Proposal
 			.row
 				each val, index in questions.general
 					- var n = 1

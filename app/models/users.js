@@ -9,7 +9,8 @@ module.exports = function (sequelize, DataTypes) {
 	});
 
 	//PERMISSIONS//
-	//1 
+	//1 general member
+	//2 admin
 
 	return User;
 };
