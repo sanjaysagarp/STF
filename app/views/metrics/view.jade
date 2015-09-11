@@ -1,0 +1,10 @@
+extends ../head
+
+append css
+	link(rel='stylesheet' href='/css/metricsview.css')
+
+block content
+	.container
+		h2 Metrics for #{proposal.ProposalTitle}
+		a(href='/proposals/proposal/#{proposal.id}') View proposal
+		a(href='/metrics/#{proposal.id}/create') Write Metrics
