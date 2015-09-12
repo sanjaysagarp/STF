@@ -3,6 +3,9 @@ extends ../head
 append css
 	link(rel='stylesheet' href='/css/metricsview.css')
 
+append js
+	script(src='/js/metricsview.js')
+
 block content
 	.container
 		h2 Metrics for #{proposal.ProposalTitle}
@@ -10,17 +13,21 @@ block content
 		|  / 
 		a(href='/metrics/#{proposal.id}/create') Write or Update Metrics
 
+
 		if metrics.length == 0
 			p There are not yet metrics for this proposal
 		else 
-			table.table: tbody
+			table.table-hover.table-condensed: tbody
 				tr
 					th User
 
+					
 					each val, index in list
-						th= index
+						th.selectors= index
 
 					th Notes
+				each val, index in list
+					tr: td.hidden(id="#{index}" colspan='100')= val
 
 				each metric in metrics
 					tr

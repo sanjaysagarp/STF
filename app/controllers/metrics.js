@@ -75,24 +75,24 @@ router.get('/metrics/:id/create', shib.ensureAuth('/login'), function(req, res, 
 				RegId: req.user.regId
 			}
 		}).then(function(user) {
-			db.Metrics.find({
-				where: {
-					AuthorId: user.id
-				}
-			}).then(function(metric) {
-				if (user) {
+			if (user) {
+				db.Metrics.find({
+					where: {
+						AuthorId: user.id
+					}
+				}).then(function(metric) {
 					res.render('metrics/create', {
 						proposal: proposal,
 						questions: questions,
 						metric: metric
 					});
-				} else {
-					res.render('error', {
-						message: 'You do not have permission to write metrics on proposals',
-						error: {status: "Access denied"}
-					});
-				}
-			});
+				});
+			} else {
+				res.render('error', {
+					message: 'You do not have permission to write metrics on proposals',
+					error: {status: "Access denied"}
+				});
+			}
 		});
 	});
 });
@@ -105,24 +105,37 @@ router.post('/metrics/:id/create', shib.ensureAuth('/login'), function(req, res,
 		}
 	}).then(function(user){
 		if (user) {
-			var metric = {};
-			for (name in req.body) {
-				metric[name] = req.body[name];
-			}
-			console.log(metric);
-			metric.ProposalId =  req.params.id,
-			metric.AuthorId =  user.id,
-
-			console.log(metric);
-
-			db.Metrics.upsert(
-				metric
-			).then(function() {
-				if (req.body["Next"]) {
-					res.redirect('/metrics/' + req.body["Next"] + '/create');
-				} else {
-					res.redirect('/metrics/' + req.params.id);
+			db.Metrics.find({
+				where: {
+					AuthorId: user.id,
+					ProposalId: req.params.id
 				}
+			}).then(function(metrics) {
+				var metric = {};
+				for (name in req.body) {
+					metric[name] = req.body[name];
+				}
+				console.log(metric);
+				metric.ProposalId =  req.params.id,
+				metric.AuthorId =  user.id,
+
+				((metrics) 
+					? db.Metrics.update(
+						metric, {
+							where: metrics.id
+						}
+					)
+					: db.Metrics.create(
+						metric
+					)
+				).then(function() {
+					if (req.body["Next"]) {
+						res.redirect('/metrics/' + req.body["Next"] + '/create');
+					} else {
+						res.redirect('/metrics/' + req.params.id);
+					}
+				});
+
 			});
 		} else {
 			res.render('error', {

@@ -42,12 +42,12 @@ block content
 							p #{questions.special[proposal.Category][n]}
 							.input-wrap-outer
 								p.score score: 
-									input(name= '#{"X" + n}' type='number' size='3' required='required' min='1' max='5')
+									input(name= '#{"X" + n}' type='number' size='3' required='required' min='1' max='5' value='#{(metric) ? metric["X" + n] : ""}')
 					- n++
 				.col-xs-12
 					.question-wrap
 						h4 Additional Notes
-						.text-wrap: textarea(name="Notes")
+						.text-wrap: textarea(name="Notes") #{(metric) ? metric["Notes"] : ""}
 			p.subtitle Jump to proposal ID 
 				input(name='Next' type='number' size='4')
 				|  on submit
