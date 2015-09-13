@@ -75,10 +75,11 @@ router.get('/metrics/:id/create', shib.ensureAuth('/login'), function(req, res, 
 				RegId: req.user.regId
 			}
 		}).then(function(user) {
-			if (user) {
+			if (user && user.Permissions > 0) {
 				db.Metrics.find({
 					where: {
-						AuthorId: user.id
+						AuthorId: user.id,
+						ProposalId: req.params.id
 					}
 				}).then(function(metric) {
 					res.render('metrics/create', {
@@ -104,7 +105,7 @@ router.post('/metrics/:id/create', shib.ensureAuth('/login'), function(req, res,
 			RegId: req.user.regId
 		}
 	}).then(function(user){
-		if (user) {
+		if (user && user.Permissions > 0) {
 			db.Metrics.find({
 				where: {
 					AuthorId: user.id,

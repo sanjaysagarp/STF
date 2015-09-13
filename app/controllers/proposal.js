@@ -49,7 +49,7 @@ router.post('/proposals/:id', shib.ensureAuth('/login'), function postProposal(r
 			res.send(404);
 		} if (req.user.regId != proposal.PrimaryRegId) {
 			res.send(403);
-		} if (proposal.Status == 1) {
+		} if (proposal.Status == 1 && !re.locals.isAdmin) {
 			res.render('error', {message: 'This proposal has been submitted and cannot be updated'});
 		}
 
@@ -245,7 +245,7 @@ router.get('/proposals/update/:id', shib.ensureAuth('/login'), function(req, res
 		}
 	}).then(function(proposal) {
 
-		if (req.user.regId == proposal.PrimaryRegId && proposal.Status == 0) {
+		if (res.locals.isAdmin || (req.user.regId == proposal.PrimaryRegId && proposal.Status == 0)) {
 			db.Item.findAll({
 				where: {
 					ProposalCode: req.params.id

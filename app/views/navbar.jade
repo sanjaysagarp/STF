@@ -48,17 +48,19 @@ nav.navbar.navbar-default.sub-nav
 				li
 					a(href='#') Explore
 			ul.nav.navbar-nav.navbar-right
+				if isAdmin
+					li
+						a(href='/admin') Admin
 				li
 					a(href='/faq') FAQ
 				li
 					a(href='/about') About
 				li
 					a(href='/contact') Contact
-				if netId
-					li.active
+				li.active
+					if netId
 						a(href='/user')= netId
-				else
-					li.active
+					else
 						a(href='/login') Login
 
 		// /.nav-collapse

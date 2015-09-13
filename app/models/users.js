@@ -2,7 +2,7 @@ module.exports = function (sequelize, DataTypes) {
 
 	var User = sequelize.define('User', {
 		NetId: 'VARCHAR(20)',
-		RegID: 'VARCHAR(40)',
+		RegId: 'VARCHAR(40)',
 		FirstName: 'VARCHAR(30)',
 		LastName: 'VARCHAR(40)',
 		Permissions: 'TINYINT'

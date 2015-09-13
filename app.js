@@ -27,7 +27,7 @@ var pubCert = fs.readFileSync(config.root + 'security/server-cert.pem', 'utf-8')
 var privKey = fs.readFileSync(config.root + 'security/server-pvk.pem', 'utf-8');
 
 
-app.set('views', config.root + '/app/views');
+app.set('views', config.root + 'app/views');
 app.set('view engine', 'jade');
 
 var env = process.env.NODE_ENV || 'development';
@@ -93,6 +93,58 @@ app.use(function removeTrailingSlashes(req, res, next) {
 		next();
 	}
 });
+
+
+//for seamless integration fo new users. An Admin will add a netid, 
+//and when that netid logs in, we grab their info and insert it to teh database
+app.use(function memberAddIfNotExists(req, res, next) {
+	if (req.user) {
+		db.User.find({
+			where: {
+				NetId: req.user.netId
+			}
+		}).then(function(user) {
+			if (user && !user.RegId) {
+				console.log('new user!');
+				console.log('regid is '+ user.RegId);
+				console.log(!user.RegId)
+				user.updateAttributes({
+					RegId: req.user.regId,
+					FirstName: req.user.givenName,
+					LastName: req.user.surname
+				}).then(function() {
+					next();
+				});
+			} else {
+				next();
+			}
+		});
+	} else {
+		console.log('failed req.user')
+		next();
+	}
+});
+
+//adds a flag to users if they're logged in if they're admins
+app.use(function adminCheck(req, res, next) {
+	if (req.user) {
+		db.User.find({
+			where: {
+				RegId: req.user.regId
+			}
+		}).then(function(user) {
+			if (user && user.Permissions && user.Permissions == 2) {
+				res.locals.isAdmin = true;
+			} else {
+				res.locals.isAdmin = false;
+			}
+			next();
+		});
+	} else { //needed or it doesnt wait for callback
+		next();
+	}
+});
+
 
 //assigns either "login" or the user's name to the response locals
 app.use(function passUserName(req, res, next) {
