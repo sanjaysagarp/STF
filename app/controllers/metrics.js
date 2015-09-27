@@ -84,15 +84,45 @@ router.post('/metrics/votingpartial', shib.ensureAuth('/login'), function(req, r
 	renderVotingFullOrPartial(false, req, res);
 });
 
+
 //handles all the logic for metrics voting
+
+//Long Explanation: This gets all the data for the metrics voting page. It is a
+//long, robust, but fairly unreadable slice of code. I've annotated it as mych 
+//as I can think of. The basic idea is to gather all data for proposals and 
+//voting into the data object. data is organized in a hierarchy as show below,
+//where any number represents any number of items, and the first reference after
+//data is a proposal
+//
+//  data
+//    |-1
+//      |-partials
+//      |    |-1
+//      |      |-items
+//      |          |-1
+//      |-items
+//      |    |-1
+//      |-metrics
+//           |-1
+//
+//The hierarchy isn't that bad, but the reference semantics below are. 
+//Somewhat surpirisingly, there should not be any issues with the below code.
+//If you do encounter an error, make sure to check the database data first,
+//as a partial missing items, or items missing partial, or items missing
+//proposal will all crash the page load. 
+
 function renderVotingFullOrPartial(fullPage, req, res) {
+	//check for activve user
 	db.User.find({
 		where: {
 			RegId: req.user.regId
 		}
 	}).then(function(user) {
-		var data = {};
-		if (user && user.Permissions > 0) {
+		if (activeCommitteeMember(res, user)) {
+
+			var data = {};
+
+			//find all proposals that are open to voting or discussion
 			db.Proposal.findAll({
 				where: {
 					$or: {
@@ -101,73 +131,96 @@ function renderVotingFullOrPartial(fullPage, req, res) {
 					}
 				}
 			}).then(function(proposals) {
+
+				//reorder and append to data the proposals by their ids
 				var proposalNums = [];
 				for (proposal in proposals) {
 					data[proposals[proposal].id] = proposals[proposal].dataValues;
 					proposalNums.push(proposals[proposal].id);
 				}
+
+				//find all partials of the proposals we found
 				db.Partial.findAll({
 					where: {
 						ProposalId: proposalNums
 					}
 				}).then(function(partials) {
+
+					//put the partials under the 'partials' object of each 
+					//proposal
 					for (partial in partials) {
 						if (data[partials[partial].ProposalId].partials === undefined) {
-
 							data[partials[partial].ProposalId].partials = {};
 						}	
-						
 						data[partials[partial].ProposalId].partials[partials[partial].id] = partials[partial].dataValues;
 					}
+
+					//get all items for each proposal
 					db.Item.findAll({
 						where: {
 							ProposalId: proposalNums
 						}
 					}).then(function(items) {
+
+						//attach items to proposal base or partial
 						for (item in items) {
-							if (items[item].PartialId) {
+							if (items[item].PartialId) { //assign to partial
 								if (data[items[item].ProposalId].partials[items[item].PartialId].items === undefined) {
 									data[items[item].ProposalId].partials[items[item].PartialId].items = {};
 								}
 								data[items[item].ProposalId].partials[items[item].PartialId].items[items[item].id] = items[item].dataValues;
-							} else {
+							} else { //assign to root
 								if (data[items[item].ProposalId].items === undefined) {
 									data[items[item].ProposalId].items = {};
 								}
 								data[items[item].ProposalId].items[items[item].id] = items[item].dataValues;
 							}
 						}
+
+						//get all the metrics data
 						db.Metrics.findAll({
 							where: {
 								ProposalId: proposalNums
 							}
 						}).then(function(metrics) {
+
+							//attach the metrics data to the proposal
 							for (metric in metrics) {
 								if (data[metrics[metric].ProposalId].metrics === undefined) {
 									data[metrics[metric].ProposalId].metrics = {};
 								}
 								data[metrics[metric].ProposalId].metrics[metrics[metric].id] = metrics[metric].dataValues;
 							}
+
+							//get all the votes by the user
 							db.Vote.findAll({
 								where: {
 									VoterId: user.id
 								}
 							}).then(function(votes) {
+
+								//mark which proposals the user has voted on
 								var alreadySubmitted = [];
 								for (vote in votes) {
 									alreadySubmitted.push(votes[vote].ProposalId);
 								}
+
+								//get all relevant endorsements
 								db.Endorsement.findAll({
 									where: {
 										ProposalId: proposalNums
 									}
 								}).then(function(ends) {
+
+									//attach number of endorsements to each proposal
 									for (end in ends) {
 										if (data[ends[end].ProposalId].ends === undefined) {
 											data[ends[end].ProposalId].ends = 0;
 										}
 										data[ends[end].ProposalId].ends++;
 									}
+
+									//we did it! make the page!
 									db.User.findAll().then(function(users) {
 										res.render((fullPage ? 'metrics/voting' : 'metrics/votingpartial'), {
 											user: user,
@@ -182,11 +235,6 @@ function renderVotingFullOrPartial(fullPage, req, res) {
 					})
 				})
 			})
-		} else {
-			res.render('error', {
-				message: 'You are not a member of STF',
-				error: {status: 'Access Denied'}
-			});
 		}
 	});
 }
@@ -291,7 +339,7 @@ router.post('/metrics/:id/create', shib.ensureAuth('/login'), function(req, res)
 			RegId: req.user.regId
 		}
 	}).then(function(user){
-		if (h.activeCommitteeMember) {
+		if (h.activeCommitteeMember(res, user)) {
 
 			//get their metrics
 			db.Metrics.find({
