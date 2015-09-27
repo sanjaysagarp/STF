@@ -48,8 +48,27 @@ block content
 								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle} 
 								td Submitted
 							if proposal.Status == 2
+								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle}
+								td In Voting
+							if proposal.Status == 3
+								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle}
+								td Awaiting Decision
+							if proposal.Status == 4
+								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle}
+								td Funded
+							if proposal.Status == 5
+								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle}
+								td Partially Funded
+							if proposal.Status == 6
+								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle}
+								td Not Funded
+							if proposal.Status == 7
 								td #{proposal.ProposalTitle}
 								td Cancelled by User
+							if proposal.Status == 8
+								td #{proposal.ProposalTitle}
+								td Cancelled by Admin
+
 
 							td: a(href='#') #{categories[proposal.Category].name}
 							td: a(href='#') #{proposal.Department}

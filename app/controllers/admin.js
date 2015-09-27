@@ -1,3 +1,5 @@
+//Controller for the admin page. 
+
 var promise = require('bluebird')
 var express = require('express');
 var	router = express.Router();
@@ -5,40 +7,44 @@ var	db = require('../models');
 var shib = require('passport-uwshib');
 var categories = require('../../config/categories');
 var questions = require('../../config/metricsquestions');
+var h = require('../helper')
+
 
 module.exports = function(app) {
 	app.use('/', router);
 };
 
+
+//Ensure that anyone asking for a '/admin' page is a logged in user, and is an 
+//administrator of the site
 router.all('/admin*', shib.ensureAuth('/login'), function(req, res, next) {
 	if (res.locals.isAdmin) {
 		next();
 	} else {
-		res.render('error', {
-			message: 'You do not have permission to view this page',
-			error: {status: 'access denied'}
-		});
+		h.displayErrorPage(res, 'You do not have permission to access this page', 'Access Denied');
 	}
-})
+});
 
+
+//display admin page
 router.get('/admin', function(req, res) {
 	res.render('admin/index');
 });
 
+
+//Receives data from the admin page. Depending on the requested action,
+//follows through and changes site data.
 router.post('/admin', function(req, res) {
 	
-	//Add or change a user
+	//Add or change a user's type
 	if (req.body.addChange) {
-		db.User.find({
-			where: {
-				NetId: req.body.netId
-			}
-		}).then(function(user) {
-			if (user) {
+		db.User.find({ where: { NetId: req.body.netId} })
+		.then(function(user) {
+			
+			if (user) { //A user exists, update their type
 				user.updateAttributes({
 					Permissions: req.body.permissions
 				}).then(function() {
-					
 					var status
 					switch (req.body.permissions) {
 						case 0:
@@ -48,13 +54,13 @@ router.post('/admin', function(req, res) {
 						case 2:
 							status = "admin.";
 					}
-
 					res.render('admin/index', {
 						subject: 'User Update Successful',
 						message: 'NetID ' + req.body.netId + ' has been set to ' + status
 					});
 				});
-			} else {
+
+			} else { //A user does not exist, create one
 				db.User.create({
 					NetId: req.body.netId,
 					Permissions: req.body.permissions
@@ -67,36 +73,43 @@ router.post('/admin', function(req, res) {
 			}
 		})
 
-	//Remove a user
+	//Remove a user and destroy all their user data (besides proposals)
 	} else if (req.body.remove && req.body.sure) {
-		db.User.find({
-			where: {
-				NetId: req.body.netId
-			}
-		}).then(function(user) {
-			if (user) {
-				db.Metrics.destroy({
-					where: {
-						AuthorId: user.id
+		db.User.find({ where: {NetId: req.body.netId} })
+		.then(function(user) {
+
+			if (user) { //Destroy the found user and user data
+				db.Metrics.destroy({ where: {AuthorId: user.id} }) //delete metrics
+				.then(db.Partial.findAll({
+					where: { AuthorId: user.id}
+				}).then(function(partials) {
+					var partialIds = []
+					for (partial in partials) {
+						partialIds.push(partials[partial].id);
 					}
-				})
-				.then(user.destroy())
-				.then(res.render('admin/index', {
+					db.Item.destroy({where: {partialId: partialIds} }); //delete items
+					partials.destroy(); //delete partials
+				}))
+				.then(db.Vote.destroy({ where: {VoterId: user.id} })) //delete votes
+				.then(user.destroy()) //delete user
+				.then(
+					res.render('admin/index', {
 						subject: 'User Delete Successful',
 						message: 'NetID ' + req.body.netId + ' and all relevant data has been deleted permanantly.'
 					})
-				)	
-			} else {
+				);	
+
+			} else { //there is no user
 				res.render('admin/index', {
 					subject: 'Unknown NetID',
 					message: 'NetID ' + req.body.netId + " was not found."
-				})
+				});
 			}
-		})
+		});
 
 	//jump to proposal edit page
 	} else if (req.body.editProposal) {
-		res.redirect('proposals/update/' + req.body.proposalId);
+		res.redirect('/proposals/update/' + req.body.proposalId);
 
 	//something went wrong
 	} else {
@@ -105,4 +118,4 @@ router.post('/admin', function(req, res) {
 			message: 'The action you tried to take failed. No changes were made.'
 		});
 	}
-})
+});

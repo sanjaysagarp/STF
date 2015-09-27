@@ -4,7 +4,8 @@ var Proposal = require('./proposal');
 module.exports = function(sequelize, DataTypes) {
 
   var Item = sequelize.define('Item', {
-    ProposalCode: DataTypes.STRING,
+    ProposalId: DataTypes.STRING,
+    PartialId: DataTypes.STRING,
     ItemCode: DataTypes.STRING,
     ItemName: DataTypes.STRING,
     OtherType: DataTypes.STRING,
@@ -25,15 +26,6 @@ module.exports = function(sequelize, DataTypes) {
       }
     },
 
-  }, {
-    classMethods: {
-      associate: function(models) {
-        //Addig Foreign key relationship
-        Item.belongsTo(models.Proposal);
-        // example on how to add relations
-        // Article.hasMany(models.Comments);
-      }
-    }
   });
 
   return Item;

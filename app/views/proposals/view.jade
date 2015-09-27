@@ -2,7 +2,7 @@ extends ../head
 
 append js
 	script(src='/js/vendor/toastr.js')
-	script(src='/js/proposals.js')
+	script(src='/js/proposalsview.js')
 
 append css
 	link(rel='stylesheet', href='/css/proposalview.css')
@@ -137,6 +137,22 @@ block content
 		a(href="/proposals/endorsements/#{proposal.id}") Write an endorsement
 
 		h3 Items
+		if editor
+			p.
+				As an editor for this proposal, you may change the items below to reflect changes to prices, quantity,
+				or specific item. It's a good idea to not change your proposal too much from its original purpose.
+
+		if partials.length > 0
+			| Partials 
+			select#partial
+				option(id='0' value='') Original Proposal Items 
+				each partial in partials
+					option(id='#{partial.id}' value='') #{users[partial.AuthorId].NetId + ': ' + partial.Title} 
+
+		input(id='proposalId' type='hidden' value='#{proposal.id}' )
+		if loggedIn
+			a(href='/partials/new/#{proposal.id}' id='partialLink') Create Partial
+
 		-var total = 0;
 		table.items
 			tbody
@@ -147,33 +163,56 @@ block content
 					th Quantity
 					th Subtotal
 
-				each item in items
-					tr.item-info.info-first-line
-						td: h4= item.ItemName
-						td= item.Group
-						td= "$" + item.Price
-						td= item.Quantity
-						td= "$" + item.Price * item.Quantity
-					tr.item-info
-						td(colspan='5')
-							span Description: 
-							| #{item.Description}
-					tr.item-info.info-last-line
-						td(colspan='5')
-							span Justification: 
-							| #{item.Justification}
 
-					-total+= item.Price * item.Quantity;
+				.default
 
-				tr.item-head
-					td: h3 Summary
-					td 
-					td 
-					td 
-					td Total
-				tr
-					td
-					td
-					td
-					td
-					td= "$" + total
+					each item in items
+						if item.PartialId === null
+							+item(item, '', 0)
+					+total('', 0)
+
+
+				each partial in partials
+					- total = 0;
+						each item in items
+							if item.PartialId == partial.id
+								+item(item, 'hidden', partial.id)
+						+total('hidden', partial.id)
+
+						
+
+
+mixin total(display, num)
+	tr.item-head(class='#{display} #{num} items-js')
+		td: h3 Summary
+		td 
+		td 
+		td 
+		td Total
+	tr.item-head(class='#{display} #{num} items-js')
+		td
+		td
+		td
+		td
+		td= "$" + total
+
+mixin item(item, display, num)
+	tr.item-info.info-first-line(class='#{display} #{num} items-js')
+		if editor
+			td <h4>#{item.ItemName}</h4> (<a href='/item/#{item.id}'>edit</a>)		
+		else
+			td: h4= item.ItemName
+		td= item.Group
+		td= "$" + item.Price
+		td= item.Quantity
+		td= "$" + item.Price * item.Quantity
+	tr.item-info(class='#{display} #{num} items-js')
+		td(colspan='5')
+			span Description: 
+			| #{item.Description}
+	tr.item-info.info-last-line(class='#{display} #{num} items-js')
+		td(colspan='5')
+			span Justification: 
+			| #{item.Justification}
+
+	-total+= item.Price * item.Quantity;

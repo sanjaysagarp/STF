@@ -1,0 +1,86 @@
+extends ../head
+
+block content
+	.col-xs-12
+		.col-md-3
+				div#itemsList
+					h3 All Items
+					ol
+						- each itemN in items
+							li 
+								if itemN.ItemName !== null && itemN.ItemName.length != 0
+									a(href='/item/#{itemN.id}') #{itemN.ItemName}
+								else 
+									a(href='/item/#{itemN.id}') (No Item Name)
+		
+		.col-md-9.well
+				h1 Edit Items for #{proposal.ProposalTitle}
+				form.form-horizontal#editItem(name='editItem', method='post')
+					fieldset
+						legend
+						.form-group
+							label.col-md-4.control-label(for='ItemName') Name
+							.col-md-4
+								input#ItemName.form-control.input-md(name='ItemName', type='text', placeholder='...', value="#{item.ItemName}")
+								input#ItemId(name='ItemId', type='hidden', value='#{item.id}')
+						.form-group
+							label.col-md-4.control-label(for='Group') Group
+							.col-md-4
+								input#Group.form-control.input-md(name='Group', type='text', placeholder='...', value="#{item.Group}")
+						.form-group
+							label.col-md-4.control-label(for='Quantity') Quantity
+							.col-md-4
+								input#Quantity.form-control.input-md(name='Quantity', type='text', placeholder='1,2,3', value="#{item.Quantity}")
+						.form-group
+							label.col-md-4.control-label(for='Price') Price
+							.col-md-4
+								input#Price.form-control.input-md(name='Price', type='text', placeholder='$', value="#{item.Price}")
+						.form-group
+							label.col-md-4.control-label(for='Type') Type
+							.col-md-4
+								select#Type.form-control(name='Type', value="#{item.Type}")
+										if item.Type==='1'
+												option(value='1', selected='selected') Option one
+										else
+												option(value='1') Option one
+										if item.Type==='2'
+												option(value='2', selected='selected') Option two
+										else
+												option(value='2') Option two
+										if item.Type===''
+												option(value='', selected='selected') Other
+										else
+												option(value='') Other
+
+						.form-group
+							label.col-md-4.control-label(for='OtherType') Other
+							.col-md-4
+								input#OtherType.form-control.input-md(name='OtherType', type='text', placeholder='...', value="#{item.OtherType}")
+						.form-group
+							label.col-md-4.control-label(for='Justification') Justification
+							.col-md-4
+								textarea#Justification.form-control(name='Justification') #{item.Justification} 
+						.form-group
+							label.col-md-4.control-label(for='Description') Description
+							.col-md-4
+								textarea#Description.form-control(name='Description') #{item.Description}
+						.form-group
+							.col-md-4.col-md-offset-4
+								a(href="/items/new/#{proposal.id}") 
+									button(type='button').btn.btn-default +New Item
+								|  
+								a(href='/item/delete/#{item.id}')
+									button(type='button').btn.btn-danger Delete Item
+						.form-group
+							label.col-md-4.control-label(for='saveItem')
+							.col-md-4
+								button#saveItem.btn.btn-default.form-button(name='saveItem', type="submit") Save
+								|  
+								if proposal.Status == 0
+									a(href='/proposals/update/#{proposal.id}#step-4')
+										button#return.btn.btn-default(name='return', type='button') Return to Proposal Edit
+								else
+									a(href='/proposals/#{proposal.id}')
+										button#return.btn.btn-default(name='return', type='button') Return to Proposal
+								
+

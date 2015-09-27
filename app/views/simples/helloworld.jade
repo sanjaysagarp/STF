@@ -1,7 +1,13 @@
 extends ../head
 
+append js
+	script(src='/socket.io/socket.io.js')
+	script var socket = io();
+
 block content
 	.container
 		h1 I got your request
 		p success!!!
+		p lel
 		p= data
+		p= message

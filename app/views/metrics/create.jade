@@ -10,13 +10,17 @@ block content
 			a(href='/metrics/#{proposal.id}') Return to Metrics
 			|  / 
 			a(href='/proposals/#{proposal.id}') View Proposal
+			
+			p= questions.general[1]
 			.row
-				each val, index in questions.general
+				- for (index in questions.general) {
 					- var n = 1
 					- var count = 0
+					- var val = questions.general[index]
 					- for (i in questions.general[index]) {
 					- 	count++;
 					- }
+					//-p  #{count}  
 					while n < count
 						.col-lg-3.col-md-4.col-sm-6.col-xs-12.cols
 							.question-wrap
@@ -30,6 +34,9 @@ block content
 										else
 											input(name='#{index + n}' type='number' size='3' required='required' min='1' max='5' value='#{(metric) ? metric[index + n] : ""}')
 						- n++ 
+				- }
+
+
 				- var n = 1
 				- var count = 0
 				- for (i in questions.special[proposal.Category]) {

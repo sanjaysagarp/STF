@@ -1,50 +1,40 @@
-extends head
+extends ../head
 
 block content
 	.col-xs-12
 		.col-md-3
 				div#itemsList
-					h3 All Items             
+					h3 All Items
 					ol
-						- each item in items
+						- each itemN in items
 							li 
-								if item.ItemName.length != 0
-									a(href='/item/#{item.id}') #{item.ItemName}
+								if itemN.ItemName !== null && itemN.ItemName.length != 0
+									a(href='/partial/#{partial.id}/#{itemN.id}') #{itemN.ItemName}
 								else 
-									a(href='/item/#{item.id}') (No Item Name)
+									a(href='/partial/#{partial.id}/#{itemN.id}') (No Item Name)
 		
 		.col-md-9.well
-				h1 Edit Items for #{proposal.ProposalTitle}
+				h1 Edit Partial for #{proposal.ProposalTitle}
 				form.form-horizontal#editItem(name='editItem', method='post')
 					fieldset
-						// Form Name
 						legend
-						// Text input
 						.form-group
 							label.col-md-4.control-label(for='ItemName') Name
 							.col-md-4
 								input#ItemName.form-control.input-md(name='ItemName', type='text', placeholder='...', value="#{item.ItemName}")
 								input#ItemId(name='ItemId', type='hidden', value='#{item.id}')
-								span.help-block help
-						// Text input
 						.form-group
 							label.col-md-4.control-label(for='Group') Group
 							.col-md-4
 								input#Group.form-control.input-md(name='Group', type='text', placeholder='...', value="#{item.Group}")
-								span.help-block help
-						// Text input
 						.form-group
 							label.col-md-4.control-label(for='Quantity') Quantity
 							.col-md-4
 								input#Quantity.form-control.input-md(name='Quantity', type='text', placeholder='1,2,3', value="#{item.Quantity}")
-								span.help-block help
-						// Text input
 						.form-group
 							label.col-md-4.control-label(for='Price') Price
 							.col-md-4
 								input#Price.form-control.input-md(name='Price', type='text', placeholder='$', value="#{item.Price}")
-								span.help-block help
-						// Select Basic
 						.form-group
 							label.col-md-4.control-label(for='Type') Type
 							.col-md-4
@@ -62,29 +52,33 @@ block content
 										else
 												option(value='') Other
 
-						// Text input
 						.form-group
 							label.col-md-4.control-label(for='OtherType') Other
 							.col-md-4
 								input#OtherType.form-control.input-md(name='OtherType', type='text', placeholder='...', value="#{item.OtherType}")
-								span.help-block help
-						// Textarea
 						.form-group
 							label.col-md-4.control-label(for='Justification') Justification
 							.col-md-4
 								textarea#Justification.form-control(name='Justification') #{item.Justification} 
-						// Textarea
 						.form-group
 							label.col-md-4.control-label(for='Description') Description
 							.col-md-4
 								textarea#Description.form-control(name='Description') #{item.Description}
-						// Button
+						.form-group
+							.col-md-4.col-md-offset-4
+								a(href="/items/new/#{partial.id}/#{proposal.id}") 
+									button(type='button').btn.btn-default +New Item
+								|  
+								a(href='/item/delete/#{item.id}')
+									button(type='button').btn.btn-danger Delete Item
 						.form-group
 							label.col-md-4.control-label(for='saveItem')
 							.col-md-4
 								button#saveItem.btn.btn-default.form-button(name='saveItem', type="submit") Save
-								a(href='/proposals/update/#{proposal.id}#step-4')
+								br
+								a(href='/proposals/#{proposal.id}')
 									button#return.btn.btn-default(name='return', type='button') Return to Proposal
-					
+								a(href='/metrics/voting')
+									button#return.btn.btn-default(name='return', type='button') Return to Voting
 
 

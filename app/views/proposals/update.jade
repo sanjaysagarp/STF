@@ -4,6 +4,9 @@ append js
 	script(src='/js/vendor/toastr.js')
 	script(src='/js/proposals.js')
 
+append css
+	link(rel='stylesheet' href='/css/toastr.css')
+
 block content
 	.container
 		h2 New Proposal
@@ -113,9 +116,9 @@ block content
 												span.help-block help
 										// Text input
 										.form-group
-											label.col-md-4.control-label(for='primary-email') Email
+											label.col-md-4.control-label(for='primary-netId') NetID
 											.col-md-4
-												input#primary-email.form-control.input-md(name='primary-email', type='email', placeholder='xyz@uw.edu', value="#{proposal.PrimaryEmail}")
+												input#primary-email.form-control.input-md(name='primary-netId', type='text', placeholder='xyzabc', value="#{proposal.PrimaryNetId}")
 
 												span.help-block help
 										// Text input
@@ -153,9 +156,9 @@ block content
 												span.help-block help
 										// Text input
 										.form-group
-											label.col-md-4.control-label(for='budget-email') Email
+											label.col-md-4.control-label(for='budget-netId') NetID
 											.col-md-4
-												input#budget-email.form-control.input-md(name='budget-email', type='email', placeholder='xyz@uw.edu', value="#{proposal.BudgetEmail}")
+												input#budget-email.form-control.input-md(name='budget-netId', type='text', placeholder='xyzabc', value="#{proposal.BudgetNetId}")
 
 												span.help-block help
 										// Text input
@@ -189,9 +192,9 @@ block content
 												span.help-block help
 										// Text input
 										.form-group
-											label.col-md-4.control-label(for='ddh-email') Email
+											label.col-md-4.control-label(for='ddh-netId') NetID
 											.col-md-4
-												input#ddh-email.form-control.input-md(name='ddh-email', type='email', placeholder='xyz@uw.edu', value="#{proposal.DeanEmail}")
+												input#ddh-email.form-control.input-md(name='ddh-netId', type='text', placeholder='xyzabc', value="#{proposal.DeanNetId}")
 												span.help-block help
 										// Text input
 										.form-group
@@ -224,9 +227,9 @@ block content
 												span.help-block help
 										// Text input
 										.form-group
-											label.col-md-4.control-label(for='stu-email') Email
+											label.col-md-4.control-label(for='stu-netId') NetID
 											.col-md-4
-												input#stu-email.form-control.input-md(name='stu-email', type='email', placeholder='xyz@uw.edu', value="#{proposal.StudentEmail}")
+												input#stu-email.form-control.input-md(name='stu-netId', type='text', placeholder='xyzabc', value="#{proposal.StudentNetId}")
 												span.help-block help
 										// Text input
 										.form-group
@@ -315,6 +318,7 @@ block content
 					.col-xs-12
 						.col-md-9.well
 							.form-horizontal
+								h4.text-center Add Item
 								fieldset
 									// Form Name
 									legend
@@ -324,7 +328,7 @@ block content
 										.col-md-4
 											input#ItemName.form-control.input-md(name='ItemName', type='text', placeholder='...')
 											span.help-block help
-											input#ItemProposalCode(name='ProposalCode', type='hidden', value='#{proposal.id}')
+											input#ItemProposalId(name='ProposalId', type='hidden', value='#{proposal.id}')
 									// Text input
 									.form-group
 										label.col-md-4.control-label(for='Group') Group

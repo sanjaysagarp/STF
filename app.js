@@ -11,6 +11,7 @@ var passport = require('passport'); //user authentication
 var shib = require('passport-uwshib'); //for shiubboleth authentication
 var session = require('express-session'); //for user sessions
 var fs = require('fs'); //to read files
+var socket = require('socket.io'); //for back and forth communication
 var config = require('./config/config'); //configuration file 
 var db = require('./app/models'); //database connections
 
@@ -126,7 +127,7 @@ app.use(function memberAddIfNotExists(req, res, next) {
 });
 
 //adds a flag to users if they're logged in if they're admins
-app.use(function adminCheck(req, res, next) {
+app.use(function adminAndMemberCheck(req, res, next) {
 	if (req.user) {
 		db.User.find({
 			where: {
@@ -144,7 +145,6 @@ app.use(function adminCheck(req, res, next) {
 		next();
 	}
 });
-
 
 //assigns either "login" or the user's name to the response locals
 app.use(function passUserName(req, res, next) {
@@ -200,6 +200,7 @@ var httpsServer = https.createServer({
 	cert : pubCert 
 }, app);
 
+
 var httpServer = http.createServer(function(req, res) {
 	var redirURL = config.domain;
 	redirURL += req.url;
@@ -208,6 +209,8 @@ var httpServer = http.createServer(function(req, res) {
 	console.log("redirected to " + redirURL);
 });
 
+//socket and persistant connection stuff
+require('./config/socket')(httpsServer, db);
 
 
 db.sequelize

@@ -10,6 +10,7 @@ module.exports = function(app) {
 	app.use('/', router);
 };
 
+//show the documents page
 router.get('/documents*', function serveDocsHome(req, res) {
 	//this removes %20 from the requested url to match links with spaces
 	req.originalUrl = req.originalUrl.replace('%20', ' ');
@@ -51,6 +52,6 @@ router.get('/documents*', function serveDocsHome(req, res) {
 
 	//render the doc
 	res.render('documents', {
-		title : 'Documents',
+		title : 'Documents'
 	});
 });

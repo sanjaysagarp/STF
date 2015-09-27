@@ -1,0 +1,26 @@
+extends ../head
+
+append css
+	link(rel='stylesheet' href='/css/metrics.css')
+
+block content
+	.jumbotron(style='background: url(img/metrics.jpg); background-position: center 32%; background-repeat: no-repeat; background-size: cover;')
+		.container
+			h1 Metrics
+	.container
+		.row
+			.col-md-3.col-xs-12.pull-right.sidebar
+				h3 Voting
+				p Voting status is closed. Members may vote <a href='/metrics/voting'> here</a> when voting is open.
+			.col-md-9.col-xs-12
+				h2 Scores for Submitted Proposals
+				table.table.table-striped: tbody
+					tr
+						th ID
+						th Title
+						th Avg Score
+					each proposal in proposals
+						tr
+							td: b= proposal.id
+							td: a(href='/proposals/#{proposal.id}')= proposal.ProposalTitle
+							td: a(href='/metrics/#{proposal.id}')= scores[proposal.id]

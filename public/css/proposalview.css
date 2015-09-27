@@ -65,9 +65,9 @@ td {
 	font-weight: bold;
 }
 
-.items > tbody > tr:nth-child(6n+2),
-.items > tbody > tr:nth-child(6n+3),
-.items > tbody > tr:nth-child(6n+4) {
+.items > tbody > tr.item-info,
+.items > tbody > tr.item-info,
+.items > tbody > tr.item-info {
 	background-color: #DDDDDD;
 }
 
@@ -88,6 +88,8 @@ td {
 .info-first-line > td {
 	padding-bottom: 6px;
 	padding-top: 5px;
+	background-color: #D0D0D0;
+	margin-bottom: 4px;
 }
 
 .item-info span {
@@ -97,4 +99,12 @@ td {
 
 .info-last-line > td {
 	padding-bottom: 10px;
+}
+
+.hidden {
+	display: none;
+}
+
+table {
+	width: 100%;
 }

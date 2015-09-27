@@ -1,0 +1,42 @@
+extends ../head
+
+append css
+	link(rel='stylesheet' href='/css/voting.css')
+	link(rel='stylesheet' href='/css/toastr.css')
+
+append js
+	script(src='/js/vendor/toastr.js')
+	script(src='/socket.io/socket.io.js')
+	script(src='/js/voting.js')
+
+block content
+	input(type='hidden' value='#{user.RegId}' id='user')
+	.container
+		.row
+			.col-md-4.col-xs-12.pull-right
+				if isAdmin
+					h2 Voting Admin Panel
+					p: i Note: all fields sent upon submit
+					h3 Open or Close View
+					p Display or remove proposal summaries
+					p Open or close proposals to voting. You may enter multiple proposals seperated by spaces
+					p Show Proposal(s) <input class='admin-data' id='display' size='10' min='0' autofocus='autofocus' />
+					p Hide Proposal(s) <input class='admin-data' id='hide' size='10' min='0'/>					
+					h3 Open or Close Voting
+					p Open or close proposals to voting. You may enter multiple proposals seperated by spaces
+					p Open Proposal(s) <input class='admin-data' id='open' size='10' min='0'/>
+					p Close Proposal(s) <input class='admin-data' id='close' size='10' min='0'/>
+					h3 Clear Proposal Votes
+					p Clear all votes on a proposal. You may enter multiple proposals seperated by spaces
+					p Clear Proposal(s) <input class='admin-data' id='clear' size='10' />
+					button(type='button')#adminButton Submit 
+
+				h2 Notifications
+				p Information about voting will appear here. You can click them to make them dissapear individually, or use the button below to remove them all.
+				button(type='button')#clearToasts Clear All
+				|  <label><input type='checkbox' id='removeTimer' /> Auto-Remove after 8 seconds</label>
+				#toast-container.toast-special-voting
+
+			.col-md-8.col-xs-12#content
+			
+				include votingpartial 

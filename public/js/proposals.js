@@ -109,7 +109,7 @@ $(document).ready(function() {
 								console.log(data.item.id);
 								$('#itemsList ol').append('<li><a href="/item/' + data.item.id+'">'+
 										$('#ItemName').val() + '</a></li>');
-								//a(href='item/#{item.ProposalCode}/#{item.ItemName}') #{item.ItemName}
+								//a(href='item/#{item.ProposalId}/#{item.ItemName}') #{item.ItemName}
 								toastr["success"]("Item created Successfully.." );
 								//+ JSON.stringify(data));
 								$('ul.setup-panel li a[href="#step-4"]').trigger('click');

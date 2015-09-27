@@ -1,7 +1,7 @@
 module.exports = function(sequelize, DataTypes) {
 
 	var Endorsement = sequelize.define('Endorsement', {
-		ProposalID: DataTypes.INTEGER,
+		ProposalId: DataTypes.INTEGER,
 		RegId: DataTypes.STRING,
 		NetId: DataTypes.STRING,
 		Name: DataTypes.STRING,
