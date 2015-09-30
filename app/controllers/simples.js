@@ -11,6 +11,15 @@ module.exports = function(app) {
 	app.use('/', router);
 };
 
+
+router.get('/loginUser', shib.ensureAuth('/login'), function(req, res) {
+	res.redirect('/proposals/myproposals')
+})
+
+router.get('/user', shib.ensureAuth('/login'), function(req, res) {
+	res.redirect('/proposals/myproposals')
+})
+
 //displays the homepage
 router.get('/', function(req, res, next) {
 	res.render('index', {
@@ -21,7 +30,7 @@ router.get('/', function(req, res, next) {
 
 //shows the calendar
 router.get('/calendar', function serveCalendar(req, res) {
-	res.render('calendar',
+	res.render('simples/calendar',
 		{title : 'Calendar'}
 	);
 });
@@ -29,7 +38,6 @@ router.get('/calendar', function serveCalendar(req, res) {
 
 //displays the hellowworld page
 router.get('/helloworld', shib.ensureAuth('/login'), shib.ensureAuth('/login'), function serveHelloWorld(req, res) {
-	console.log(req.user);
 	res.render('simples/helloworld',
 		{message : req.session.message}
 	);
@@ -119,7 +127,7 @@ router.get('/faq', function serveFaq(req, res) {
 				a : 'At any time, although frequently during your presentation and in the time immediately after, the committee members will rank the perceived performance of your proposal, were the committee to fund it. This is a not an exact science, but we try to do the best we can to be impartial to the proposal. We use these metrics as a guide when voting on whether to fund a proposal later in the year. Metrics are never the be-all end-all of our decision making process, and are merely there as an additional help to our regular process of discussion during voting.'
 			} , {
 				q : 'Are there often Conflicts of Interest?',
-				a : 'Most committee members have many roles throughout campus and ASUW, leading to frequent conflicts of interest were a member to vote on a proposal that would directly impact their other positions within the university. For this reason, members will recuse themselves during voting on a rpoposal were it to directly impact them.'
+				a : 'Most committee members have many roles throughout campus and ASUW, leading to frequent conflicts of interest were a member to vote on a proposal that would directly impact their other positions within the university. For this reason, members will recuse themselves during voting on a proposal were it to directly impact them.'
 			}]
 		}
 	});

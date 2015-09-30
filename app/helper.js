@@ -1,3 +1,5 @@
+//a bunch of commonly used helper functions
+
 var db = require('/STF/app/models');
 var shib = require('passport-uwshib');
 var bb = require('bluebird');
@@ -12,49 +14,58 @@ module.exports = {
 	//Returns true if approved, false and redirects to error page if not, 
 	//and false if redirect flag is false
 	approvedEditor: function(res, u, pId, redir) {
-		var p = new bb(function() {
-			if (!pId.id) {
-				return db.Proposal.find({where: {id: pId} });
-			}
-			return pId;
-		});
-			
-		if (redir === null) {
-			redir = true;
-		} if (res.locals.isAdmin || (
-			(u.regId == p.PrimaryRegId) ||
-			(u.netId == p.PrimaryNetId) ||
-			(u.netId == p.BudgetNetId) ||
-			(u.netId == p.DeanNetId) || 
-			(u.netId == p.StudentNetId)
-			) && p.Status == 0)	{
-			return true;
-		} else {
-			if (redir) {
-				module.exports.displayErrorPage(res, 'You are not an Approved editor of this Proposal', 'Access Denied');
-			}
-			return false;
-		}
 		
+		if (pId.id === undefined) {
+			return db.Proposal.find({where: {id: pId} }).then(function(p) {
+				testUser(res, u, p, redir)
+			})
+		}
+
+		return testUser(res, u, pId, redir);
+				
+		
+		function testUser(res, u, p, redir) {
+			if (redir === null) {
+				redir = true;
+			} if (res.locals.isAdmin || (
+				(u.regId == p.PrimaryRegId) ||
+				(u.netId == p.PrimaryNetId) ||
+				(u.netId == p.BudgetNetId) ||
+				(u.netId == p.DeanNetId) || 
+				(u.netId == p.StudentNetId)
+				) && p.Status == 0)	{
+				return true;
+			} else {
+				if (redir) {
+					module.exports.displayErrorPage(res, 'You are not an Approved editor of this Proposal', 'Access Denied');
+				}
+				return false;
+			}
+		}
 	},
 
 	activeCommitteeMember: function(res, uRegId, redir) {
-		var u = new bb(function() {
-			if (!uRegId.id) {
-				return db.User.find({where: {RegId: uRegId}});
-			} 
-			return uRegId
-		});
 
-		if (redir == null) {
-			redir = true;
-		} if (u && u.Permissions > 0) {
-			return true;
+		if (uRegId.id === undefined) {
+			return db.User.find({where: {RegId: uRegId}})
+			.then(function(u) {
+				testUser(res, u, redir)
+			})
 		} else {
-			if (redir) {
-				module.exports.displayErrorPage(res, 'You are not an active committee member', 'Access Denied');
+			return testUser(res, uRegId, redir)
+		}
+
+		function testUser(res, u, redir) {
+			if (redir == null) {
+				redir = true;
+			} if (u && u.Permissions > 0) {
+				return true;
+			} else {
+				if (redir) {
+					module.exports.displayErrorPage(res, 'You are not an active committee member', 'Access Denied');
+				}
+				return false;
 			}
-			return false;
 		}
 	},
 
@@ -65,6 +76,23 @@ module.exports = {
 			message: mess,
 			error: {status: status}
 		})
+	},
+
+
+	//
+	proposalStatus: function(status) {
+		var messages = [
+			'Unsubmitted',
+			'Submitted',
+			'In Voting',
+			'Awaiting Decision',
+			'Funded',
+			'Partially Funded',
+			'Not Funded',
+			'Cancelled by User',
+			'Cancelled by Admin'];
+		return "<div class='text-center status-wrap status-" + status + 
+			"'><p><b>" + messages[status] + "</b></p></div>";
 	}
 
 

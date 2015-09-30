@@ -15,6 +15,15 @@ module.exports = function(app) {
 };
 
 
+router.get('/voting', function(req, res) {
+	res.redirect('/metrics/voting');
+})
+
+router.get('/vote', function(req, res) {
+	res.redirect('/metrics/voting');
+})
+
+
 //displays the base metrics homepage
 router.get('/metrics', function(req, res) { //todo unspaghetti this
 	db.Metrics.findAll({
@@ -43,7 +52,6 @@ router.get('/metrics', function(req, res) { //todo unspaghetti this
 		}
 
 		for (proposal in scores) {
-			console.log(scores[proposal])
 			var prop = scores[proposal];
 			var total = 0;
 			var count = 0;
@@ -53,13 +61,11 @@ router.get('/metrics', function(req, res) { //todo unspaghetti this
 			}
 			scores[proposal] = total / count; //MISSING TOTAL Q NUMBER, comment below is partial souloution
 		}
-		console.log(Object.keys(scores));
 
 		db.Proposal.findAll({
 			order: [['id', 'DESC']],
 			where: {id: Object.keys(scores)}
 		}).then(function(proposals) {
-		console.log(scores);
 /*			for (score in scores) {
 				console.log(score)
 				var cat = proposals[12].Category;
@@ -67,6 +73,7 @@ router.get('/metrics', function(req, res) { //todo unspaghetti this
 				scores[score] = scores[score] / questionCount;
 			}*/
 			res.render('metrics/index', {
+				title: 'All Metric Scores',
 				proposals: proposals,
 				scores: scores
 			})
@@ -118,7 +125,7 @@ function renderVotingFullOrPartial(fullPage, req, res) {
 			RegId: req.user.regId
 		}
 	}).then(function(user) {
-		if (activeCommitteeMember(res, user)) {
+		if (h.activeCommitteeMember(res, user)) {
 
 			var data = {};
 
@@ -137,6 +144,7 @@ function renderVotingFullOrPartial(fullPage, req, res) {
 				for (proposal in proposals) {
 					data[proposals[proposal].id] = proposals[proposal].dataValues;
 					proposalNums.push(proposals[proposal].id);
+					data[proposals[proposal].id].StatusHtml = h.proposalStatus(proposals[proposal].Status)
 				}
 
 				//find all partials of the proposals we found
@@ -220,11 +228,17 @@ function renderVotingFullOrPartial(fullPage, req, res) {
 										data[ends[end].ProposalId].ends++;
 									}
 
+
 									//we did it! make the page!
 									db.User.findAll().then(function(users) {
+										var userData = {};
+										for (userN in users) {
+											userData[users[userN].id] = users[userN];
+										}
 										res.render((fullPage ? 'metrics/voting' : 'metrics/votingpartial'), {
+											title: 'STF Voting',
 											user: user,
-											users: users,
+											users: userData,
 											data: data,
 											voted: alreadySubmitted
 										}); 
@@ -278,12 +292,19 @@ router.get('/metrics/:id', function(req, res) {
 						}
 					}
 
+					var userData = {};
+					for (var obj in users) {
+						userData[users[obj].id] = users[obj]
+					}
+
+
 					res.render('metrics/view', {
+						title: 'Metrics for ' + proposal.ProposalTitle,
 						proposal: proposal,
 						metrics: metrics,
 						questions: questions,
 						list: questionList,
-						users: users
+						users: userData
 					});
 				});
 			})	
@@ -315,8 +336,8 @@ router.get('/metrics/:id/create', shib.ensureAuth('/login'), function(req, res, 
 						ProposalId: req.params.id
 					}
 				}).then(function(metric) {
-					console.log(questions)
 					res.render('metrics/create', {
+						title: 'Your Metrics for ' + proposal.ProposalTitle,
 						proposal: proposal,
 						questions: questions,
 						metric: metric
@@ -359,10 +380,10 @@ router.post('/metrics/:id/create', shib.ensureAuth('/login'), function(req, res)
 				metric.AuthorId =  user.id,
 
 				//create metrics if none, update if exists
-				((metrics) 
+				((metrics != null) 
 					? db.Metrics.update(
 						metric, {
-							where: metrics.id
+							where: {id: metrics.id}
 						}
 					)
 					: db.Metrics.create(

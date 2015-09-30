@@ -1,5 +1,3 @@
-var Proposal = require('./proposal');
-
 module.exports = function(sequelize, DataTypes) {
 
   var Partial = sequelize.define('Partial', {

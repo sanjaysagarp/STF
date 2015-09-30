@@ -39,9 +39,9 @@ nav.navbar.navbar-default.sub-nav
 						span.caret
 					ul.dropdown-menu(role='menu')
 						li: a(href='/documents') Documents
-						li: a(href='#') Key Server
+						li: a(href='http://www.washington.edu/itconnect/wares/acquiring-software-and-hardware/keyserver-help-for-it-staff/') Key Server
 						li: a(href='/calendar') Calendar
-				li: a(href='#') Explore
+				//- todo li: a(href='#') Explore
 			ul.nav.navbar-nav.navbar-right
 				if isAdmin
 					li: a(href='/admin') Admin
@@ -52,6 +52,6 @@ nav.navbar.navbar-default.sub-nav
 					if netId
 						a(href='/user')= netId
 					else
-						a(href='/login') Login
+						a(href='/loginUser') Login
 
 		// /.nav-collapse

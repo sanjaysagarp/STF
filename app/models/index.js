@@ -10,11 +10,7 @@ var db = {};
 // });
 
 //connect to the database
-var sequelize = new Sequelize('test', 'root', 'STFP@ss', {
-	host: "127.0.0.1",
-	port: 3306
-})
-
+var sequelize = config.sequelize();
 
 fs.readdirSync(__dirname).filter(function (file) {
 	//return all files in the directory besides this one

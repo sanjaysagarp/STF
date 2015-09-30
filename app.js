@@ -43,11 +43,9 @@ app.use(cookieParser());
 app.use(compress());
 app.use(express.static(config.root + '/public'));
 
-app.use(cookieParser('secret'));
+app.use(cookieParser(config.cookieSecret));
 app.use(session({
-	secret: "TemporarySecretKey",
-/*    key: fs.readFileSync('security/session-secret.txt', 'utf-8'),
-    cookie: {secret: true}*/
+	secret: config.sessionSecret,
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -87,7 +85,7 @@ app.get(shib.urls.metadata, shib.metadataRoute(strat, pubCert));
 //hierarchies, and simplifies the types of pages we have to look for.
 app.use(function removeTrailingSlashes(req, res, next) {
 	var url = req.url;
-	if(url.substring(url.length- 1, url.length) == '/' && url.length > 1) {
+	if (url.substring(url.length- 1, url.length) == '/' && url.length > 1) {
 		console.log('removed trailing slash');
 		res.redirect(301, url.substring(0, url.length - 1));
 	} else {
@@ -121,13 +119,12 @@ app.use(function memberAddIfNotExists(req, res, next) {
 			}
 		});
 	} else {
-		console.log('failed req.user')
 		next();
 	}
 });
 
 //adds a flag to users if they're logged in if they're admins
-app.use(function adminAndMemberCheck(req, res, next) {
+app.get('/login/callback', function adminAndMemberCheck(req, res, next) {
 	if (req.user) {
 		db.User.find({
 			where: {
@@ -211,7 +208,7 @@ var httpServer = http.createServer(function(req, res) {
 
 //socket and persistant connection stuff
 require('./config/socket')(httpsServer, db);
-
+var sequelize = require('sequelize');
 
 db.sequelize
 	.sync()
@@ -223,6 +220,7 @@ db.sequelize
 			console.log('http listening on ' + httpServer.address().port);
 		});
 	}).catch(function(e) {
+		console.log(e)
 		throw new Error(e);
 	});
 

@@ -1,3 +1,32 @@
 .disabled h4 {
 	color: #555555;
 }
+
+.sig-wrap {
+	background-color: white;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	border-radius: 5px;
+	border: #DDDDDD 1px solid;
+	margin-bottom: 10px;
+}
+
+.signed, .unsigned {
+	padding: 5px;
+	border-radius: 3px;
+	color: white;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.signed {
+	background-color: #51a351;
+}
+
+.unsigned {
+	background-color: #2f96b4;
+}
+
+textarea {
+	height: 160px !important;
+}

@@ -1,3 +1,5 @@
+//adds interactivity to change the item list to the correct partial's list
+
 window.addEventListener('load', function() {
 
 	var proposalId = document.getElementById('proposalId').value;
@@ -6,11 +8,12 @@ window.addEventListener('load', function() {
 		document.getElementById('partial').onchange = changeItems;
 	}
 
+	changeItems();
+
 
 	function changeItems() {
 		var partial = document.getElementById('partial').options[document.getElementById('partial').selectedIndex].id
-		console.log(partial);
-		var all = document.getElementsByClassName('items-js');
+		var all = document.getElementsByClassName('items');
 		for (item in all) {
 			if (all[item].classList !== undefined) {
 				all[item].classList.add('hidden')
@@ -18,7 +21,6 @@ window.addEventListener('load', function() {
 		}
 		var rows = document.getElementsByClassName(' ' + partial);
 		for (row in rows) {
-			console.log(rows[row])
 			if (rows[row].classList !== undefined){
 				rows[row].classList.remove('hidden');
 			}

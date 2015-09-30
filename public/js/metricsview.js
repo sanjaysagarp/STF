@@ -1,3 +1,6 @@
+//adds interactivity to the metrics page to drop down
+//the question when the question marker is clicked
+
 window.addEventListener('load', function() {
 
 	var selectors = document.getElementsByClassName("selectors");
@@ -5,14 +8,11 @@ window.addEventListener('load', function() {
 	for (var i = 0; i < selectors.length; i++) {
 		selectors[i].onclick = showQuestion;
 	}
-	console.log(selectors);
 
 	function showQuestion() {
 		hideAll();
-		console.log("hello");
 		var qId = this.innerHTML;
 		if (this.style.backgroundColor != '#EEEEEE') {
-			console.log(qId);
 			var q = document.getElementById(qId);
 			q.className = "selected";
 			this.style.backgroundColor = '#EEEEEE';

@@ -15,49 +15,6 @@
 	margin-top: 10px;
 }
 
-.status-wrap {
-	margin: 5px;
-	color: white;
-}
-
 #toast-container {
 	margin-top: 10px;
-}
-
-.status-0 {
-	background-color: #BBBBBB;
-}
-
-.status-1 {
-	background-color: #888888;
-}
-
-.status-2 {
-	background-color: #2f96b4;
-}
-
-.status-3 {
-	background-color: #f89406;
-}
-
-.status-4 {
-	background-color: #51a351;
-}
-
-.status-5 {
-	background-color: #51a351;
-}
-
-.status-6 {
-	background-color: #bd362f;
-}
-
-.status-7 {
-	background-color: #FFFFFF;
-	color: black;
-}
-
-.status-8 {
-	background-color: #FFFFFF;
-	color: black;
 }

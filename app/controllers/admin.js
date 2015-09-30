@@ -19,6 +19,7 @@ module.exports = function(app) {
 //administrator of the site
 router.all('/admin*', shib.ensureAuth('/login'), function(req, res, next) {
 	if (res.locals.isAdmin) {
+		res.locals.title = 'STF Administration'
 		next();
 	} else {
 		h.displayErrorPage(res, 'You do not have permission to access this page', 'Access Denied');
@@ -80,24 +81,28 @@ router.post('/admin', function(req, res) {
 
 			if (user) { //Destroy the found user and user data
 				db.Metrics.destroy({ where: {AuthorId: user.id} }) //delete metrics
-				.then(db.Partial.findAll({
-					where: { AuthorId: user.id}
-				}).then(function(partials) {
-					var partialIds = []
-					for (partial in partials) {
-						partialIds.push(partials[partial].id);
-					}
-					db.Item.destroy({where: {partialId: partialIds} }); //delete items
-					partials.destroy(); //delete partials
-				}))
-				.then(db.Vote.destroy({ where: {VoterId: user.id} })) //delete votes
-				.then(user.destroy()) //delete user
-				.then(
-					res.render('admin/index', {
-						subject: 'User Delete Successful',
-						message: 'NetID ' + req.body.netId + ' and all relevant data has been deleted permanantly.'
+				.then(function() {
+
+					db.Partial.findAll({
+						where: { AuthorId: user.id}
+					}).then(function(partials) {
+						var partialIds = []
+						for (partial in partials) {
+							partialIds.push(partials[partial].id);
+						}
+						db.Item.destroy({where: {partialId: partialIds} }); //delete items
+						db.Partial.destroy({ where: {AuthorId: user.id}}); //delete partials
 					})
-				);	
+					.then(db.Vote.destroy({ where: {VoterId: user.id} })) //delete votes
+					.then(user.destroy()) //delete user
+					.then(function() {
+						res.render('admin/index', {
+							subject: 'User Delete Successful',
+							message: 'NetID ' + req.body.netId + ' and all relevant data has been deleted permanantly.'
+						})
+					})
+				});	
+				
 
 			} else { //there is no user
 				res.render('admin/index', {

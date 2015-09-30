@@ -31,7 +31,7 @@ block content
 
 				each metric in metrics
 					tr
-						td= users[metric.AuthorId - 1].NetId
+						td= users[metric.AuthorId].NetId
 						each val, index in list
 							td= metric[index]
 							-j++

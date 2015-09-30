@@ -1,22 +1,28 @@
+//partials pages
+
 var express = require('express');
 var	router = express.Router();
 var	db = require('../models');
 var shib = require('passport-uwshib');
 var h = require('../helper');
 
-
 module.exports = function(app) {
 	app.use('/', router);
 };
 
-router.get('/partials/new/:id', shib.ensureAuth('/login'), function(req, res) {
-	db.User.find({
-		where: {
-			RegId: req.user.regId
-		}
-	}).then(function(user) {
-		if (user && user.Permissions > 0) {
+//ensure login on all partial pages
+router.all('/partial*', shib.ensureAuth('/login'), function(req, res, next) {next()} );
 
+
+//create a new partial with duplicated items
+router.get('/partials/new/:id', function(req, res) {
+	db.User.find({
+		where: {RegId: req.user.regId}
+	}).then(function(user) {
+
+		if (h.activeCommitteeMember(res, user)) {
+
+			//get all base items from the original proposal
 			db.Item.findAll({
 				where: {
 					ProposalId: req.params.id,
@@ -24,11 +30,14 @@ router.get('/partials/new/:id', shib.ensureAuth('/login'), function(req, res) {
 				}
 			}).then(function(items) {
 				var redirect;
+
+				//create thye partial
 				db.Partial.create({
 					AuthorId: user.id,
 					ProposalId: req.params.id
 				}).then(function(partial) {
-					console.log('partial id ' + partial.id)
+					
+					//create each duplicated item, bound tot he partial
 					for (item in items) {
 						var i = items[item].dataValues;
 						i.id = null;
@@ -38,39 +47,38 @@ router.get('/partials/new/:id', shib.ensureAuth('/login'), function(req, res) {
 						db.Item.create(i);
 					}
 					redirect = partial.id;
+
+				//redirect to new partial
 				}).then(function() {
 					res.redirect('/partial/' + redirect + '/0');
-				});
+				})
 			})
-
-		} else {
-			res.render('error', {
-				message: 'You are not a member of the STF committee',
-				error: {status: 'Access Denied'}
-			});
 		}
 	})
 });
 
-router.get('/partial/:partial/:item', shib.ensureAuth('/login'), function(req, res) {
+
+//get a partial by its item
+router.get('/partial/:partial/:item', function(req, res) {
 	db.User.find( {
 		where: {
 			RegId: req.user.regId
 		}
 	}).then(function(user) {
-		if (user && user.Permissions > 0) {
+		if (h.activeCommitteeMember(res, user)) {
 
-			db.Partial.find({
-				where: {
-					id: req.params.partial
-				}
-			}).then(function(partial) {
+			//get the partial 
+			db.Partial.findById(req.params.partial).then(function(partial) {
+				
+				//so long as the author is the partial's author or the user is an admin
 				if (res.locals.isAdmin || (partial && partial.AuthorId == user.id)) {
 					db.Proposal.find({
 						where: {
 							id: partial.ProposalId,
 						}
 					}).then(function(proposal) {
+
+						//grab all items that match the partial
 						db.Item.findAll({
 							where: {
 								PartialId: partial.id,
@@ -83,6 +91,7 @@ router.get('/partial/:partial/:item', shib.ensureAuth('/login'), function(req, r
 									}
 								}).then(function(item) {
 									res.render('items/partialview',{
+										title: 'Partial for ' + proposal.ProposalTitle,
 										item: item,
 										items: items,
 										partial: partial,
@@ -91,7 +100,8 @@ router.get('/partial/:partial/:item', shib.ensureAuth('/login'), function(req, r
 								})
 							} else {
 								res.render('items/partialview',{
-									item: items[0],
+									title: 'Partial for ' + proposal.ProposalTitle,
+									item: 0,
 									items: items,
 									partial: partial,
 									proposal: proposal
@@ -100,55 +110,67 @@ router.get('/partial/:partial/:item', shib.ensureAuth('/login'), function(req, r
 						})
 					})
 
-
-
-				} else { //we have a partial already created
-					res.render('error', {
-						message: 'The requested partial could not be found or you are not the author',
-						error: {status: 'Requested does not Exist'}
-					});
+				} else { 
+					h.displayErrorPage(res, 'The requested partial could not be found or you are not the author',
+						'Requested does not Exist');
 				}
 			})
-
-
-
-
-		} else {
-			res.render('error', {
-				message: 'You are not a member of STF', 
-				error: {status: 'access denied'}
-			})
-		}
+		} 
 	})
 });
 
-router.post('/partial/:partial/:item', shib.ensureAuth('/login'), function(req, res) {
-	console.log("updating item");
-	db.Item.find({
+
+//change item data on a partial
+router.post('/partial/:partial/:item', function(req, res) {
+	db.User.find({
 		where: {
-			id: req.params.item
+			RegId: req.user.regId
 		}
-	}).then(function(item) {
-		if (!item) {
-			res.send(404);
-		} 
-		db.User.find({
-			where: {
-				RegId: req.user.regId
-			}
-		}).then (function(user) {
+	}).then (function(user) {
+		db.Partial.findById(req.params.partial)
+		.then(function(partial) {
 			if (res.locals.isAdmin || (partial && partial.AuthorId == user.id)) {
-				db.Item.update(req.body, {
-					where: {
-						id: req.params.item
+				if (req.params.item != 0) {
+					db.Item.find({
+						where: {
+							id: req.params.item
+						}
+					}).then(function(item) {
+						db.Item.update(req.body, {
+							where: {
+								id: req.params.item
+							}
+						}).then(function(item) {
+							if (!item) {
+								res.send(404);
+							} 
+							res.redirect('/partial/' + req.params.partial + '/' + req.params.item)
+						});
+					});
+				} else {
+					if (req.body['delete']) {
+							res.redirect('/proposals/' + partial.ProposalId);
+							partial.destroy()
+						
+							db.Item.destroy({
+								where: {
+									PartialId: req.params.partial
+								}
+							})
+					} else {
+						db.Partial.update({
+							Title: req.body['PartialTitle']
+						}, {
+							where: {id: req.params.partial}
+						}).then(function() {
+							res.redirect('/partial/' + req.params.partial + '/' + req.params.item)
+						})
 					}
-				}).then(function(item) {
-					 res.redirect('/partial/' + req.params.partial + '/' + req.params.item)
-				});
+				}
 			} else {
-				h.displayErrorPage(res, 'You cannot edit this item', 'Chnage Refused');
+				h.displayErrorPage(res, 'You cannot edit this item', 'Change Refused');
 			}
 		})
-	});
+	})
 });
 

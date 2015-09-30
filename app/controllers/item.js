@@ -38,7 +38,6 @@ function itemMaker(req, res) {
 router.post('/items/new', function(req, res) {
 	if (h.approvedEditor(res, req.user, req.body['ProposalId'])) {
 		db.Item.create(req.body).then(function(item) {
-			console.log("Item Created");
 			res.json({
 				message: "Success", 
 				item: item
@@ -51,10 +50,13 @@ router.post('/items/new', function(req, res) {
 //deletes an item by its id
 router.get('/item/delete/:id', function(req, res) {
 	db.Item.find({ where: {id: req.params.id} }).then(function(item) {
+		var partial = item.PartialId
 		db.Proposal.find({ where: {id: item.ProposalId} }).then(function(proposal) {
 			if (h.approvedEditor(res, req.user, proposal)) {
 				item.destroy().then(function() {
-					if (proposal.Status != 0) { //if a proposal is submitted, goto showpage
+					if (partial) {
+						res.redirect('/partial/' + partial + '/0')
+					} else if (proposal.Status != 0) { //if a proposal is submitted, goto showpage
 						res.redirect('/proposals/' + proposal.id);
 					} else { //go back to the edit proposal page
 						res.redirect('/proposals/update/' + proposal.id + '#step-4');
@@ -90,6 +92,7 @@ router.get('/item/:id', function(req,res) {
 				}).then(function(proposal) {
 					if (h.approvedEditor(res, req.user, proposal)) {
 						res.render('items/proposalview',{
+							title: item.ItemName,
 							item: item,
 							items: items,
 							proposal: proposal

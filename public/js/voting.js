@@ -1,9 +1,13 @@
-//sidelined due to time constraints
+//METRICS VOTING WOOOO!!!
+
+//adds the interactivity for the metrics voting page
 
 window.addEventListener('load', function() {
 
+	//for identification
 	var regId = document.getElementById('user').value;
 
+	//set options for toast notifications
 	toastr.options = {
 	  "closeButton": false,
 	  "debug": false,
@@ -14,21 +18,20 @@ window.addEventListener('load', function() {
 	  "onclick": null,
 	  "showDuration": "1",
 	  "hideDuration": "1",
-	  //"timeOut": "8000",
 	  "timeOut": '0',
 	  "extendedTimeOut": "0",
 	  "showEasing": "swing",
 	  "hideEasing": "linear",
 	  "showMethod": "fadeIn",
-	  "hideMethod": "fadeOut"
+	  "hideMethod": "fadeOut",
+	  'timeout': '8000'
 	}
 
-	toastr.options['timeout'] = '8000';
-
-	//starts teh socket connection
+	//starts the socket connection
 	var socket = io();
 	bindStuff();
 
+	//binds all the interactivity to the objects
 	function bindStuff() {
 		var buttons = document.getElementsByClassName('vote-button');
 		for (var i = 0; i < buttons.length; i++) {
@@ -59,10 +62,12 @@ window.addEventListener('load', function() {
 		}
 	}
 
+	//clears the toasts
 	function clearAllToasts() {
 		toastr.clear();
 	}
 
+	//toggle wether the toasts should auto-hide after a time period or not
 	function toggleTimer() {
 		var timer = document.getElementById('removeTimer').checked;
 		if (timer) {
@@ -74,8 +79,11 @@ window.addEventListener('load', function() {
 		}
 	}
 
+	//send all the changes for proposal viewing and voting
 	function changeOpenAndDisplay() {
 
+		//takes a space seperated list of id's and breaks them by space,
+		//or returns a null value for no entry
 		function prepare(arr) {
 			if (arr && arr.value) {
 				arr = arr.value.split(' ');
@@ -93,6 +101,8 @@ window.addEventListener('load', function() {
 		var display = prepare(document.getElementById('display'));
 		var hide = prepare(document.getElementById('hide'));
 		var clear = prepare(document.getElementById('clear'));
+		
+		//send relevant socket signals
 		if (open || close) {
 			socket.emit('changeOpen', {
 				regId: regId,
@@ -111,6 +121,8 @@ window.addEventListener('load', function() {
 				clear: clear
 			});
 		}
+
+		//clear the entries
 		document.getElementById('open').value = '';
 		document.getElementById('close').value = '';
 		document.getElementById('display').value = '';
@@ -118,10 +130,11 @@ window.addEventListener('load', function() {
 		document.getElementById('clear').value = '';
 	}
 
+
+	//send a vote on a proposal
 	function sendVote() {
 		proposal = this.id.substring(0, this.id.indexOf('but'));
 		var value = document.getElementById(proposal).value;
-		console.log(document.getElementById('user').value)
 		socket.emit('vote', {
 			regId: regId,
 			value: value,
@@ -129,6 +142,8 @@ window.addEventListener('load', function() {
 		});
 	}
 
+
+	//refresh the data on the page to reflect changes
 	function refreshData() {
 		var ajax = new XMLHttpRequest();
 		ajax.onload = postData;
@@ -136,60 +151,77 @@ window.addEventListener('load', function() {
 		ajax.send();
 	}
 
+
+	//change the data on the page to match the received page
 	function postData() {
 		document.getElementById('content').innerHTML = this.responseText;
 		bindStuff();
 	}
 
+
+	//socket responses and toasts for voting
 	socket.on('response', function(data) {
-		console.log(data)
 		if (data.status == 'true') {
-			toastr["success"]("Vote Accepted", "Your vote for ID " + proposal + " was successfuly registered" )
+			toastr["success"]("Your vote for ID " + proposal + " was successfuly registered", "Vote Accepted")
 		} else if (data.status == 'notOpen') {
-			toastr["warning"]("Vote Refused", "That proposal is not open for voting" )
+			toastr["warning"]("That proposal is not open for voting", "Vote Refused")
 		} else if (data.status == 'alreadyVoted') {
-			toastr["warning"]('Vote Refused', 'You\'ve already voted on that proposal')
+			toastr["warning"]('You\'ve already voted on that proposal', 'Vote Refused')
 		} else if (data.status == 'notMember') {
-			toastr['warning']('Vote Refused', 'You are not a member of the STFC!')
+			toastr['warning']('You are not a member of the STFC!', 'Vote Refused')
 		} else {
-			toastr['warning']('Unknown Error', 'An unknown error has occurred')
+			toastr['warning']('An unknown error has occurred', 'Unknown Error')
 		}
 		refreshData();
 	})
 
+	//socket data for a change in open proposals
 	socket.on('openChange', function(data) {
-		console.log(data)
 		if (data.status == 'voteOpen') {
-			toastr['info']('Vote Opened', 'Proposal ID ' + data.proposal + ' has been opened for voting')
+			toastr['info']('Proposal ' + data.proposal + ' has been opened for voting', 'Vote Opened')
 		} else if (data.status == 'voteClosed') {
 			if (data.value == 1) {
-				toastr['success']('Proposal Funded', 'Proposal ID ' + data.proposal + ' has been closed. Final Result: Funded, ' + data.yey + ' yey, ' + data.nay + ' nay, ' + data.count + ' total.')
-			} else if (data.value == 0) {
-				toastr['error']('Proposal Not Funded', 'Proposal ID ' + data.proposal + ' has been closed. Final Result: Not Funded, ' + data.yey + ' yey, ' + data.nay + ' nay, ' + data.count + ' total.')				
-			} else if (data.value == 2) {
-				toastr['info']('Proposal Tied', 'Proposal ID ' + data.proposal + ' has been closed. Final Result: Tied, ' + data.yey + ' yey, ' + data.nay + ' nay, ' + data.count + ' total.')				
+				toastr['info']('Proposal ' + data.proposal + ' has been closed with no votes registered.', 'Proposal Closed')
 			} else {
-				toastr['info']('Proposal Closed', 'Proposal ID ' + data.proposal + ' has been closed with no votes registered.')
+				
+				var voteCount = "";
+				voteCount += data.votes[-1] + ' yay, ';
+				delete data.votes[-1];
+				voteCount += data.votes[-2] + ' nay';
+				delete data.votes[-2];
+				for (vote in data.votes) {
+					voteCount += ', ' +  data.votes[vote] + ' for partial ' + vote;
+				}
+
+				if (data.value == 3) {
+					toastr['info']('Proposal ' + data.proposal + ' ended in a Tie. ' + voteCount, 'Proposal Tied')
+				} else if (data.value == 4) {
+					toastr['success']('Proposal ' + data.proposal + ' has been Funded. ' + voteCount, 'Proposal Funded')
+				} else if (data.value == 5) {
+					toastr['info']('Proposal ' + data.proposal + ' has been Partially Funded under Partial ' + data.partial + '. ' + voteCount, 'Proposal Partially Funded')	
+				} else if (data.value == 6) {
+					toastr['error']('Proposal ' + data.proposal + ' has been Rejected. ' + voteCount, 'Proposal Not Funded')				
+				}
 			}
-		} else if (data.status == 'notAdmin') {
-			toastr['warning']('Change Refused', 'You are anot an admin, and may not make this change')
+		} else if (data == 'notAdmin') {
+			toastr['warning']('You are not an admin, and may not make this change', 'Change Refused')
 		}
 		refreshData();
 	})
 
+	//socket data for a change in display
 	socket.on('displayChange', function(data) {
-		console.log(data)
 		if (data.status == 'displayed') {
-			toastr['info']('New Displayed Proposal(s)', 'Proposal(s) ' + data.proposals.join(', ') + ' are up for discussion');
+			toastr['info']('Proposal(s) ' + data.proposals.join(', ') + ' are up for discussion', 'New Displayed Proposal(s)')
 		} else if (data.status == 'hidden') {
-			toastr['info']('Proposal(s) Hidden', 'Proposal(s) ' + data.proposals.join(', ') + ' have been hidden')
+			toastr['info']('Proposal(s) ' + data.proposals.join(', ') + ' have been hidden', 'Proposal(s) Hidden')
 		}
 		refreshData();
 	})
 
+	//socket data for cleared votes
 	socket.on('votesClear', function(data) {
-		console.log(data)
-		toastr['warning']('Votes Cleared', 'Proposal(s) ' + data.proposals.join(', ') + ' have had their votes reset')
+		toastr['warning']('Proposal(s) ' + data.proposals.join(', ') + ' have had their votes reset', 'Votes Cleared')
 		refreshData();
 	})
 

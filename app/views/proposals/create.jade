@@ -42,6 +42,7 @@ block content
 					.col-xs-12
 						.col-md-12.well
 							// Introduction Form
+							//Introduction Form
 							.form-horizontal(data-toggle='formcache', name='proposalForm')
 								fieldset
 									// Form Name
@@ -53,26 +54,23 @@ block content
 										.col-md-5
 											input#title.form-control.input-md(name='title', type='text', placeholder='title')
 
-											span.help-block Title for your proposal. Must be longer than 10 chars
+											span.help-block Title for your proposal. Must be longer than 10 chars.
 									// Select Basic
 									.form-group
 										label.col-md-4.control-label(for='category') Category
-
 										.col-md-4
 											select#category.form-control(name='category')
 												each val, index in categories
 													option(value='#{index}')= val.name
-
 									// Select Basic
 									.form-group
 										label.col-md-4.control-label(for='department') Department
 
 										.col-md-4
 											select#department.form-control(name='department')
-												option(value='optionOneValue') Option one
-
-												option(value='optionTwoValue') Option two
-									// Button (Double)
+												each val, index in departments
+													option(value='#{val}') #{val}
+											p: a#newDepartment(href='') Enter a Different Department
 									.form-group
 										label.col-md-4.control-label(for='saveAndContinue')
 										br

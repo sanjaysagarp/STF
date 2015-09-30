@@ -1,9 +1,14 @@
 extends ../head
 
-append js
-	script(src='/js/vendor/toastr.js')
-	script(src='/js/proposals.js')
+append css
+	link(rel='stylesheet' href='/css/dynatable.css')
 
+append js
+	script(src='/js/dynatable.js')
+	script(type='text/javascript')
+			$(document).ready(function() {
+			$('#dynatable').dynatable();
+			});
 
 block content
 
@@ -11,7 +16,7 @@ block content
 		.proposals-header
 			h2(style='float:left; padding-left: 40px')= title 
 			.dropdown.proposals-dropdown
-				button#dropdownMenu1.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='true', style='margin: 20px') All Years
+				//- TODO button#dropdownMenu1.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='true', style='margin: 20px') All Years
 					span.caret
 
 				ul.dropdown-menu(role='menu', aria-labelledby='dropdownMenu1', style='margin: 0px')
@@ -28,7 +33,7 @@ block content
 						a(role='menuitem', tabindex='-1', href='#') 2012
 
 	.container
-		table
+		table.table-striped.table#dynatable
 			if proposals.length != 0
 				thead
 					tr
@@ -70,7 +75,7 @@ block content
 								td Cancelled by Admin
 
 
-							td: a(href='#') #{categories[proposal.Category].name}
-							td: a(href='#') #{proposal.Department}
+							td: a(href='/proposals/category/#{proposal.Category}') #{categories[proposal.Category].name}
+							td: a(href='/proposals/department/#{proposal.Department}') #{proposal.Department}
 			else 
 				p There are no proposals yet!

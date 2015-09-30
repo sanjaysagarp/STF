@@ -36,27 +36,6 @@ block content
 							.col-md-4
 								input#Price.form-control.input-md(name='Price', type='text', placeholder='$', value="#{item.Price}")
 						.form-group
-							label.col-md-4.control-label(for='Type') Type
-							.col-md-4
-								select#Type.form-control(name='Type', value="#{item.Type}")
-										if item.Type==='1'
-												option(value='1', selected='selected') Option one
-										else
-												option(value='1') Option one
-										if item.Type==='2'
-												option(value='2', selected='selected') Option two
-										else
-												option(value='2') Option two
-										if item.Type===''
-												option(value='', selected='selected') Other
-										else
-												option(value='') Other
-
-						.form-group
-							label.col-md-4.control-label(for='OtherType') Other
-							.col-md-4
-								input#OtherType.form-control.input-md(name='OtherType', type='text', placeholder='...', value="#{item.OtherType}")
-						.form-group
 							label.col-md-4.control-label(for='Justification') Justification
 							.col-md-4
 								textarea#Justification.form-control(name='Justification') #{item.Justification} 
@@ -66,21 +45,21 @@ block content
 								textarea#Description.form-control(name='Description') #{item.Description}
 						.form-group
 							.col-md-4.col-md-offset-4
+								button#saveItem.btn.btn-default.form-button(name='saveItem', type="submit") Save
+								|  
 								a(href="/items/new/#{proposal.id}") 
 									button(type='button').btn.btn-default +New Item
-								|  
-								a(href='/item/delete/#{item.id}')
-									button(type='button').btn.btn-danger Delete Item
 						.form-group
 							label.col-md-4.control-label(for='saveItem')
 							.col-md-4
-								button#saveItem.btn.btn-default.form-button(name='saveItem', type="submit") Save
-								|  
 								if proposal.Status == 0
 									a(href='/proposals/update/#{proposal.id}#step-4')
-										button#return.btn.btn-default(name='return', type='button') Return to Proposal Edit
+										button#return.btn.btn-default(name='return', type='button') Return to Edit
 								else
 									a(href='/proposals/#{proposal.id}')
 										button#return.btn.btn-default(name='return', type='button') Return to Proposal
+								|  
+								a(href='/item/delete/#{item.id}')
+									button(type='button').btn.btn-danger Delete Item
 								
 

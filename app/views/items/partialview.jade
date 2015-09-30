@@ -5,6 +5,7 @@ block content
 		.col-md-3
 				div#itemsList
 					h3 All Items
+					a(href='/partial/#{partial.id}/0') Partial Main
 					ol
 						- each itemN in items
 							li 
@@ -15,70 +16,69 @@ block content
 		
 		.col-md-9.well
 				h1 Edit Partial for #{proposal.ProposalTitle}
-				form.form-horizontal#editItem(name='editItem', method='post')
-					fieldset
-						legend
-						.form-group
-							label.col-md-4.control-label(for='ItemName') Name
-							.col-md-4
-								input#ItemName.form-control.input-md(name='ItemName', type='text', placeholder='...', value="#{item.ItemName}")
-								input#ItemId(name='ItemId', type='hidden', value='#{item.id}')
-						.form-group
-							label.col-md-4.control-label(for='Group') Group
-							.col-md-4
-								input#Group.form-control.input-md(name='Group', type='text', placeholder='...', value="#{item.Group}")
-						.form-group
-							label.col-md-4.control-label(for='Quantity') Quantity
-							.col-md-4
-								input#Quantity.form-control.input-md(name='Quantity', type='text', placeholder='1,2,3', value="#{item.Quantity}")
-						.form-group
-							label.col-md-4.control-label(for='Price') Price
-							.col-md-4
-								input#Price.form-control.input-md(name='Price', type='text', placeholder='$', value="#{item.Price}")
-						.form-group
-							label.col-md-4.control-label(for='Type') Type
-							.col-md-4
-								select#Type.form-control(name='Type', value="#{item.Type}")
-										if item.Type==='1'
-												option(value='1', selected='selected') Option one
-										else
-												option(value='1') Option one
-										if item.Type==='2'
-												option(value='2', selected='selected') Option two
-										else
-												option(value='2') Option two
-										if item.Type===''
-												option(value='', selected='selected') Other
-										else
-												option(value='') Other
+				
+				if item != 0
 
-						.form-group
-							label.col-md-4.control-label(for='OtherType') Other
-							.col-md-4
-								input#OtherType.form-control.input-md(name='OtherType', type='text', placeholder='...', value="#{item.OtherType}")
-						.form-group
-							label.col-md-4.control-label(for='Justification') Justification
-							.col-md-4
-								textarea#Justification.form-control(name='Justification') #{item.Justification} 
-						.form-group
-							label.col-md-4.control-label(for='Description') Description
-							.col-md-4
-								textarea#Description.form-control(name='Description') #{item.Description}
-						.form-group
-							.col-md-4.col-md-offset-4
-								a(href="/items/new/#{partial.id}/#{proposal.id}") 
-									button(type='button').btn.btn-default +New Item
-								|  
-								a(href='/item/delete/#{item.id}')
-									button(type='button').btn.btn-danger Delete Item
-						.form-group
-							label.col-md-4.control-label(for='saveItem')
-							.col-md-4
-								button#saveItem.btn.btn-default.form-button(name='saveItem', type="submit") Save
-								br
-								a(href='/proposals/#{proposal.id}')
-									button#return.btn.btn-default(name='return', type='button') Return to Proposal
-								a(href='/metrics/voting')
-									button#return.btn.btn-default(name='return', type='button') Return to Voting
+					form.form-horizontal#editItem(name='editItem', method='post')
+						fieldset
+							legend
+							.form-group
+								label.col-md-4.control-label(for='ItemName') Name
+								.col-md-4
+									input#ItemName.form-control.input-md(name='ItemName', type='text', placeholder='...', value="#{item.ItemName}")
+									input#ItemId(name='ItemId', type='hidden', value='#{item.id}')
+							.form-group
+								label.col-md-4.control-label(for='Group') Group
+								.col-md-4
+									input#Group.form-control.input-md(name='Group', type='text', placeholder='...', value="#{item.Group}")
+							.form-group
+								label.col-md-4.control-label(for='Quantity') Quantity
+								.col-md-4
+									input#Quantity.form-control.input-md(name='Quantity', type='text', placeholder='1,2,3', value="#{item.Quantity}")
+							.form-group
+								label.col-md-4.control-label(for='Price') Price
+								.col-md-4
+									input#Price.form-control.input-md(name='Price', type='text', placeholder='$', value="#{item.Price}")
+							.form-group
+								label.col-md-4.control-label(for='Justification') Justification
+								.col-md-4
+									textarea#Justification.form-control(name='Justification') #{item.Justification} 
+							.form-group
+								label.col-md-4.control-label(for='Description') Description
+								.col-md-4
+									textarea#Description.form-control(name='Description') #{item.Description}
+							.form-group
+								.col-md-4.col-md-offset-4
+									button#saveItem.btn.btn-default.form-button(name='saveItem', type="submit") Save
+									|  
+									a(href="/items/new/#{partial.id}/#{proposal.id}") 
+										button(type='button').btn.btn-default +New Item
+							.form-group
+								.col-md-4.col-md-offset-4
+									a(href='/proposals/#{proposal.id}')
+										button#return.btn.btn-default(name='return', type='button') Return to Proposal
+							.form-group
+								.col-md-4.col-md-offset-4
+									a(href='/item/delete/#{item.id}')
+										button(type='button').btn.btn-danger Delete Item
 
+				else
+					form.form-horizontal#editItem(name='editPartial', method='post')
+						fieldset
+							legend
+							.form-group
+								label.col-md-4.control-label(for='PartialTitle') Partial Title
+								.col-md-4
+									input#PartialTitle.form-control.input-md(name='PartialTitle', type='text', placeholder='...', value="#{partial.Title}")
+							.form-group
+								label.col-md-4.control-label(for='saveItem')
+								.col-md-4
+									button#saveItem.btn.btn-default.form-button(name='saveItem', type="submit") Save
+					.form-group
+						.col-md-4.col-md-offset-4
+							form.form-horizontal#editItem(name='editPartial', method='post')
+								fieldset
+									legend
+										input(type='hidden' name='delete' value='true')
+										button(type='submit').btn.btn-danger Delete Partial
 
