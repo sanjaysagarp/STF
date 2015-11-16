@@ -30,3 +30,7 @@
 textarea {
 	height: 160px !important;
 }
+
+#fastTrackWrap {
+	padding-top: 7px;
+}

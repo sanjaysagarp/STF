@@ -96,6 +96,7 @@ app.use(function removeTrailingSlashes(req, res, next) {
 
 //for seamless integration fo new users. An Admin will add a netid, 
 //and when that netid logs in, we grab their info and insert it to teh database
+//should be refactored into some other place, slows down things right now
 app.use(function memberAddIfNotExists(req, res, next) {
 	if (req.user) {
 		db.User.find({
@@ -124,7 +125,7 @@ app.use(function memberAddIfNotExists(req, res, next) {
 });
 
 //adds a flag to users if they're logged in if they're admins
-app.get('/login/callback', function adminAndMemberCheck(req, res, next) {
+app.use(function adminAndMemberCheck(req, res, next) {
 	if (req.user) {
 		db.User.find({
 			where: {

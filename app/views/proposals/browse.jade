@@ -19,18 +19,18 @@ block content
 				//- TODO button#dropdownMenu1.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='true', style='margin: 20px') All Years
 					span.caret
 
-				ul.dropdown-menu(role='menu', aria-labelledby='dropdownMenu1', style='margin: 0px')
-					li(role='presentation')
-						a(role='menuitem', tabindex='-1', href='#') 2015
+					ul.dropdown-menu(role='menu', aria-labelledby='dropdownMenu1', style='margin: 0px')
+						li(role='presentation')
+							a(role='menuitem', tabindex='-1', href='#') 2015
 
-					li(role='presentation')
-						a(role='menuitem', tabindex='-1', href='#') 2014
+						li(role='presentation')
+							a(role='menuitem', tabindex='-1', href='#') 2014
 
-					li(role='presentation')
-						a(role='menuitem', tabindex='-1', href='#') 2013
+						li(role='presentation')
+							a(role='menuitem', tabindex='-1', href='#') 2013
 
-					li(role='presentation')
-						a(role='menuitem', tabindex='-1', href='#') 2012
+						li(role='presentation')
+							a(role='menuitem', tabindex='-1', href='#') 2012
 
 	.container
 		table.table-striped.table#dynatable
@@ -48,31 +48,31 @@ block content
 							td #{proposal.id}
 							if proposal.Status == 0
 								td: a(href='/proposals/update/#{proposal.id}') #{proposal.ProposalTitle} 
-								td Unsubmitted
+								td #{proposal.FastTrack ? "[FT] ": ""}Unsubmitted
 							if proposal.Status == 1
 								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle} 
-								td Submitted
+								td #{proposal.FastTrack ? "[FT] ": ""}Submitted
 							if proposal.Status == 2
 								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle}
-								td In Voting
+								td #{proposal.FastTrack ? "[FT] ": ""}In Voting
 							if proposal.Status == 3
 								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle}
-								td Awaiting Decision
+								td #{proposal.FastTrack ? "[FT] ": ""}Awaiting Decision
 							if proposal.Status == 4
 								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle}
-								td Funded
+								td #{proposal.FastTrack ? "[FT] ": ""}Funded
 							if proposal.Status == 5
 								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle}
-								td Partially Funded
+								td #{proposal.FastTrack ? "[FT] ": ""}Partially Funded
 							if proposal.Status == 6
 								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle}
-								td Not Funded
+								td #{proposal.FastTrack ? "[FT] ": ""}Not Funded
 							if proposal.Status == 7
 								td #{proposal.ProposalTitle}
-								td Cancelled by User
+								td #{proposal.FastTrack ? "[FT] ": ""}Cancelled by User
 							if proposal.Status == 8
 								td #{proposal.ProposalTitle}
-								td Cancelled by Admin
+								td #{proposal.FastTrack ? "[FT] ": ""}Cancelled by Admin
 
 
 							td: a(href='/proposals/category/#{proposal.Category}') #{categories[proposal.Category].name}

@@ -61,9 +61,9 @@ router.post('/proposal/sign', shib.ensureAuth('/login'), function signProposal(r
 				if (proposal.DeanNetId == req.user.netId) {
 					signed = true;
 					proposal.update({DeanSignature: 1});
-				} if (proposal.StudentNetId == req.user.netId) {
+				} if (proposal.PrimaryNetId == req.user.netId) {
 					signed = true;
-					proposal.update({StudentSignature: 1});
+					proposal.update({PrimarySignature: 1});
 				} if (proposal.BudgetNetId == req.user.netId) {
 					signed = true;
 					proposal.update({BudgetSignature: 1});
@@ -115,16 +115,19 @@ router.post('/proposals/:id', shib.ensureAuth('/login'), function postProposal(r
 		if (proposal.length == 0) {
 			res.send(404);
 		} if (h.approvedEditor(res, req.user, proposal)) {	
+			console.log(req.body['Background']); 
 
 			var fromForm = {
 				ProposalTitle: req.body["title"],
 				Category: req.body["category"],
 				Department: req.body["department"],
+				FastTrack: (req.body["fastTrack"] == 'on' ? 1 : 0),
 				PrimaryName: req.body["PrimaryName"],
 				PrimaryTitle: req.body["primary-title"],
 				PrimaryNetId: req.body["primary-netId"].toLowerCase(),
 				PrimaryPhone: req.body["primary-phone"],
 				PrimaryMail: req.body["primary-mail"],
+				PrimarySignature: (proposal.PrimaryNetId == req.body["primary-netId"] ? proposal.PrimarySignature : 0),
 				BudgetName: req.body["budget-name"],
 				BudgetTitle: req.body["budget-title"],
 				BudgetNetId: req.body["budget-netId"].toLowerCase(),
@@ -142,7 +145,6 @@ router.post('/proposals/:id', shib.ensureAuth('/login'), function postProposal(r
 				StudentNetId: req.body["stu-netId"].toLowerCase(),
 				StudentPhone: req.body["stu-phone"],
 				StudentMail: req.body["stu-mail"],
-				StudentSignature: (proposal.StudentNetId == req.body["stu-netId"] ? proposal.StudentSignature : 0),
 				Abstract: req.body["abstract"],
 				CategoryJustification: req.body["CategoryJustification"],
 				Background: req.body["Background"],
@@ -456,7 +458,7 @@ router.post('/proposals/endorsements/:id', shib.ensureAuth('/login'), function(r
 
 function allSigned(proposal) {
 	return (proposal.BudgetSignature == 1 &&
-	        proposal.StudentSignature == 1 &&
+	        proposal.PrimarySignature == 1 &&
 	        proposal.DeanSignature == 1);
 }
 

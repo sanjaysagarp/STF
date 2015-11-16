@@ -1,0 +1,85 @@
+extends head
+
+block content
+  .col-xs-12
+    .col-md-3
+        div#itemsList
+          if items
+            h3  Items             
+            ol
+              - each item in items
+                li 
+                  a(href='/item/#{item.id}') #{item.ItemName}
+    .col-md-9.well
+        h1=item.ItemName
+        form.form-horizontal#editItem(name='editItem')
+          fieldset
+            // Form Name
+            legend
+            // Text input
+            .form-group
+              label.col-md-4.control-label(for='ItemName') Name
+              .col-md-4
+                input#ItemName.form-control.input-md(name='ItemName', type='text', placeholder='...', value="#{item.ItemName}")
+                input#ItemId(name='ItemId', type='hidden', value='#{item.id}')
+                span.help-block help
+            // Text input
+            .form-group
+              label.col-md-4.control-label(for='Group') Group
+              .col-md-4
+                input#Group.form-control.input-md(name='Group', type='text', placeholder='...', value="#{item.Group}")
+                span.help-block help
+            // Text input
+            .form-group
+              label.col-md-4.control-label(for='Quantity') Quantity
+              .col-md-4
+                input#Quantity.form-control.input-md(name='Quantity', type='text', placeholder='1,2,3', value="#{item.Quantity}")
+                span.help-block help
+            // Text input
+            .form-group
+              label.col-md-4.control-label(for='Price') Price
+              .col-md-4
+                input#Price.form-control.input-md(name='Price', type='text', placeholder='$', value="#{item.Price}")
+                span.help-block help
+            // Select Basic
+            .form-group
+              label.col-md-4.control-label(for='Type') Type
+              .col-md-4
+                select#Type.form-control(name='Type', value="#{item.Type}")
+                    if item.Type==='1'
+                        option(value='1', selected='selected') Option one
+                    else
+                        option(value='1') Option one
+                    if item.Type==='2'
+                        option(value='2', selected='selected') Option two
+                    else
+                        option(value='2') Option two
+                    if item.Type===''
+                        option(value='', selected='selected') Other
+                    else
+                        option(value='') Other
+
+            // Text input
+            .form-group
+              label.col-md-4.control-label(for='OtherType') Other
+              .col-md-4
+                input#OtherType.form-control.input-md(name='OtherType', type='text', placeholder='...', value="#{item.OtherType}")
+                span.help-block help
+            // Textarea
+            .form-group
+              label.col-md-4.control-label(for='Justification') Justification
+              .col-md-4
+                textarea#Justification.form-control(name='Justification') #{item.Justification} 
+            // Textarea
+            .form-group
+              label.col-md-4.control-label(for='Description') Description
+              .col-md-4
+                textarea#Description.form-control(name='Description') #{item.Description}
+            // Button
+            .form-group
+              label.col-md-4.control-label(for='saveItem')
+              .col-md-4
+                button#saveItem.btn.btn-default(name='saveItem', type="submit") + Save Item
+          
+
+

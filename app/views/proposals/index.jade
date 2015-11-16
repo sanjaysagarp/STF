@@ -1,0 +1,135 @@
+//- This does something with metrics, as in showing metrics
+//- requires data from teh sql server somehow
+
+extends ../head
+
+append js
+	script(src='/js/vendor/toastr.js')
+	script(src='/js/proposals.js')
+
+block content
+	.container
+		.col-sm-3
+				.metrics
+						h2 Metrics
+					#accordion.panel-group
+						if data
+							if data.Collaborative
+									.panel.panel-default
+										.panel-heading
+											h4.panel-title
+												a(data-toggle='collapse', data-parent='#accordion', href='#collapse1') Collaborative
+										#collapse1.panel-collapse.collapse.collapse
+											.panel-body
+													- each metric in data.Collaborative
+															p=metric.Metric
+
+							if data.ComputerLabs
+									.panel.panel-default
+										.panel-heading
+											h4.panel-title
+												a(data-toggle='collapse', data-parent='#accordion', href='#collapse2') Computer Labs
+
+										#collapse2.panel-collapse.collapse
+											.panel-body
+												- each metric in data.ComputerLabs
+														p=metric.Metric
+
+							.panel.panel-default
+								.panel-heading
+									h4.panel-title
+										a(data-toggle='collapse', data-parent='#accordion', href='#collapse3') General Cost Benefit
+
+								#collapse3.panel-collapse.collapse
+									.panel-body
+										- each metric in data.GeneralCostBenefit
+												p=metric.Metric
+
+							.panel.panel-default
+								.panel-heading
+									h4.panel-title
+										a(data-toggle='collapse', data-parent='#accordion', href='#collapse4') General Departmental Support And Responsibility
+								#collapse4.panel-collapse.collapse.collapse
+									.panel-body
+										- each metric in data.GeneralDepartmentalSupportAndResponsibility
+												p=metric.Metric
+							.panel.panel-default
+								.panel-heading
+									h4.panel-title
+										a(data-toggle='collapse', data-parent='#accordion', href='#collapse5') General Scholarship
+
+								#collapse5.panel-collapse.collapse
+									.panel-body
+										- each metric in data.GeneralScholarship
+												p=metric.Metric
+							.panel.panel-default
+								.panel-heading
+									h4.panel-title
+										a(data-toggle='collapse', data-parent='#accordion', href='#collapse6') General Student Access
+
+								#collapse6.panel-collapse.collapse
+									.panel-body
+										- each metric in data.GeneralStudentAccess
+												p=metric.Metric
+							if data.MachineResearch
+									.panel.panel-default
+										.panel-heading
+											h4.panel-title
+												a(data-toggle='collapse', data-parent='#accordion', href='#collapse7') Machine/Research
+
+										#collapse7.panel-collapse.collapse
+											.panel-body
+												- each metric in data.MachineResearch
+														p=metric.Metric
+
+							if data.Portable
+									.panel.panel-default
+										.panel-heading
+											h4.panel-title
+												a(data-toggle='collapse', data-parent='#accordion', href='#collapse8') Portable
+
+										#collapse8.panel-collapse.collapse
+											.panel-body
+												- each metric in data.Portable
+														p=metric.Metric
+
+							if data.RemoteComputing
+									.panel.panel-default
+										.panel-heading
+											h4.panel-title
+												a(data-toggle='collapse', data-parent='#accordion', href='#collapse9') Remote Computing
+
+										#collapse9.panel-collapse.collapse
+											.panel-body
+												- each metric in data.RemoteComputing
+														p=metric.Metric
+
+		.col-sm-2
+		.col-sm-7
+				h2 Biology Study Area Fulfillment
+				table
+						tbody
+								tr
+										th Introduction
+								tr
+										td Proposal ID
+										td 2015-063
+								tr
+										td Submitted
+										td April 16, 2015
+								tr
+										td Owner
+										td dhurley
+								tr
+										td Department
+										td Biology
+								tr
+										td Category
+										td Computer Labs
+								tr
+										td Funding Status
+										td Pending
+								tr
+										td Metric Score
+										td None
+

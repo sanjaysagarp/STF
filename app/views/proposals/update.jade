@@ -40,12 +40,8 @@ block content
 				#step-1.setup-content
 					.col-xs-12
 						.col-md-12.well
-							//Introduction Form
 							.form-horizontal(data-toggle='formcache', name='proposalForm')
 								fieldset
-									// Form Name
-									legend
-									// Text input
 									.form-group
 										label.col-md-4.control-label(for='title') Title
 
@@ -53,7 +49,6 @@ block content
 											input#title.form-control.input-md(name='title', type='text', placeholder='title', value="#{proposal.ProposalTitle}")
 
 											span.help-block Title for your proposal. Must be longer than 10 chars.
-									// Select Basic
 									.form-group
 										label.col-md-4.control-label(for='category') Category
 										.col-md-4
@@ -62,7 +57,6 @@ block content
 												each val, index in categories
 													if index != proposal.Category
 														option(value='#{index}')= val.name
-									// Select Basic
 									.form-group
 										label.col-md-4.control-label(for='department') Department
 
@@ -74,7 +68,16 @@ block content
 														option(value='#{val}') #{val}
 											p: a#newDepartment(href='') Enter a Different Department
 
-									// Button (Double)
+									.form-group
+										label.col-md-4.control-label(for='fastTrack') Fast Track
+
+										.col-md-4#fastTrackWrap
+											if proposal.FastTrack
+												input#fastTrack(name='fastTrack' type='checkbox' checked)
+											else
+												input#fastTrack(name='fastTrack' type='checkbox')
+											span.help-block Fast track proposals are voted upon at the start of the review process in cases where funds are needed before July
+
 									.form-group
 										label.col-md-4.control-label(for='save')
 
@@ -84,45 +87,37 @@ block content
 
 										.col-md-4
 											button.btn.btn-primary.form-button(type='submit', name='save') Save
-											//button.next-button.btn.btn-default.form-button(name='next') Next
-					// <button id="activate-step-2" class="btn btn-primary btn-lg">Activate Step
 				#step-2.row.setup-content
 					.col-xs-12
 						.col-md-12.well
 							.form-horizontal(data-toggle='formcache', name='contactForm')
 								h4.text-center  Primary
-								span.help-block Your Primary person is the first person we contact for questions about your proposal. Although all persons you enter below will be able to edit the proposal, the primary is our first point of contact. A primary individual may also be listed as any of the other roles below.
+								span.help-block Your Primary person is the first person we contact for questions about your proposal. Although all persons you enter below will be able to edit the proposal, the primary is our first point of contact. A primary individual may share the role of student, but not with any other role.
 								.form-horizontal
 									fieldset
-										// Form Name
 										legend
-										// Text input
 										.form-group
 											label.col-md-4.control-label(for='PrimaryName') Name
 											.col-md-4
 												input#textinputName.form-control.input-md(name='PrimaryName', type='text', placeholder='name', value="#{proposal.PrimaryName}")
 
-										// Text input
 										.form-group
 											label.col-md-4.control-label(for='primary-title') Title
 											.col-md-4
 												input#primary-title.form-control.input-md(name='primary-title', type='text', placeholder='title', value="#{proposal.PrimaryTitle}" )
 												span.help-block If Applicable
-										// Text input
 										.form-group
 											label.col-md-4.control-label(for='primary-netId') NetID
 											.col-md-4
 												input#primary-email.form-control.input-md(name='primary-netId', type='text', placeholder='xyzabc', value="#{proposal.PrimaryNetId}")
 
 												span.help-block Exclude '@uw.edu'. Enter only your NetID
-										// Text input
 										.form-group
 											label.col-md-4.control-label(for='primary-phone') Phone
 											.col-md-4
 												input#primary-phone.form-control.input-md(name='primary-phone', type='text', placeholder='999-999-9999', value="#{proposal.PrimaryPhone}")
 
 												span.help-block Due to the public nature of the UW, your phone will be shared freely
-										// Text input
 										.form-group
 											label.col-md-4.control-label(for='primary-mail') Mail
 											.col-md-4
@@ -130,42 +125,36 @@ block content
 
 												span.help-block If Applicable
 								h4.text-center  Budget
-								span.help-block The Budget Director is whom we speak with for anything regarding the transfer of funds. They cannot be the same person as the Dean or Student
+								span.help-block The Budget Director is whom we speak with for anything regarding the transfer of funds. They cannot be the same person as the Dean, Primary or Student
 								.form-horizontal
 									fieldset
-										// Form Name
 										legend
-										// Text input
 										.form-group
 											label.col-md-4.control-label(for='budget-name') Name
 											.col-md-4
 												input#budget-name.form-control.input-md(name='budget-name', type='text', placeholder='name', value="#{proposal.BudgetName}")
 
-										// Text input
 										.form-group
 											label.col-md-4.control-label(for='budget-title') Title
 											.col-md-4
 												input#budget-title.form-control.input-md(name='budget-title', type='text', placeholder='title', value="#{proposal.BudgetTitle}")
 
-										// Text input
 										.form-group
 											label.col-md-4.control-label(for='budget-netId') NetID
 											.col-md-4
 												input#budget-email.form-control.input-md(name='budget-netId', type='text', placeholder='xyzabc', value="#{proposal.BudgetNetId}")
 
 												span.help-block Exclude '@uw.edu'. Enter only the NetID
-										// Text input
 										.form-group
 											label.col-md-4.control-label(for='budget-phone') Phone
 											.col-md-4
 												input#budget-phone.form-control.input-md(name='budget-phone', type='text', placeholder='999-999-9999',value="#{proposal.BudgetPhone}")
-										// Text input
 										.form-group
 											label.col-md-4.control-label(for='budget-mail') Mail
 											.col-md-4
 												input#budget-mail.form-control.input-md(name='budget-mail', type='text', placeholder='abc', value="#{proposal.BudgetMail}")
 								h4.text-center  Dean/Departmental-Head
-								span.help-block Every proposal must have a Dean or Department Head supporting it. This cannot be the same person listed under Budget or Student
+								span.help-block Every proposal must have a Dean or Department Head supporting it. This cannot be the same person listed under Budget, Primary or Student
 								.form-horizontal
 									fieldset
 										legend
@@ -231,32 +220,27 @@ block content
 							.col-md-12.well
 								.form-horizontal
 									fieldset
-										// Form Name
 										legend
-										// Textarea
 										.form-group
 											label.col-md-4.control-label(for='abstract') Abstract
 											.col-md-8
 												textarea#abstract.form-control(name='abstract', placeholder="Please write a quick overview of the proposal") #{proposal.Abstract}
-										// Textarea
 										.form-group
-											label.col-md-4.control-label(for='background') Background
+											label.col-md-4.control-label(for='Background') Background
 											.col-md-8
-												textarea#background.form-control(name='background', placeholder="Give us any important background to this proposal, such as previous proposals, departmental needs, etc.") #{proposal.Background}
-										// Textarea
+												textarea#background.form-control(name='Background', placeholder="Give us any important background to this proposal, such as previous proposals, departmental needs, etc.") #{proposal.Background}
 										.form-group
 											label.col-md-4.control-label(for='CategoryJustification') Category Justification
 											.col-md-8
-												textarea#category.form-control(name='CategoryJustification', placeholder="If it's not immediately obvious, explain why you beleive your proposal should be in the category you selected") #{proposal.CategoryJustification}
+												textarea#category.form-control(name='CategoryJustification', placeholder="If it's not immediately obvious, explain why you believe your proposal should be in the category you selected") #{proposal.CategoryJustification}
 										.form-group
 											label.col-md-4.control-label(for='Benefits') Benefits to Students and the University
 											.col-md-8
 												textarea#abstract.form-control(name='Benefits', placeholder="If your proposal was funded, what benefits could we see for students and the university?") #{proposal.Benefits}
-										// Textarea
 										.form-group
 											label.col-md-4.control-label(for='AccessRestrictions') Access Restrictions (if any)
 											.col-md-8
-												textarea#background.form-control(name='AccessRestrictions') #{proposal.AccessRestrictions}
+												textarea#accessRestrictions.form-control(name='AccessRestrictions') #{proposal.AccessRestrictions}
 										.form-group
 											label.col-md-4.control-label(for='Hours') Hours of Availability
 											.col-md-4
@@ -277,7 +261,6 @@ block content
 											.col-md-8
 												textarea#timeline.form-control(name='InstallationTimeline') #{proposal.InstallationTimeline}
 												span.help-block How long would it take for the department to implement the proposal after funding?
-										// Button (Double)
 										.form-group
 											label.col-md-4.control-label(for='save')
 											.col-md-4
@@ -291,43 +274,35 @@ block content
 							.form-horizontal
 								h4.text-center Add Item
 								fieldset
-									// Form Name
-									legend
-									// Text input
+									p <b>Note:</b> Please be aware that we require all tax to be summed and added as a seperate item. Please do not attach tax to an item when computing its cost. For example, if you were to list three computers for $1000 each, list one item as 3 Computers for a total of $3000, and one item of tax for a total of $250
 									.form-group
 										label.col-md-4.control-label(for='ItemName') Name
 										.col-md-4
 											input#ItemName.form-control.input-md(name='ItemName', type='text', placeholder='...')
 											input#ItemProposalId(name='ProposalId', type='hidden', value='#{proposal.id}')
-									// Text input
 									.form-group
 										label.col-md-4.control-label(for='Group') Group
 										.col-md-4
 											input#Group.form-control.input-md(name='Group', type='text', placeholder='...')
 											span.help-block Group by priority of needed funds, or by components (e.g. Software, Hardware)
-									// Text input
 									.form-group
 										label.col-md-4.control-label(for='Quantity') Quantity
 										.col-md-4
 											input#Quantity.form-control.input-md(name='Quantity', min='0' type='number', placeholder='1,2,3')
 											span.help-block Number of units desired
-									// Text input
 									.form-group
 										label.col-md-4.control-label(for='Price') Price
 										.col-md-4
 											input#Price.form-control.input-md(name='Price', min='0' type='number', placeholder='$')
 											span.help-block Cost per unit (exclude dollar sign)
-									// Textarea
 									.form-group
 										label.col-md-4.control-label(for='Description') Description
 										.col-md-8
 											textarea#Description.form-control(name='Description', placeholder='Describe the item')
-									// Textarea
 									.form-group
 										label.col-md-4.control-label(for='Justification') Justification
 										.col-md-8
 											textarea#Justification.form-control(name='Justification', placeholder='Justify why you need it')
-									// Button
 									.form-group
 										label.col-md-4.control-label(for='addItem')
 										.col-md-4
@@ -362,11 +337,11 @@ block content
 									h3 Status
 									.row
 										.col-xs-12.col-md-4.text-center
-											.sig-wrap(class='#{proposal.StudentSignature == 0 ? "disabled" : ""}')
-												h4 Student Lead
+											.sig-wrap(class='#{proposal.PrimarySignature == 0 ? "disabled" : ""}')
+												h4 Primary Author
 												p 
-													if proposal.StudentSignature == 0
-														if proposal.StudentNetId == netId 
+													if proposal.PrimarySignature == 0
+														if proposal.PrimaryNetId == netId 
 															button(type='button').btn.btn-warning.sign-btn Sign Proposal
 														else
 															span.unsigned Unsiged
@@ -399,7 +374,7 @@ block content
 									.row
 										.col-xs-4.col-xs-offset-8.col-md-2.col-md-offset-10
 											a(href='/proposal/submit/#{proposal.id}')
-												button#submitProposal(type='button' class='#{proposal.BudgetSignature == 1 && proposal.StudentSignature == 1 && proposal.DeanSignature == 1 ? "" : "disabled"}').btn.form-button Submit Proposal
+												button#submitProposal(type='button' class='#{proposal.BudgetSignature == 1 && proposal.PrimarySignature == 1 && proposal.DeanSignature == 1 ? "" : "disabled"}').btn.form-button Submit Proposal
 									
 
 
