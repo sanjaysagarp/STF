@@ -31,7 +31,6 @@ module.exports = function(sequelize, DataTypes) {
 		StudentMail: DataTypes.STRING,
 		Abstract: DataTypes.TEXT,
 		Background: DataTypes.TEXT,
-		CategoryJustification: DataTypes.TEXT,
 		Benefits: DataTypes.TEXT,
 		AccessRestrictions: DataTypes.TEXT, 
 		Hours: DataTypes.INTEGER,

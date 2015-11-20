@@ -224,15 +224,13 @@ block content
 										.form-group
 											label.col-md-4.control-label(for='abstract') Abstract
 											.col-md-8
-												textarea#abstract.form-control(name='abstract', placeholder="Please write a quick overview of the proposal") #{proposal.Abstract}
+												textarea#abstract.form-control(name='abstract', placeholder="Write a quick overview of the proposal") #{proposal.Abstract}
+												#abstract.span.help-block (Please limit response to 500 characters)
 										.form-group
 											label.col-md-4.control-label(for='Background') Background
 											.col-md-8
-												textarea#background.form-control(name='Background', placeholder="Give us any important background to this proposal, such as previous proposals, departmental needs, etc.") #{proposal.Background}
-										.form-group
-											label.col-md-4.control-label(for='CategoryJustification') Category Justification
-											.col-md-8
-												textarea#category.form-control(name='CategoryJustification', placeholder="If it's not immediately obvious, explain why you believe your proposal should be in the category you selected") #{proposal.CategoryJustification}
+												textarea#background.form-control(name='Background', placeholder="Please situate the proposal in the context of past requests and student need") #{proposal.Background}
+										
 										.form-group
 											label.col-md-4.control-label(for='Benefits') Benefits to Students and the University
 											.col-md-8

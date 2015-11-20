@@ -146,7 +146,6 @@ router.post('/proposals/:id', shib.ensureAuth('/login'), function postProposal(r
 				StudentPhone: req.body["stu-phone"],
 				StudentMail: req.body["stu-mail"],
 				Abstract: req.body["abstract"],
-				CategoryJustification: req.body["CategoryJustification"],
 				Background: req.body["Background"],
 				Benefits: req.body["Benefits"],
 				AccessRestrictions: req.body["AccessRestrictions"],
@@ -207,7 +206,6 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 	var StudentPhone = req.body["stu-phone"];
 	var StudentMail = req.body["stu-mail"];
 	var Abstract = req.body["abstract"];
-	var CategoryJustification = req.body["CategoryJustification"];
 	var Background = req.body["background"];
 	var Benefits = req.body["Benefits"];
 	var AccessRestrictions = req.body["AccessRestrictions"];
@@ -247,7 +245,6 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 		StudentMail: StudentMail,
 		Abstract: Abstract,
 		Background: Background,
-		CategoryJustification: CategoryJustification,
 		Benefits: Benefits,
 		AccessRestrictions: AccessRestrictions,
 		Hours: Hours,
