@@ -121,10 +121,12 @@ block content
 		p= proposal.Background
 		h3 Benefits to Students and University
 		p= proposal.Benefits
+		h3 Estimated Student Usage
+		p.subtitle About #{proposal.StudentsEstimated} are predicted to use this equipment on a monthly basis
+		p= proposal.EstimateJustification
 		h3.title Access Restrictions
 		p.subtitle Access available #{proposal.Days} for #{proposal.Hours} hours a day
-		p.subtitle About #{proposal.StudentsEstimated} use this equipment on a monthly basis
-		p= proposal.AccessRestrictions
+				p= proposal.AccessRestrictions
 		
 		h3 Student Endorsements
 		if endorsements

@@ -255,6 +255,11 @@ block content
 												input#studentsEstimated.form-control.input(name='StudentsEstimated', min='0' type='number', placeholder='100', value="#{proposal.StudentsEstimated}")
 												span.help-block How many students will utilize this equipment? (On a monthly basis)
 										.form-group
+											label.col-md-4.control-label(for='EstimateJustification') Justification of Estimated Student Usage
+											.col-md-8
+												textarea#estimateJustification.form-control(name='EstimateJustification') #{proposal.EstimateJustification}
+												span.help-block How do you justify the amount of students who will utilize this proposal?
+										.form-group
 											label.col-md-4.control-label(for='DepartmentalResources') Resources Provided by Department
 											.col-md-8
 												textarea#resources.form-control(name='DepartmentalResources') #{proposal.DepartmentalResources}

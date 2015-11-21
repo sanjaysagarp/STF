@@ -152,6 +152,7 @@ router.post('/proposals/:id', shib.ensureAuth('/login'), function postProposal(r
 				Hours: req.body["Hours"],
 				Days: req.body["Days"].toLowerCase(),
 				StudentsEstimated: req.body["StudentsEstimated"],
+				EstimateJustification: req.body["EstimateJustification"],
 				DepartmentalResources: req.body["DepartmentalResources"],
 				InstallationTimeline: req.body["InstallationTimeline"]
 			}
@@ -211,10 +212,11 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 	var Benefits = req.body["Benefits"];
 	var AccessRestrictions = req.body["AccessRestrictions"];
 	var Hours = req.body["Hours"];
-	var StudentsEstimated = req.body["StudentsEstimated"]
 	if (Hours === '') {
 		Hours = 0;
 	}
+	var StudentsEstimated = req.body["StudentsEstimated"];
+	var EstimateJustification = req.body["EstimateJustification"];
 	var Days = req.body["Days"];
 	var DepartmentalResources = req.body["DepartmentalResources"];
 	var InstallationTimeline = req.body["InstallationTimeline"];
@@ -252,6 +254,7 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 		Hours: Hours,
 		Days: Days,
 		StudentsEstimated: StudentsEstimated,
+		EstimateJustification: EstimateJustification,
 		DepartmentalResources: DepartmentalResources,
 		InstallationTimeline: InstallationTimeline
 	}).then(function(proposal) {
