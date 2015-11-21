@@ -35,6 +35,7 @@ module.exports = function(sequelize, DataTypes) {
 		AccessRestrictions: DataTypes.TEXT, 
 		Hours: DataTypes.INTEGER,
 		Days: DataTypes.STRING,
+		StudentsEstimated: DataTypes.INTEGER,
 		DepartmentalResources: DataTypes.TEXT, 
 		InstallationTimeline: DataTypes.TEXT,
 		Status: 'TINYINT',

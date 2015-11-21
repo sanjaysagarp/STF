@@ -250,6 +250,11 @@ block content
 												input#textinputDays.form-control.input-md(name='Days', type='text', placeholder='S,M,Tu...', value="#{proposal.Days}")
 												span.help-block Enter the expected days the resource will be available with day abbreviations seperated by commas, or 'all days'
 										.form-group
+											label.col-md-4.control-label(for='StudentsEstimated') Estimated Student Usage
+											.col-md-4
+												input#studentsEstimated.form-control.input(name='StudentsEstimated', min='0' type='number', placeholder='100', value="#{proposal.StudentsEstimated}")
+												span.help-block How many students will utilize this equipment? (On a monthly basis)
+										.form-group
 											label.col-md-4.control-label(for='DepartmentalResources') Resources Provided by Department
 											.col-md-8
 												textarea#resources.form-control(name='DepartmentalResources') #{proposal.DepartmentalResources}
