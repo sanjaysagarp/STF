@@ -225,16 +225,30 @@ block content
 											label.col-md-4.control-label(for='abstract') Abstract
 											.col-md-8
 												textarea#abstract.form-control(name='abstract', placeholder="Write a quick overview of the proposal") #{proposal.Abstract}
-												#abstract.span.help-block (Please limit response to 500 characters)
+												#abstract.span.help-block (Please limit response to 750 characters)
 										.form-group
 											label.col-md-4.control-label(for='Background') Background
 											.col-md-8
 												textarea#background.form-control(name='Background', placeholder="Please situate the proposal in the context of past requests and student need") #{proposal.Background}
-										
 										.form-group
 											label.col-md-4.control-label(for='Benefits') Benefits to Students and the University
 											.col-md-8
 												textarea#abstract.form-control(name='Benefits', placeholder="If your proposal was funded, what benefits could we see for students and the university?") #{proposal.Benefits}
+										.form-group
+											label.col-md-4.control-label(for='DepartmentalResources') Additional Departmental Support
+											.col-md-8
+												textarea#resources.form-control(name='DepartmentalResources') #{proposal.DepartmentalResources}
+												span.help-block What additional resources will your department provide to ensure successful implementation of this proposal? (Human, technology, financial)
+										.form-group
+											label.col-md-4.control-label(for='StudentsEstimated') Estimated Student Use
+											.col-md-4
+												input#studentsEstimated.form-control.input(name='StudentsEstimated', min='0' type='number', placeholder='100', value="#{proposal.StudentsEstimated}")
+												span.help-block How many students will utilize this equipment? (On a quarterly basis)
+										.form-group
+											label.col-md-4.control-label(for='EstimateJustification') Justification of Estimated Student Usage
+											.col-md-8
+												textarea#estimateJustification.form-control(name='EstimateJustification') #{proposal.EstimateJustification}
+												span.help-block What evidence implies the estimate above is accurate?
 										.form-group
 											label.col-md-4.control-label(for='AccessRestrictions') Access Restrictions (if any)
 											.col-md-8
@@ -250,25 +264,15 @@ block content
 												input#textinputDays.form-control.input-md(name='Days', type='text', placeholder='S,M,Tu...', value="#{proposal.Days}")
 												span.help-block Enter the expected days the resource will be available with day abbreviations seperated by commas, or 'all days'
 										.form-group
-											label.col-md-4.control-label(for='StudentsEstimated') Estimated Student Usage
-											.col-md-4
-												input#studentsEstimated.form-control.input(name='StudentsEstimated', min='0' type='number', placeholder='100', value="#{proposal.StudentsEstimated}")
-												span.help-block How many students will utilize this equipment? (On a monthly basis)
-										.form-group
-											label.col-md-4.control-label(for='EstimateJustification') Justification of Estimated Student Usage
+											label.col-md-4.control-label(for='Outreach') Outreach
 											.col-md-8
-												textarea#estimateJustification.form-control(name='EstimateJustification') #{proposal.EstimateJustification}
-												span.help-block How do you justify the amount of students who will utilize this proposal?
+												textarea#timeline.form-control(name='Outreach') #{proposal.Outreach}
+												span.help-block How will you inform students about the availability of this resources?
 										.form-group
-											label.col-md-4.control-label(for='DepartmentalResources') Resources Provided by Department
+											label.col-md-4.control-label(for='ProposalTimeline') Proposal Timeline
 											.col-md-8
-												textarea#resources.form-control(name='DepartmentalResources') #{proposal.DepartmentalResources}
-												span.help-block It's important to the committee that a department will support its proposal. What will the department be providing to support the resource?
-										.form-group
-											label.col-md-4.control-label(for='InstallationTimeline') Installation Timeline
-											.col-md-8
-												textarea#timeline.form-control(name='InstallationTimeline') #{proposal.InstallationTimeline}
-												span.help-block How long would it take for the department to implement the proposal after funding?
+												textarea#timeline.form-control(name='ProposalTimeline') #{proposal.ProposalTimeline}
+												span.help-block When will items be purchased, when will students have access, etc
 										.form-group
 											label.col-md-4.control-label(for='save')
 											.col-md-4

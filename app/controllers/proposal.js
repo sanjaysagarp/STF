@@ -148,13 +148,13 @@ router.post('/proposals/:id', shib.ensureAuth('/login'), function postProposal(r
 				Abstract: req.body["abstract"],
 				Background: req.body["Background"],
 				Benefits: req.body["Benefits"],
+				DepartmentalResources: req.body["DepartmentalResources"],
+				StudentsEstimated: req.body["StudentsEstimated"],
+				EstimateJustification: req.body["EstimateJustification"],
 				AccessRestrictions: req.body["AccessRestrictions"],
 				Hours: req.body["Hours"],
 				Days: req.body["Days"].toLowerCase(),
-				StudentsEstimated: req.body["StudentsEstimated"],
-				EstimateJustification: req.body["EstimateJustification"],
-				DepartmentalResources: req.body["DepartmentalResources"],
-				InstallationTimeline: req.body["InstallationTimeline"]
+				ProposalTimeline: req.body["ProposalTimeline"]
 			}
 
 			if(fromForm.Hours===''){
@@ -210,16 +210,18 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 	var Abstract = req.body["abstract"];
 	var Background = req.body["background"];
 	var Benefits = req.body["Benefits"];
+	var DepartmentalResources = req.body["DepartmentalResources"];
+	var StudentsEstimated = req.body["StudentsEstimated"];
+	var EstimateJustification = req.body["EstimateJustification"];
 	var AccessRestrictions = req.body["AccessRestrictions"];
 	var Hours = req.body["Hours"];
 	if (Hours === '') {
 		Hours = 0;
 	}
-	var StudentsEstimated = req.body["StudentsEstimated"];
-	var EstimateJustification = req.body["EstimateJustification"];
 	var Days = req.body["Days"];
-	var DepartmentalResources = req.body["DepartmentalResources"];
-	var InstallationTimeline = req.body["InstallationTimeline"];
+	var Outreach = req.body["Outreach"];
+	var ProposalTimeline = req.body["ProposalTimeline"];
+
 
 	db.Proposal.create({
 		ProposalTitle: ProposalTitle,
@@ -250,12 +252,13 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 		Abstract: Abstract,
 		Background: Background,
 		Benefits: Benefits,
+		DepartmentalResources: DepartmentalResources,
+		StudentsEstimated: StudentsEstimated,
+		EstimateJustification: EstimateJustification,
 		AccessRestrictions: AccessRestrictions,
 		Hours: Hours,
 		Days: Days,
-		StudentsEstimated: StudentsEstimated,
-		EstimateJustification: EstimateJustification,
-		DepartmentalResources: DepartmentalResources,
+		Outreach: Outreach,
 		InstallationTimeline: InstallationTimeline
 	}).then(function(proposal) {
 		res.redirect('/proposals/update/' + proposal.id);

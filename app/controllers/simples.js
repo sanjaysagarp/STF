@@ -63,6 +63,13 @@ router.get('/about', function serveAbout(req, res) {
 	});
 });
 
+//displays the policy page
+router.get('/policies', function servePolicies(req, res) {
+	res.render('simples/policies', {
+		title : 'Policies'
+	});
+});
+
 
 //displays the contact page
 router.get('/contact', function serveContact(req, res) {
