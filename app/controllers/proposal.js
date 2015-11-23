@@ -259,7 +259,7 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 		Hours: Hours,
 		Days: Days,
 		Outreach: Outreach,
-		InstallationTimeline: InstallationTimeline
+		ProposalTimeline: ProposalTimeline
 	}).then(function(proposal) {
 		res.redirect('/proposals/update/' + proposal.id);
 	});

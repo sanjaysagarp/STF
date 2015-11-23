@@ -2,6 +2,10 @@ extends ../head
 
 append js
 	script(src='/js/policies.js')
+
+append css
+	link(rel='stylesheet', href='/css/main.css')
+	link(rel='stylesheet', href='/css/policies.css')
 					
 block content
 	.jumbotron(style='background: url(img/about.jpg); background-position: center 50%; background-repeat: no-repeat; background-size: cover;')
@@ -12,6 +16,9 @@ block content
 	.container
 		ul.nav.nav-pills.nav-justified.thumbnail.setup-panel.form-ul
 			li.active
+				a(href='#wi-fi').wi-fi
+					h4.list-group-item-heading Wi-Fi
+			li
 				a(href='#consumables').consumables
 					h4.list-group-item-heading Consumables
 			li
@@ -20,26 +27,170 @@ block content
 			li
 				a(href='#accessibility').accessibility
 					h4.list-group-item-heading Accessibility
-			li
-				a(href='#wi-fi').wi-fi
-					h4.list-group-item-heading Wi-Fi
-
+			
+			#wi-fi.setup-content
+				h1 Wireless Internet Policy
+				hr
+				p The Student Technology Fee Committee recognizes the necessity of robust, reliable, and widely available wifi on campus. However, it is our opinion the fee should not be used in its continued maintenance or expansion.
+				p When the STFC first began funding wifi expansions on campus, the technology was new and innovative. The intent was to bring prestige to the university and create increased bandwidth options for students on campus. By this criteria, we believe the project has been a success and the original funding has been well justified. However, like many other successful technologies, wifi has become so ubiquitous that it is hardly noticed as long as it continues to function. It is now similar to other resources such as electricity, plumbing, and heating: effectively, a utility.  Being a utility and therefore part of the basic infrastructure of the university,  the Student Technology Fee will not pay for its continued use and maintenance, just as we do not pay for other infrastructure. 
 			#consumables.setup-content
 				h1 Consumables Policy
+				hr
 				h3 Purpose & Overview
 				p Each year the Student Technology Fee Committee (STFC) appropriates funding for technology that requires consumables goods. This includes toner, filaments for 3D printers, non-reusable batteries, etc. This document mandates the proper use of the Student Technology Fee in purchasing consumables.
 				
 				h3 Policy Language
-				
 				ol(type="1") 
-					li 
-						h5 Definitions
-							ol(type="a")
-								li Consumables - a commodity that is intended to be used up relatively quickly
+					li Definitions
+						ol(type="a")
+							li Consumables: a commodity that is intended to be used up relatively quickly.
+							li Groups: The entity responsible for maintaining the STF funded project or equipment.
+					li Charging For Consumables
+						ol(type="a")
+							li Groups may charge students for consumables up to the price of the consumable.
+							li The group must disclose the intention to levy this fee in the proposal.
+							li A fee can be levied after the proposal is approved only after a majority vote in favor of the fee by the committee. 
+							ul(style="list-style-type:square")
+								li The funds may only be used to purchase new consumables for student use on the project from which the fee was collected
+					li Charging For Access
+						ol(type="a")
+							li Groups may not charge students for access.
+							li Departments may charge non-students for consumables or access.
+				h3 Discussion
+				p The committee remains committed to reducing any financial barriers that impede student access to technology. This policy is not an endorsement of charging for consumables but rather acknowledgment that there may be situations where a group lacks the financial resources to continue providing the requisite consumables for students. We believe the continued success and availability of these projects hinge upon the department’s ability to collect a minimal fee that offsets the price of the consumable. The committee seeks to mitigate potential negative effects by restricting this fee to its narrowest possible form. 
 
 			#compliance.setup-content
-				h1 Policy for compliance goes here!
+				h1 Compliance Policy
+				hr
+				h3 Purpose & Overview
+				p Our committee has always been by and for students. We collect money from fees with the mandate to provide technology for students at the University of Washington. In doing so we make difficult decisions on where to provide funding. It is our duty to choose carefully and make our best effort to oversee the execution of funded proposals is in the best interest of the student body. In order to do so, the fee requires funded proposals comply with the oversight of the Student Technology Fee Committee as defined in this and all other current official committee documents.
+				h3 Policy Language
+				ol(type="1") 
+					li Definitions
+						ol(type="a")
+							li Committee: The STFC committee including paid staff and ex-officio.
+							li Committee Staff: The paid staff of the committee and program advisor.
+							li Project: Any project presented to the committee for funding.
+							li Project Manager: The person(s) responsible for the execution of a project.
+							li Signatory: The dean/department chair/program coordinator, whose signature is on the proposal.
+							li Hosts: The department or group from which the signatory comes from.
+							li Proposal Cycle: A process in which the committee accepts, reviews, and votes on proposals for funding initiated with the committee creating a Request for Funding document.
+							li Supplemental: Process by which changes to the funded items or the cost of items must occur.
+					li Oversight Period
+						ol(type="a")
+							li Items under $10,000 will have a default oversight period of three years.
+					li Use of Funds
+						ol(type="a")
+							li Funds may only be spent on those items listed in the proposal at the time of approval.
+							li Any alternative item purchased must be approved by a supplemental; this includes purchasing equivalent equipment or a different model at the same or lower price.
+					li Reporting Requirements
+						ol(type="a")
+							li All funded projects are required to submit quarterly reports to the committee during the first year after receiving funding.
+							li For the years following, the STFC requires annual reports for the duration of the oversight period
+							li The committee may require more frequent reporting - quarterly or monthly
+					li Field Visits
+						ol(type="a")
+							li The Committee will visit grant sites to learn about the demand for particular technology, ensure compliance with Committee rules, and spread awareness of the STFC.
+							ol(type="i")
+								li Visits will be initiated by contacting the project lead on the original proposal.
+								li These visits will also be used to understand more intricate details of proposals.
+					li Maintenance of Equipment
+						ol(type="a")
+							li Departments must provide the necessary support for maintaining equipment in good working condition.
+							li The department must facilitate the maximum student use of equipment.
+							li A department no longer able to provide support must notify the committee so steps can be taken to ensure proper maintenance.
+							ol(type="i")
+								li Should this occur during the oversight period, it will be taken into account when considering future funding.
+							li A control system must be in place to prevent theft, loss, and damage.
+							li Any theft, loss, or damage, must be reported to the committee in a timely manner.
+					li Insurance
+						ol(type="a")
+							li Groups must maintain insurance on STF equipment when required by the committee.
+							li The committee, via the program coordinator, must be notified of any insurance replacements within a timely manner.
+					li Accessibility and Availability
+						ol(type="a")
+							li All items funded by the STF must be used primarily by students for the duration it is under STFC oversight.
+							li Any changes to accessibility or availability from the original proposal intent must be approved by the Committee.
+							li Student use should be promoted, including taking reasonable steps to advertise when appropriate.
+					li Compliance Actions
+						p The actions discussed below are not intended to be comprehensive lists, rather a measure of the severity of each action. Should a new action (one not discussed below) be decided, we hope that it is done in a process matching its severity.
+							ol(type="a")
+								li At any time and without vote, the committee can take the following mild actions:
+								ol(type="i")
+									li The committee maintains records on the success and failures of a project and will this as a metric for judging future proposals.
+									li Arrange a 'home visit'
+									li Request more information from the Project Manager.
+									li Request a meeting with the office of the Signatory.
+								li After a majority ruling of the voting members during a meeting, the committee may take any medium disciplinary action as it sees fit, besides ones explicitly outlined in the next section as extreme action. Such examples of medium action include:
+								ol(type="i")
+									li Probation, during which time the project group has a maximum amount of time set by the committee to reach compliance or create a viable plan for correction.
+									li Not hear proposals affiliated with the authors of the non-compliant project.
+									li Require consistent and constant updates.
+								li The following actions are extreme. These possible actions can only be taken after an impartial tribunal of students, composed of two members from each the ASUW and GPSS Judiciary committees and a single elected member from the STFC, has been convened to adjudicate the consequence of non-compliance.The committee and the project representatives will be given opportunity to speak at these hearings, which will occur only after a the project has been in a probationary period of no less than one month.
+								ol(type="i")
+									li A ban on new proposals from offending parties.
+									li Seizing of any and all equipment funded by the STF to be redistributed elsewhere on campus, or otherwise disposed of (e.g. sold or leased to inside or outside organizations).
+									li Other sanctions or actions as determined by the adjudicating committee.
 			#accessibility.setup-content
-				h1 Policy for accessibility goes here!
-			#wi-fi.setup-content
-				h1 Policy for Wi-Fi goes here!
+				h1 Accessibility Policy
+				hr
+				h3 Purpose & Overview
+				p Given that the Student Technology Fee (STF) is collected from nearly every student enrolled at the University of Washington, the Student Technology Fee Committee (STFC) finds that accessibility to equipment funded with STF funds is an important criterion by which STF proposals should be evaluated.
+				p While the Committee recognizes that there are many legitimate reasons for limiting access to resources, the Committee favors more accessible technology for students.
+				p The Committee also recognizes that students with disabilities often encounter barriers when using technology resources. The Committee will give special consideration to proposals including adaptive technologies that provide disabled users access.
+				h3 Policy Language
+				ol(type="1") 
+					li Definitions
+						ol(type="A")
+							li Access
+								ol(type="a")
+									li Uniform Access
+										ol(type="i")
+											li Resource is available for use by all students from all three campuses with no restrictions.
+											li Resource is available continuously or nearly continuously.
+											li Usage of the resource is not geographically contained to one campus.
+											li Resource must specifically serve student needs from each of the three campuses.
+											li There must be no access restrictions as defined below.
+									li General Access
+										ol(type="i")
+											li Resource is available for use by all students from at least one campus.
+											li Only registration and appointment restrictions may be applied to the resource.
+											li Resource must serve a general need shared by many students.
+									li Other Access
+										ol(type="i")
+											li Resource not defined as Uniform or General Access
+							li Resource Restrictions
+								ol(type="a")
+									li No restriction
+										ol(type="i")
+											li All UW students may use resource.
+											li A UW NetID may be required.
+									li Registration Restriction
+										ol(type="i")
+											li All UW students may use resource following registration with the resource owner.
+											li Registration is not an application and may not be denied.
+									li Appointment Restriction
+										ol(type="i")
+											li All UW students may use resource by appointment with the resource owner.
+									li Priority Restriction
+										ol(type="i")
+											li All UW students may use the resource, but certain students receive priority or are exempt from registration or appointment requirements.
+									li Restricted Resource
+										ol(type="i")
+											li Student use of the resource is restricted to certain students or an application is required for use.
+							li Adaptive Technologies - Technologies intended to provide otherly-abled students with access to resources
+						li Priority
+							ol(type="a")
+								li Proposals with higher accessibility will generally be given funding priority by the STFC, with all other factors being equal.
+								li Access priority for the STFC
+									ol(type="i")
+										li Uniform Access
+										li General Access
+										li Other Access
+								li Proposals with lower access restrictions will be given funding priority by the STFC, with all other factors being equal.
+								li Proposals for adaptive technologies will be given funding priority by the STFC, with all other factors being equal.
+						li Logistics
+							ol(type="a")
+								li The committee will consider placement, purpose, and times of availability, when deciding funding
+								li Any change to the placement, purpose, or times of availability will be brought to the attention of the committee for approval while the items are under committee oversight.
+			

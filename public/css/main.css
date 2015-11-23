@@ -101,6 +101,19 @@ textarea {
     margin: 0px;
 }
 
+.main-footer {
+	background: #4b2e83;
+	height: 90px;
+	margin-top: 15px;
+}
+
+.container {
+	margin-bottom: 2em;
+}
+
+nav > .container {
+	margin-bottom: 0;
+}
 .navbar-brand > img,
 .proposals-header {
     display: inline-block;
