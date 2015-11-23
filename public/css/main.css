@@ -101,10 +101,35 @@ textarea {
     margin: 0px;
 }
 
-.main-footer {
+#footer {
 	background: #4b2e83;
-	height: 90px;
-	margin-top: 15px;
+	height: 140px;
+	margin-top: 30px;
+}
+
+#footer ul { 
+	list-style: none; 
+	position: relative; 
+	float: left; 
+	display: inline; 
+	left: 50%; 
+	margin-top: 1em;
+	margin-bottom: 0;
+}
+
+#footer ul li { 
+	position: relative; 
+	float: left; 
+	display: inline; 
+	right: 50%;
+	padding: 5px 5px;	
+	color: #FDFDFD;
+}
+#footer > a:visited {
+	text-decoration: none;
+}
+#footer > a:hover {
+	text-decoration: none;
 }
 
 .container {
