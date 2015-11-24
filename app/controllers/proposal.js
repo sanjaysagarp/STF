@@ -147,14 +147,18 @@ router.post('/proposals/:id', shib.ensureAuth('/login'), function postProposal(r
 				StudentMail: req.body["stu-mail"],
 				Abstract: req.body["abstract"],
 				Background: req.body["Background"],
-				Benefits: req.body["Benefits"],
-				DepartmentalResources: req.body["DepartmentalResources"],
 				StudentsEstimated: req.body["StudentsEstimated"],
 				EstimateJustification: req.body["EstimateJustification"],
+				ResearchScholarship: req.body["ResearchScholarship"],
+				EducationalExperience: req.body["EducationalExperience"],
+				CareerEnhancement: req.body["CareerEnhancement"],
 				AccessRestrictions: req.body["AccessRestrictions"],
 				Hours: req.body["Hours"],
 				Days: req.body["Days"].toLowerCase(),
-				ProposalTimeline: req.body["ProposalTimeline"]
+				ProposalTimeline: req.body["ProposalTimeline"],
+				HumanResources: req.body["HumanResources"],
+				TechnologyResources: req.body["TechnologyResources"],
+				FinancialResources: req.body["FinancialResources"]
 			}
 
 			if(fromForm.Hours===''){
@@ -209,10 +213,11 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 	var StudentMail = req.body["stu-mail"];
 	var Abstract = req.body["abstract"];
 	var Background = req.body["background"];
-	var Benefits = req.body["Benefits"];
-	var DepartmentalResources = req.body["DepartmentalResources"];
 	var StudentsEstimated = req.body["StudentsEstimated"];
 	var EstimateJustification = req.body["EstimateJustification"];
+	var ResearchScholarship = req.body["ResearchScholarship"];
+	var EducationalExperience = req.body["EducationalExperience"];
+	var CareerEnhancement = req.body["CareerEnhancement"];
 	var AccessRestrictions = req.body["AccessRestrictions"];
 	var Hours = req.body["Hours"];
 	if (Hours === '') {
@@ -221,6 +226,9 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 	var Days = req.body["Days"];
 	var Outreach = req.body["Outreach"];
 	var ProposalTimeline = req.body["ProposalTimeline"];
+	var HumanResources = req.body["HumanResources"];
+	var TechnologyResources = req.body["TechnologyResources"];
+	var FinancialResources = req.body["FinancialResources"];
 
 
 	db.Proposal.create({
@@ -251,15 +259,19 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 		StudentMail: StudentMail,
 		Abstract: Abstract,
 		Background: Background,
-		Benefits: Benefits,
-		DepartmentalResources: DepartmentalResources,
 		StudentsEstimated: StudentsEstimated,
 		EstimateJustification: EstimateJustification,
+		ResearchScholarship: ResearchScholarship,
+		EducationalExperience: EducationalExperience,
+		CareerEnhancement: CareerEnhancement,
 		AccessRestrictions: AccessRestrictions,
 		Hours: Hours,
 		Days: Days,
 		Outreach: Outreach,
-		ProposalTimeline: ProposalTimeline
+		ProposalTimeline: ProposalTimeline,
+		HumanResources: HumanResources,
+		TechnologyResources: TechnologyResources,
+		FinancialResources: FinancialResources
 	}).then(function(proposal) {
 		res.redirect('/proposals/update/' + proposal.id);
 	});

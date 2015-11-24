@@ -93,7 +93,7 @@ $(document).ready(function() {
 								//a(href='item/#{item.ProposalId}/#{item.ItemName}') #{item.ItemName}
 								toastr["success"]("Item created Successfully.." );
 								//+ JSON.stringify(data));
-								$('ul.setup-panel li a[href="#step-4"]').trigger('click');
+								$('ul.setup-panel li a[href="#step-7"]').trigger('click');
 								$('#createItem')[0].reset();
 						}
 				});

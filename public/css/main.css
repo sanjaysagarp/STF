@@ -111,6 +111,8 @@ body {
 #container {
 	min-height:100%;
 	position:relative;
+	box-sizing: border-box;
+	overflow:hidden;
 }
 
 #header {
@@ -123,10 +125,12 @@ body {
 #footer {
 	background: #4b2e83;
 	width:100%;
+	overflow:hidden;
 	height:160px;
 	position:relative;
 	bottom:0;
-	left:0;}
+	left:0;
+}
 
 #footer ul { 
 	list-style: none; 
@@ -138,14 +142,19 @@ body {
 	margin-bottom: 0;
 }
 
-#footer ul li { 
+#footer ul li {	
 	position: relative; 
 	float: left; 
-	display: inline; 
+	display: inline;
 	right: 50%;
-	padding: 5px 5px;	
 	color: #FDFDFD;
 }
+
+#footerSpace {
+	margin-left: 4px;
+	margin-right: 4px;
+}
+
 #footer > a:visited {
 	text-decoration: none;
 }
@@ -313,6 +322,7 @@ h4 {
        (-o-min-device-pixel-ratio: 5/4),
        (-webkit-min-device-pixel-ratio: 1.25),
        (min-resolution: 120dpi) {
+
     /* Style adjustments for high resolution devices */
 }
 

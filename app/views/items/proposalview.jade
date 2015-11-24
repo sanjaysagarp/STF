@@ -20,28 +20,29 @@ block content
 						legend
 						.form-group
 							label.col-md-4.control-label(for='ItemName') Name
-							.col-md-4
+							.col-md-6
 								input#ItemName.form-control.input-md(name='ItemName', type='text', placeholder='...', value="#{item.ItemName}")
 								input#ItemId(name='ItemId', type='hidden', value='#{item.id}')
 						.form-group
 							label.col-md-4.control-label(for='Group') Group
-							.col-md-4
+							.col-md-6
 								input#Group.form-control.input-md(name='Group', type='text', placeholder='...', value="#{item.Group}")
 						.form-group
 							label.col-md-4.control-label(for='Quantity') Quantity
-							.col-md-4
+							.col-md-6
 								input#Quantity.form-control.input-md(name='Quantity', type='text', placeholder='1,2,3', value="#{item.Quantity}")
 						.form-group
 							label.col-md-4.control-label(for='Price') Price
-							.col-md-4
+							.col-md-6
 								input#Price.form-control.input-md(name='Price', type='text', placeholder='$', value="#{item.Price}")
+								span.help-block (Exclude commas)
 						.form-group
 							label.col-md-4.control-label(for='Justification') Justification
-							.col-md-4
+							.col-md-6
 								textarea#Justification.form-control(name='Justification') #{item.Justification} 
 						.form-group
 							label.col-md-4.control-label(for='Description') Description
-							.col-md-4
+							.col-md-6
 								textarea#Description.form-control(name='Description') #{item.Description}
 						.form-group
 							.col-md-4.col-md-offset-4
@@ -53,7 +54,7 @@ block content
 							label.col-md-4.control-label(for='saveItem')
 							.col-md-4
 								if proposal.Status == 0
-									a(href='/proposals/update/#{proposal.id}#step-4')
+									a(href='/proposals/update/#{proposal.id}#step-7')
 										button#return.btn.btn-default(name='return', type='button') Return to Edit
 								else
 									a(href='/proposals/#{proposal.id}')

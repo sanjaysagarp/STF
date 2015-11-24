@@ -79,15 +79,15 @@ router.get('/contact', function serveContact(req, res) {
 		contacts : [{
 			title : 'Chair',
 			name : 'David Goldstone',
-			email : 'STFChair@uw.edu'
+			email : 'TechFee@uw.edu'
 		}, {	
 			title : 'Program Coordinator',
 			name : 'Alton Lu',
 			email : 'TechFee@uw.edu'
 		}, {
 			title : 'Web Developer',
-			name : 'Bryce Kolton',
-			email : 'BBKolton@uw.edu'
+			name : 'Sanjay Sagar',
+			email : 'sagas@uw.edu'
 		}]
 	});
 });

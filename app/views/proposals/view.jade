@@ -119,20 +119,28 @@ block content
 		p= proposal.Abstract
 		h3 Background
 		p= proposal.Background
-		h3 Benefits to Students and University
-		p= proposal.Benefits
-		h3 Departmental Resources
-		p= proposal.DepartmentalResources
 		h3 Estimated Student Usage
 		p.subtitle About #{proposal.StudentsEstimated} are predicted to use this equipment on a quarterly basis
 		p= proposal.EstimateJustification
+		h3 Research and Scholarship
+		p= proposal.ResearchScholarship
+		h3 Educational Experience
+		p= proposal.EducationalExperience
+		h3 Career Enhancement
+		p= proposal.CareerEnhancement
 		h3.title Access Restrictions
 		p.subtitle Access available #{proposal.Days} for #{proposal.Hours} hours a day
 		p= proposal.AccessRestrictions
-		h3 Outreach
-		p=proposal.Outreach
+		h3 Outreach Strategy
+		p= proposal.Outreach
 		h3 Proposal Timeline
-		p=proposal.ProposalTimeline
+		p= proposal.ProposalTimeline
+		h3 Human Resources
+		p= proposal.HumanResources
+		h3 Technology Resources
+		p= proposal.TechnologyResources
+		h3 Financial Resources
+		p= proposal.FinancialResources
 		h3 Student Endorsements
 		if endorsements
 			each endorsement in endorsements

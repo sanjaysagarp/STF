@@ -17,21 +17,33 @@ block content
 					li.active
 						a(href='#step-1').step-1
 							h4.list-group-item-heading Introduction
-							p.list-group-item-text Name and Category
+							p.list-group-item-text Name, Category & Deptartment
 					li
 						a(href='#step-2').step-2
 							h4.list-group-item-heading Persons
 							p.list-group-item-text Proposal Contact Info
 					li
 						a(href='#step-3').step-3
-							h4.list-group-item-heading Description
-							p.list-group-item-text About your proposal
+							h4.list-group-item-heading Abstract
+							p.list-group-item-text Quick Proposal Overview
 					li
 						a(href='#step-4').step-4
+							h4.list-group-item-heading Description
+							p.list-group-item-text Student Usage & Scholarship
+					li
+						a(href='#step-5').step-5
+							h4.list-group-item-heading Availability
+							p.list-group-item-text Proposal General Usage
+					li
+						a(href='#step-6').step-6
+							h4.list-group-item-heading Timeline
+							p.list-group-item-text Installation and Resources
+					li
+						a(href='#step-7').step-7
 							h4.list-group-item-heading Items
 							p.list-group-item-text The Requested Items
 					li
-						a(href='#step-5').step-5
+						a(href='#step-8').step-8
 							h4.list-group-item-heading Signature Page
 							p.list-group-item-text Submit your Proposal
 		div
@@ -224,21 +236,25 @@ block content
 										.form-group
 											label.col-md-4.control-label(for='abstract') Abstract
 											.col-md-8
-												textarea#abstract.form-control(name='abstract', placeholder="Write a quick overview of the proposal") #{proposal.Abstract}
-												#abstract.span.help-block (Please limit response to 750 characters)
+												textarea#abstract.form-control(name='abstract', placeholder="500 character limit", maxlength="500") #{proposal.Abstract}
+												#abstract.span.help-block Please provide a 500 character overview of the proposal 
+										.form-group
+											label.col-md-4.control-label(for='save')
+											.col-md-4
+															button.btn.btn-default.form-button(name='save' type='submit') Save
+				
+				#step-4.row.setup-content
+					.form-horizontal(data-toggle='formcache', name='description')
+						.col-xs-12
+							.col-md-12.well
+								.form-horizontal
+									fieldset
+										legend
 										.form-group
 											label.col-md-4.control-label(for='Background') Background
 											.col-md-8
-												textarea#background.form-control(name='Background', placeholder="Please situate the proposal in the context of past requests and student need") #{proposal.Background}
-										.form-group
-											label.col-md-4.control-label(for='Benefits') Benefits to Students and the University
-											.col-md-8
-												textarea#abstract.form-control(name='Benefits', placeholder="If your proposal was funded, what benefits could we see for students and the university?") #{proposal.Benefits}
-										.form-group
-											label.col-md-4.control-label(for='DepartmentalResources') Additional Departmental Support
-											.col-md-8
-												textarea#resources.form-control(name='DepartmentalResources') #{proposal.DepartmentalResources}
-												span.help-block What additional resources will your department provide to ensure successful implementation of this proposal? (Human, technology, financial)
+												textarea#background.form-control(name='Background') #{proposal.Background}
+												#abstract.span.help-block Please situate the proposal in the context of past requests and student need
 										.form-group
 											label.col-md-4.control-label(for='StudentsEstimated') Estimated Student Use
 											.col-md-4
@@ -250,9 +266,37 @@ block content
 												textarea#estimateJustification.form-control(name='EstimateJustification') #{proposal.EstimateJustification}
 												span.help-block What evidence implies the estimate above is accurate?
 										.form-group
+											label.col-md-4.control-label(for='ResearchScholarship') Research and Scholarship
+											.col-md-8
+												textarea#accessRestrictions.form-control(name='ResearchScholarship') #{proposal.ResearchScholarship}
+												span.help-block What research and scholarship benefits will students receive from interacting with this technology?
+										.form-group
+											label.col-md-4.control-label(for='EducationalExperience') Educational Experience
+											.col-md-8
+												textarea#accessRestrictions.form-control(name='EducationalExperience') #{proposal.EducationalExperience}
+												span.help-block How does the project enhance students’ academic experience?
+										.form-group
+											label.col-md-4.control-label(for='CareerEnhancement') Career Enhancement
+											.col-md-8
+												textarea#accessRestrictions.form-control(name='CareerEnhancement') #{proposal.CareerEnhancement}
+												span.help-block What career enhancing skills will students gain from working with this technology?
+										.form-group
+											label.col-md-4.control-label(for='save')
+											.col-md-4
+															button.btn.btn-default.form-button(name='save' type='submit') Save
+
+				#step-5.row.setup-content
+					.form-horizontal(data-toggle='formcache', name='description')
+						.col-xs-12
+							.col-md-12.well
+								.form-horizontal
+									fieldset
+										legend
+										.form-group
 											label.col-md-4.control-label(for='AccessRestrictions') Access Restrictions (if any)
 											.col-md-8
 												textarea#accessRestrictions.form-control(name='AccessRestrictions') #{proposal.AccessRestrictions}
+												span.help-block What restrictions, if any, will be in place to ensure resource safety but allow for broad usage?
 										.form-group
 											label.col-md-4.control-label(for='Hours') Hours of Availability
 											.col-md-4
@@ -261,26 +305,55 @@ block content
 										.form-group
 											label.col-md-4.control-label(for='Days') Days of Availability
 											.col-md-4
-												input#textinputDays.form-control.input-md(name='Days', type='text', placeholder='S,M,Tu...', value="#{proposal.Days}")
+												input#textinputDays.form-control.input-md(name='Days', type='text', placeholder='Sun,Mon,Tue...', value="#{proposal.Days}")
 												span.help-block Enter the expected days the resource will be available with day abbreviations seperated by commas, or 'all days'
 										.form-group
-											label.col-md-4.control-label(for='Outreach') Outreach
+											label.col-md-4.control-label(for='Outreach') Outreach Strategy
 											.col-md-8
 												textarea#timeline.form-control(name='Outreach') #{proposal.Outreach}
-												span.help-block How will you inform students about the availability of this resources?
+												span.help-block What is your planned outreach strategy to inform students about this resource and its location?
+										.form-group
+											label.col-md-4.control-label(for='save')
+											.col-md-4
+															button.btn.btn-default.form-button(name='save' type='submit') Save
+
+				#step-6.row.setup-content
+					.form-horizontal(data-toggle='formcache', name='description')
+						.col-xs-12
+							.col-md-12.well
+								.form-horizontal
+									fieldset
+										legend
 										.form-group
 											label.col-md-4.control-label(for='ProposalTimeline') Proposal Timeline
 											.col-md-8
 												textarea#timeline.form-control(name='ProposalTimeline') #{proposal.ProposalTimeline}
 												span.help-block When will items be purchased, when will students have access, etc
 										.form-group
+											label.col-md-4.control-label(for='HumanResources') Human Resources
+											.col-md-8
+												textarea#timeline.form-control(name='HumanResources') #{proposal.HumanResources}
+												span.help-block What human resources will be provided by the college, department, or program to help ensure project success?
+										.form-group
+											label.col-md-4.control-label(for='TechnologyResources') Technology Resources
+											.col-md-8
+												textarea#timeline.form-control(name='TechnologyResources') #{proposal.TechnologyResources}
+												span.help-block What technology resources will be provided by the college, department, or program to help ensure project success?
+										.form-group
+											label.col-md-4.control-label(for='FinancialResources') Financial Resources
+											.col-md-8
+												textarea#timeline.form-control(name='FinancialResources') #{proposal.FinancialResources}
+												span.help-block What (additional) financial resources will be provided by the college, department, program, or any other entity that will help ensure project success?
+										.form-group
 											label.col-md-4.control-label(for='save')
 											.col-md-4
-												button.btn.btn-default.form-button(name='save' type='submit') Save
+															button.btn.btn-default.form-button(name='save' type='submit') Save
+
+
 		div
 			form.form-horizontal#createItem(data-toggle='formcache', name='proposalForm',
 				method='post', action='/items/new')
-				#step-4.row.setup-content
+				#step-7.row.setup-content
 					.col-xs-12
 						.col-md-9.well
 							.form-horizontal
@@ -336,7 +409,7 @@ block content
 		div
 			form.form-horizontal(data-toggle='formcache', name='proposalForm',
 				method='get', action='/proposal/submit/#{proposal.id}')
-				#step-5.row.setup-content
+				#step-8.row.setup-content
 					.col-xs-12
 						.col-md-12
 							.well

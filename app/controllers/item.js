@@ -59,7 +59,7 @@ router.get('/item/delete/:id', function(req, res) {
 					} else if (proposal.Status != 0) { //if a proposal is submitted, goto showpage
 						res.redirect('/proposals/' + proposal.id);
 					} else { //go back to the edit proposal page
-						res.redirect('/proposals/update/' + proposal.id + '#step-4');
+						res.redirect('/proposals/update/' + proposal.id + '#step-7');
 					}
 				})
 			}
