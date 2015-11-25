@@ -10,9 +10,12 @@ header#top.main-header.navbar.navbar-static-top.bs-docs-nav(role='banner')
 				span.icon-bar
 				span.icon-bar
 			a.navbar-brand(href='http://uw.edu')
-				img(src='/img/w.svg', alt='', style='height: 75px;')
-				img.hidden-xs(src='/img/uw.svg', alt='', style='height: 20px;')
+				.row
+					.container 
+						img(src='/img/w.svg', alt='', style='height: 75px;')
+						img.hidden-xs(src='/img/uw.svg', alt='', style='height: 20px;')
 				// Navigation
+				//container within row insures correct placement for IE
 //- for the STF logo, white bar, and navigation
 nav.navbar.navbar-default.sub-nav
 	.container

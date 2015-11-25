@@ -169,6 +169,10 @@ body {
 nav > .container {
 	margin-bottom: 0;
 }
+
+.navbar-brand {
+	padding-left: 0;
+}
 .navbar-brand > img,
 .proposals-header {
     display: inline-block;

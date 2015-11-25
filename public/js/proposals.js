@@ -130,7 +130,7 @@ $(document).ready(function() {
 			input.className = 'form-control input-md';
 			input.id = 'newDepartment';
 			var parent = this.parentNode;
-			this.remove();
+			$(this).remove();
 			parent.appendChild(input);
 			input.onkeydown = changeDepartment;
 			input.onkeyup = changeDepartment;
