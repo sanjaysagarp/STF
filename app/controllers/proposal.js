@@ -34,7 +34,14 @@ router.get('/proposals/create', shib.ensureAuth('/login'), function createPropos
 router.get('/proposals/myproposals', shib.ensureAuth('/login'), function myProposals(req, res) {
 	db.Proposal.findAll({
 		where: {
-			PrimaryRegId : req.user.regId
+			//PrimaryRegId : req.user.regId
+			//dean, budget, primary, students
+			$or : {
+				PrimaryRegId : req.user.regId, 
+				BudgetNetId : req.user.netId, 
+				DeanNetId : req.user.netId, 
+				StudentNetId : req.user.netId
+			}
 		}
 	}).then(function(proposals) {
 		res.render('proposals/browse',{

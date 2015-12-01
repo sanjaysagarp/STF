@@ -87,7 +87,7 @@ router.get('/contact', function serveContact(req, res) {
 		}, {
 			title : 'Web Developer',
 			name : 'Sanjay Sagar',
-			email : 'sagas@uw.edu'
+			email : 'stfcweb@uw.edu'
 		}]
 	});
 });
