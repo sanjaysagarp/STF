@@ -192,7 +192,7 @@ block content
 											.col-md-4
 												input#ddh-mail.form-control.input-md(name='ddh-mail', type='text', placeholder='abc', value="#{proposal.DeanMail}")
 								h4.text-center  Student
-								span.help-block The STF is for student use, and we work hard to ensure students are the beneficiaries of their money. We require at least one student lead on the project. This cannot be the same person as under Budget or Dean
+								span.help-block The STF is for student use, and we work hard to ensure students are the beneficiaries of their money. We recommend at least one student lead on the project. This cannot be the same person as under Budget or Dean
 								.form-horizontal
 									fieldset
 										legend
@@ -220,6 +220,58 @@ block content
 											.col-md-4
 												input#stu-mail.form-control.input-md(name='stu-mail', type='text', placeholder='abc', value="#{proposal.StudentMail}")
 												span.help-block Not Required
+
+								h4.text-center Additional Contacts (Optional)
+								span.help-block These contacts will have access to edit your proposal
+								.form-horizontal
+									fieldset
+										legend
+										.form-group
+											label.col-md-4.control-label(for='con1-name') Name
+											.col-md-4
+												if proposal.AdditionalContactName1
+													input#stu-name.form-control.input-md(name='con1-name', type='text', placeholder='name', value="#{proposal.AdditionalContactName1}")
+												else
+													input#stu-name.form-control.input-md(name='con1-name', type='text', placeholder='name', value="")
+										.form-group
+											label.col-md-4.control-label(for='con1-netId') NetID
+											.col-md-4
+												if proposal.AdditionalContactNetId1
+													input#stu-email.form-control.input-md(name='con1-netId', type='text', placeholder='xyzabc', value="#{proposal.AdditionalContactNetId1}")
+												else
+													input#stu-email.form-control.input-md(name='con1-netId', type='text', placeholder='xyzabc', value="")
+												span.help-block Exclude '@uw.edu'. Enter only the NetID
+										.form-group
+											label.col-md-4.control-label(for='con2-name') Name
+											.col-md-4
+												if proposal.AdditionalContactName2
+													input#stu-name.form-control.input-md(name='con2-name', type='text', placeholder='name', value="#{proposal.AdditionalContactName2}")
+												else
+													input#stu-name.form-control.input-md(name='con2-name', type='text', placeholder='name', value="")
+										.form-group
+											label.col-md-4.control-label(for='con2-netId') NetID
+											.col-md-4
+												if proposal.AdditionalContactNetId2
+													input#stu-email.form-control.input-md(name='con2-netId', type='text', placeholder='xyzabc', value="#{proposal.AdditionalContactNetId2}")
+												else
+													input#stu-email.form-control.input-md(name='con2-netId', type='text', placeholder='xyzabc', value="")
+												span.help-block Exclude '@uw.edu'. Enter only the NetID
+										.form-group
+											label.col-md-4.control-label(for='con3-name') Name
+											.col-md-4
+												if proposal.AdditionalContactName3
+													input#stu-name.form-control.input-md(name='con3-name', type='text', placeholder='name', value="#{proposal.AdditionalContactName3}")
+												else
+													input#stu-name.form-control.input-md(name='con3-name', type='text', placeholder='name', value="name")
+										.form-group
+											label.col-md-4.control-label(for='con3-netId') NetID
+											.col-md-4
+												if proposal.AdditionalContactNetId3
+													input#stu-email.form-control.input-md(name='con3-netId', type='text', placeholder='xyzabc', value="#{proposal.AdditionalContactNetId3}")
+												else
+													input#stu-email.form-control.input-md(name='con3-netId', type='text', placeholder='xyzabc', value="")
+												span.help-block Exclude '@uw.edu'. Enter only the NetID
+
 										.form-group
 											label.col-md-4.control-label(for='save')
 											br
@@ -259,7 +311,7 @@ block content
 											label.col-md-4.control-label(for='StudentsEstimated') Estimated Student Use
 											.col-md-4
 												input#studentsEstimated.form-control.input(name='StudentsEstimated', min='0' type='number', placeholder='100', value="#{proposal.StudentsEstimated}")
-												span.help-block How many students will utilize this equipment? (On a quarterly basis)
+												span.help-block How many unique students will utilize this equipment? (On a quarterly basis)
 										.form-group
 											label.col-md-4.control-label(for='EstimateJustification') Justification of Estimated Student Usage
 											.col-md-8
@@ -268,17 +320,17 @@ block content
 										.form-group
 											label.col-md-4.control-label(for='ResearchScholarship') Research and Scholarship
 											.col-md-8
-												textarea#accessRestrictions.form-control(name='ResearchScholarship') #{proposal.ResearchScholarship}
+												textarea#researchScholarship.form-control(name='ResearchScholarship') #{proposal.ResearchScholarship}
 												span.help-block What research and scholarship benefits will students receive from interacting with this technology?
 										.form-group
 											label.col-md-4.control-label(for='EducationalExperience') Educational Experience
 											.col-md-8
-												textarea#accessRestrictions.form-control(name='EducationalExperience') #{proposal.EducationalExperience}
+												textarea#educationalExperience.form-control(name='EducationalExperience') #{proposal.EducationalExperience}
 												span.help-block How does the project enhance students’ academic experience?
 										.form-group
 											label.col-md-4.control-label(for='CareerEnhancement') Career Enhancement
 											.col-md-8
-												textarea#accessRestrictions.form-control(name='CareerEnhancement') #{proposal.CareerEnhancement}
+												textarea#careerEnhancement.form-control(name='CareerEnhancement') #{proposal.CareerEnhancement}
 												span.help-block What career enhancing skills will students gain from working with this technology?
 										.form-group
 											label.col-md-4.control-label(for='save')
@@ -310,7 +362,7 @@ block content
 										.form-group
 											label.col-md-4.control-label(for='Outreach') Outreach Strategy
 											.col-md-8
-												textarea#timeline.form-control(name='Outreach') #{proposal.Outreach}
+												textarea#outreach.form-control(name='Outreach') #{proposal.Outreach}
 												span.help-block What is your planned outreach strategy to inform students about this resource and its location?
 										.form-group
 											label.col-md-4.control-label(for='save')
@@ -332,18 +384,18 @@ block content
 										.form-group
 											label.col-md-4.control-label(for='HumanResources') Human Resources
 											.col-md-8
-												textarea#timeline.form-control(name='HumanResources') #{proposal.HumanResources}
+												textarea#humanResources.form-control(name='HumanResources') #{proposal.HumanResources}
 												span.help-block What human resources will be provided by the college, department, or program to help ensure project success?
 										.form-group
 											label.col-md-4.control-label(for='TechnologyResources') Technology Resources
 											.col-md-8
-												textarea#timeline.form-control(name='TechnologyResources') #{proposal.TechnologyResources}
+												textarea#technologyResources.form-control(name='TechnologyResources') #{proposal.TechnologyResources}
 												span.help-block What technology resources will be provided by the college, department, or program to help ensure project success?
 										.form-group
 											label.col-md-4.control-label(for='FinancialResources') Financial Resources
 											.col-md-8
-												textarea#timeline.form-control(name='FinancialResources') #{proposal.FinancialResources}
-												span.help-block What (additional) financial resources will be provided by the college, department, program, or any other entity that will help ensure project success?
+												textarea#financialResources.form-control(name='FinancialResources') #{proposal.FinancialResources}
+												span.help-block What financial resources will be provided by the college, department, program, or any other entity that will help ensure project success?
 										.form-group
 											label.col-md-4.control-label(for='save')
 											.col-md-4
@@ -430,7 +482,7 @@ block content
 														if proposal.PrimaryNetId == netId 
 															button(type='button').btn.btn-warning.sign-btn Sign Proposal
 														else
-															span.unsigned Unsiged
+															span.unsigned Unsigned
 													else
 														span.signed Signed
 										.col-xs-12.col-md-4.text-center

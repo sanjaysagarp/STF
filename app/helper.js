@@ -32,7 +32,10 @@ module.exports = {
 				(u.netId == p.PrimaryNetId) ||
 				(u.netId == p.BudgetNetId) ||
 				(u.netId == p.DeanNetId) || 
-				(u.netId == p.StudentNetId)
+				(u.netId == p.StudentNetId) ||
+				(u.netId == p.AdditionalContactNetId1) ||
+				(u.netId == p.AdditionalContactNetId2) ||
+				(u.netId == p.AdditionalContactNetId3)
 				) && p.Status == 0)	{
 				return true;
 			} else {

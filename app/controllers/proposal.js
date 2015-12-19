@@ -40,7 +40,10 @@ router.get('/proposals/myproposals', shib.ensureAuth('/login'), function myPropo
 				PrimaryRegId : req.user.regId, 
 				BudgetNetId : req.user.netId, 
 				DeanNetId : req.user.netId, 
-				StudentNetId : req.user.netId
+				StudentNetId : req.user.netId,
+				AdditionalContactNetId1: req.user.netId,
+				AdditionalContactNetId2: req.user.netId,
+				AdditionalContactNetId3: req.user.netId
 			}
 		}
 	}).then(function(proposals) {
@@ -152,6 +155,12 @@ router.post('/proposals/:id', shib.ensureAuth('/login'), function postProposal(r
 				StudentNetId: req.body["stu-netId"].toLowerCase(),
 				StudentPhone: req.body["stu-phone"],
 				StudentMail: req.body["stu-mail"],
+				AdditionalContactName1: req.body["con1-name"],
+				AdditionalContactNetId1: req.body["con1-netId"],
+				AdditionalContactName2: req.body["con2-name"],
+				AdditionalContactNetId2: req.body["con2-netId"],
+				AdditionalContactName3: req.body["con3-name"],
+				AdditionalContactNetId3: req.body["con3-netId"],
 				Abstract: req.body["abstract"],
 				Background: req.body["Background"],
 				StudentsEstimated: req.body["StudentsEstimated"],
@@ -162,6 +171,7 @@ router.post('/proposals/:id', shib.ensureAuth('/login'), function postProposal(r
 				AccessRestrictions: req.body["AccessRestrictions"],
 				Hours: req.body["Hours"],
 				Days: req.body["Days"].toLowerCase(),
+				Outreach: req.body["Outreach"],
 				ProposalTimeline: req.body["ProposalTimeline"],
 				HumanResources: req.body["HumanResources"],
 				TechnologyResources: req.body["TechnologyResources"],
@@ -218,6 +228,13 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 	var StudentNetId = req.body["stu-netId"];
 	var StudentPhone = req.body["stu-phone"];
 	var StudentMail = req.body["stu-mail"];
+	var AdditionalContactName1 = req.body["con1-name"];
+	var AdditionalContactNetId1 = req.body["con1-netId"];
+	var AdditionalContactName2 = req.body["con2-name"];
+	var AdditionalContactNetId2 = req.body["con2-netId"];
+	var AdditionalContactName3 = req.body["con3-name"];
+	var AdditionalContactNetId3 = req.body["con3-netId"];
+
 	var Abstract = req.body["abstract"];
 	var Background = req.body["background"];
 	var StudentsEstimated = req.body["StudentsEstimated"];
@@ -264,6 +281,12 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 		StudentPhone: StudentPhone,
 		StudentNetId: StudentNetId,
 		StudentMail: StudentMail,
+		AdditionalContactName1: AdditionalContactName1,
+		AdditionalContactNetId1: AdditionalContactNetId1,
+		AdditionalContactName2: AdditionalContactName2,
+		AdditionalContactNetId2: AdditionalContactNetId2,
+		AdditionalContactName3: AdditionalContactName3,
+		AdditionalContactNetId3: AdditionalContactNetId3,
 		Abstract: Abstract,
 		Background: Background,
 		StudentsEstimated: StudentsEstimated,

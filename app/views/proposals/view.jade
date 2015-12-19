@@ -216,7 +216,7 @@ mixin item(item)
 		td= item.Group
 		td= "$" + item.Price
 		td= item.Quantity
-		td= "$" + (Math.round(item.Price * item.Quantity * 100) / 100)
+		td= "$" + (Math.round(item.Price * item.Quantity * 100) / 100).toFixed(2)
 	tr.item-info
 		td(colspan='5')
 			span Description: 
@@ -226,7 +226,7 @@ mixin item(item)
 			span Justification: 
 			| #{item.Justification}
 
-	-total+= Math.round(item.Price * item.Quantity * 100) / 100;
+	-total+= (Math.round(item.Price * item.Quantity * 100) / 100);
 
 mixin total() 
 	tr.item-head
@@ -240,5 +240,5 @@ mixin total()
 		td
 		td
 		td
-		td= "$" + total
+		td= '$' + total.toFixed(2)
 	-total = 0;
