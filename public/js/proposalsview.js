@@ -6,9 +6,10 @@ window.addEventListener('load', function() {
 
 	if (document.getElementById('partial') !== null) {
 		document.getElementById('partial').onchange = changeItems;
+		changeItems();
 	}
 
-	changeItems();
+	//changeItems();
 
 
 	function changeItems() {
@@ -44,10 +45,6 @@ window.addEventListener('load', function() {
 		}
 
 
-	}
-
-	function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	}
 
 });

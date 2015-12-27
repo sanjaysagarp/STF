@@ -34,7 +34,10 @@ block content
 							td !{status}
 						tr
 							th Metrics
-							td: a(href='/metrics/#{proposal.id}') View Metrics
+							if proposal.Status == 0
+								td: | View Metrics
+							else
+								td: a(href='/metrics/#{proposal.id}') View Metrics
 
 			.col-sm-12.col-md-8
 				h3 Contact Info
@@ -214,9 +217,10 @@ mixin item(item)
 		else 
 			td: h4= item.ItemName
 		td= item.Group
-		td= "$" + item.Price
+		td= "$" + item.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+
 		td= item.Quantity
-		td= "$" + (Math.round(item.Price * item.Quantity * 100) / 100).toFixed(2)
+		td= "$" + (Math.round(item.Price * item.Quantity * 100) / 100).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 	tr.item-info
 		td(colspan='5')
 			span Description: 
@@ -240,5 +244,5 @@ mixin total()
 		td
 		td
 		td
-		td= '$' + total.toFixed(2)
+		td= '$' + total.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 	-total = 0;

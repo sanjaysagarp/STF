@@ -8,19 +8,33 @@ window.addEventListener('load', function() {
 	for (var i = 0; i < selectors.length; i++) {
 		selectors[i].onclick = showQuestion;
 	}
-
+/*
+	//Table Row and Column Highlighting on Mouseover
+	$('td').mouseover(function () {
+    $(this).siblings().css('background-color', '#EEEEEE');
+    var ind = $(this).index();
+    $('td:nth-child(' + (ind + 1) + ')').css('background-color', '#EEEEEE');
+	});
+	$('td').mouseleave(function () {
+    $(this).siblings().css('background-color', '');
+    var ind = $(this).index();
+    $('td:nth-child(' + (ind + 1) + ')').css('background-color', '');
+	});
+*/
 	function showQuestion() {
-		hideAll();
+		//hideAll();
 		var qId = this.innerHTML;
-		if (this.style.backgroundColor != '#EEEEEE') {
-			var q = document.getElementById(qId);
+		var q = document.getElementById(qId);
+		if (q.className != 'selected') {
+			//console.log(q.className);
+			//var q = document.getElementById(qId);
+			hideAll()
 			q.className = "selected";
-			this.style.backgroundColor = '#EEEEEE';
+			this.style.backgroundColor = '#D9D9D9';
+		} else {
+			hideAll();
 		}
 	}
-
-	//TODO add column shading and double click close
-
 
 	function hideAll() {
 		var questions = document.getElementsByClassName("selected");
@@ -31,6 +45,4 @@ window.addEventListener('load', function() {
 			selectors[i].style.backgroundColor = "";
 		}
 	}
-
-
 });

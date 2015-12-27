@@ -3,5 +3,12 @@ table {
 }
 
 .selected {
-	background-color: #DDDDDD;
+	background-color: #BFBFBF;
+}
+.table-striped-column > tbody > tr td:nth-of-type(odd) {
+  background-color: #EEEEEE;
+}
+
+.table-striped-column > tbody > tr th:nth-of-type(odd) {
+  background-color: #F2F2F2;
 }

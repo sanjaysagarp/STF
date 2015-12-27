@@ -5,7 +5,7 @@ append css
 
 block content
 	.container
-		form(method='post')
+		form(method='post' name='metricForm' action='/metrics/#{proposal.id}/create')
 			h2 Metrics for #{proposal.ProposalTitle}
 			a(href='/metrics/#{proposal.id}') Return to Metrics
 			|  / 
