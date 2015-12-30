@@ -43,7 +43,7 @@ module.exports = function(sequelize, DataTypes) {
 		EducationalExperience: DataTypes.TEXT,
 		CareerEnhancement: DataTypes.TEXT,
 		AccessRestrictions: DataTypes.TEXT, 
-		Hours: DataTypes.INTEGER,
+		Hours: DataTypes.STRING,
 		Days: DataTypes.STRING,
 		Outreach: DataTypes.TEXT,
 		ProposalTimeline: DataTypes.TEXT,

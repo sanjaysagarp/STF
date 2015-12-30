@@ -30,16 +30,17 @@ router.get('/proposals/create', shib.ensureAuth('/login'), function createPropos
 	})
 });
 
-//display proposals tat the user has created
+//display proposals that the user has created
 router.get('/proposals/myproposals', shib.ensureAuth('/login'), function myProposals(req, res) {
 	db.Proposal.findAll({
 		where: {
 			//PrimaryRegId : req.user.regId
 			//dean, budget, primary, students
 			$or : {
-				PrimaryRegId : req.user.regId, 
-				BudgetNetId : req.user.netId, 
-				DeanNetId : req.user.netId, 
+				PrimaryRegId : req.user.regId,
+				PrimaryNetId : req.user.netId,
+				BudgetNetId : req.user.netId,
+				DeanNetId : req.user.netId,
 				StudentNetId : req.user.netId,
 				AdditionalContactNetId1: req.user.netId,
 				AdditionalContactNetId2: req.user.netId,
@@ -93,7 +94,13 @@ router.post('/proposal/sign', shib.ensureAuth('/login'), function signProposal(r
 			}
 		})
 	}
-});
+});				.col-sm-3
+					h3 Meetings
+					ul.no-style
+						li Every Monday, 4:00 - 6:00 PM 
+						li Location: HUB 303
+					a(href="/calendar") View All Events
+
 
 
 router.get('/proposal/submit/:id', shib.ensureAuth('/login'), function submitProposal(req, res) {
@@ -169,7 +176,7 @@ router.post('/proposals/:id', shib.ensureAuth('/login'), function postProposal(r
 				EducationalExperience: req.body["EducationalExperience"],
 				CareerEnhancement: req.body["CareerEnhancement"],
 				AccessRestrictions: req.body["AccessRestrictions"],
-				Hours: req.body["Hours"],
+				Hours: req.body["Hours"].toLowerCase(),
 				Days: req.body["Days"].toLowerCase(),
 				Outreach: req.body["Outreach"],
 				ProposalTimeline: req.body["ProposalTimeline"],
