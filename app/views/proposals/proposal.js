@@ -37,14 +37,14 @@ router.get('/proposals/myproposals', shib.ensureAuth('/login'), function myPropo
 			//PrimaryRegId : req.user.regId
 			//dean, budget, primary, students
 			$or : {
-				//PrimaryRegId : req.user.regId,
-				PrimaryNetId : req.user.netId.toLowerCase(),
-				BudgetNetId : req.user.netId.toLowerCase(),
-				DeanNetId : req.user.netId.toLowerCase(),
-				StudentNetId : req.user.netId.toLowerCase(),
-				AdditionalContactNetId1: req.user.netId.toLowerCase(),
-				AdditionalContactNetId2: req.user.netId.toLowerCase(),
-				AdditionalContactNetId3: req.user.netId.toLowerCase()
+				PrimaryRegId : req.user.regId,
+				PrimaryNetId : req.user.netId,
+				BudgetNetId : req.user.netId,
+				DeanNetId : req.user.netId,
+				StudentNetId : req.user.netId,
+				AdditionalContactNetId1: req.user.netId,
+				AdditionalContactNetId2: req.user.netId,
+				AdditionalContactNetId3: req.user.netId
 			}
 		}
 	}).then(function(proposals) {
@@ -94,7 +94,13 @@ router.post('/proposal/sign', shib.ensureAuth('/login'), function signProposal(r
 			}
 		})
 	}
-});
+});				.col-sm-3
+					h3 Meetings
+					ul.no-style
+						li Every Monday, 4:00 - 6:00 PM 
+						li Location: HUB 303
+					a(href="/calendar") View All Events
+
 
 
 router.get('/proposal/submit/:id', shib.ensureAuth('/login'), function submitProposal(req, res) {
@@ -157,11 +163,11 @@ router.post('/proposals/:id', shib.ensureAuth('/login'), function postProposal(r
 				StudentPhone: req.body["stu-phone"],
 				StudentMail: req.body["stu-mail"],
 				AdditionalContactName1: req.body["con1-name"],
-				AdditionalContactNetId1: req.body["con1-netId"].toLowerCase(),
+				AdditionalContactNetId1: req.body["con1-netId"],
 				AdditionalContactName2: req.body["con2-name"],
-				AdditionalContactNetId2: req.body["con2-netId"].toLowerCase(),
+				AdditionalContactNetId2: req.body["con2-netId"],
 				AdditionalContactName3: req.body["con3-name"],
-				AdditionalContactNetId3: req.body["con3-netId"].toLowerCase(),
+				AdditionalContactNetId3: req.body["con3-netId"],
 				Abstract: req.body["abstract"],
 				Background: req.body["Background"],
 				StudentsEstimated: req.body["StudentsEstimated"],

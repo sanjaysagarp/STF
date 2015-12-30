@@ -153,7 +153,8 @@ block content
 					p= endorsement.Message
 		else 
 			p There are no endorsements for this proposal
-		a(href="/proposals/endorsements/#{proposal.id}") Write an endorsement
+		if proposal.status >= 1
+			a(href="/proposals/endorsements/#{proposal.id}") Write an endorsement
 
 		h3 Items
 		if editor
