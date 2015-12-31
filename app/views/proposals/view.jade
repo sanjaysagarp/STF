@@ -144,7 +144,7 @@ block content
 		p= proposal.TechnologyResources
 		h3 Financial Resources
 		p= proposal.FinancialResources
-		h3 Student Endorsements
+		h3 Endorsements
 		if endorsements
 			each endorsement in endorsements
 				.endorsement
@@ -153,7 +153,7 @@ block content
 					p= endorsement.Message
 		else 
 			p There are no endorsements for this proposal
-		if proposal.status >= 1
+		if proposal.Status == 1
 			a(href="/proposals/endorsements/#{proposal.id}") Write an endorsement
 
 		h3 Items
@@ -176,7 +176,7 @@ block content
 						option(id='#{partial.id}' value='') #{users[partial.AuthorId].NetId + ': ' + partial.Title} 
 
 		input(id='proposalId' type='hidden' value='#{proposal.id}' )
-		if loggedIn
+		if committeeMember
 			a(href='/partials/new/#{proposal.id}' id='partialLink') Create Partial
 
 		-var total = 0;

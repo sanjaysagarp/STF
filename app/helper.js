@@ -23,7 +23,7 @@ module.exports = {
 
 		return testUser(res, u, pId, redir);
 				
-		
+		// checks if user is associated with proposal (Primary, Budget, Dean, Additional...)
 		function testUser(res, u, p, redir) {
 			if (redir === null) {
 				redir = true;

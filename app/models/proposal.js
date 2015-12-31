@@ -61,7 +61,11 @@ module.exports = function(sequelize, DataTypes) {
 /* proposal status cosdes
    0 = working proposal
    1 = submitted proposal
-   2 = voting mode
-   3 = cancelled proposal (by user)
-   4 = cancelled proposal (by admin)
+   2 = in voting
+	 3 = Awaiting Decision
+	 4 = Funded
+	 5 = Partially Funded
+	 6 = Not Funded
+	 7 = Cancelled by User
+	 8 = Cancelled by Admin
 */

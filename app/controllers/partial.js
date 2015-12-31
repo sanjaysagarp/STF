@@ -78,6 +78,7 @@ router.get('/partial/:partial/:item', function(req, res) {
 						}
 					}).then(function(proposal) {
 
+						//need to check proposal status (if submitted or awaiting decision)
 						//grab all items that match the partial
 						db.Item.findAll({
 							where: {

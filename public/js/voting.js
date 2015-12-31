@@ -37,7 +37,6 @@ window.addEventListener('load', function() {
 		for (var i = 0; i < buttons.length; i++) {
 			buttons[i].onclick = sendVote;
 		}
-
 		document.getElementById('clearToasts').onclick = clearAllToasts;
 
 		document.getElementById('removeTimer').onclick = toggleTimer;
