@@ -427,49 +427,74 @@ router.get('/proposals/:id', function(req, res) {
 				}).then(function(partials) {
 
 					//assign user ids to the partials they made
-					var userIds = [];
+					var userPartialIds = [];
 					for (partial in partials) {
-						userIds.push(partials[partial].AuthorId);
+						userPartialIds.push(partials[partial].AuthorId);
 					}
-					db.User.findAll({
-						where: {
-							id: userIds
+					//Implement supplemental after partials
+					db.Supplemental.findAll({
+						where : {
+							ProposalID: req.params.id
 						}
-					}).then(function(usersRaw) {
-
-						//re-orient data
-						var users = {};
-						for (userRaw in usersRaw) {
-							users[usersRaw[userRaw].id] = usersRaw[userRaw];
+					}).then(function(supplementals) {
+						//need to get users of supplementals (creators)
+						var userSupplementalIds = [];
+						for (supplemental in supplementals) {
+							userSupplementalIds.push(supplementals[supplemental].AuthorId);
 						}
+						db.User.findAll({
+							where : {
+								id: userSupplementalIds
+							}
+						}).then(function(usersSupplementalRaw) {
+							// re-orient data (supplementals)
+							var usersSupplemental = {};
+							for(userSupplementalRaw in usersSupplementalRaw) {
+								usersSupplemental[usersSupplementalRaw[userSupplementalRaw].id] = usersSupplementalRaw[userSupplementalRaw];
+							}
+							db.User.findAll({
+								where: {
+									id: userPartialIds
+								}
+							}).then(function(usersPartialRaw) {
 
-						//create written date
-						var cr = new Date(proposal.createdAt);
-						var months = ["January", "February", "March", "April", "May", "June", "July", 
-						              "August", "September", "October", "November", "December"];
-						var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
-						var editor = false;
-						var loggedIn = false;
-						var committeeMember = false;
-						if (req.user) {
-							editor = h.approvedEditor(res, req.user, proposal, false);
-							committeeMember = h.activeCommitteeMember(res, req.user, false);
-							loggedIn = true;
-						}
+								//re-orient data
+								var usersPartial = {};
+								for (userPartialRaw in usersPartialRaw) {
+									usersPartial[usersPartialRaw[userPartialRaw].id] = usersPartialRaw[userPartialRaw];
+								}
 
-						res.render('proposals/view', {
-							title: proposal.ProposalTitle,
-							proposal: proposal,
-							partials: partials,
-							users: users,
-							created: day,
-							items: items,
-							committeeMember : committeeMember,
-							loggedIn: loggedIn,
-							endorsements: endorsements,
-							categories: categories,
-							editor: editor,
-							status: h.proposalStatus(proposal.Status)
+								//create written date
+								var cr = new Date(proposal.createdAt);
+								var months = ["January", "February", "March", "April", "May", "June", "July", 
+								              "August", "September", "October", "November", "December"];
+								var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
+								var editor = false;
+								var loggedIn = false;
+								var committeeMember = false;
+								if (req.user) {
+									editor = h.approvedEditor(res, req.user, proposal, false);
+									committeeMember = h.activeCommitteeMember(res, req.user.regId);
+									loggedIn = true;
+								}
+
+								res.render('proposals/view', {
+									title: proposal.ProposalTitle,
+									proposal: proposal,
+									partials: partials,
+									supplementals: supplementals,
+									usersPartial: usersPartial,
+									usersSupplemental: usersSupplemental,
+									created: day,
+									items: items,
+									committeeMember : committeeMember,
+									loggedIn: loggedIn,
+									endorsements: endorsements,
+									categories: categories,
+									editor: editor,
+									status: h.proposalStatus(proposal.Status)
+								});
+							});
 						});
 					});
 				});

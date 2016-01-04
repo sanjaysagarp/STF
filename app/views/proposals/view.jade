@@ -171,13 +171,30 @@ block content
 					option(id='0' value='') Original Proposal Items 
 				each partial in partials
 					if proposal.PartialFunded == partial.id && proposal.Status == 5
-						option(id='#{partial.id}' value='' selected) #{"Funded Partial by " + users[partial.AuthorId].NetId + ': ' + partial.Title} 
+						option(id='#{partial.id}' value='' selected) #{"Funded Partial by " + usersPartial[partial.AuthorId].NetId + ': ' + partial.Title} 
 					else 
-						option(id='#{partial.id}' value='') #{users[partial.AuthorId].NetId + ': ' + partial.Title} 
+						option(id='#{partial.id}' value='') #{usersPartial[partial.AuthorId].NetId + ': ' + partial.Title} 
 
 		input(id='proposalId' type='hidden' value='#{proposal.id}' )
 		if committeeMember
 			a(href='/partials/new/#{proposal.id}' id='partialLink') Create Partial
+
+		if supplementals.length > 0
+			|<br/> Supplementals
+			select#supplemental.form-control
+				if proposal.Status == 4
+					option(id='0' value='') Funded Original Proposal Items
+				else
+					each supplemental in supplementals
+						if supplemental.Status == 1
+							option(id='#{supplemental.id}' value='' selected) #{"Funded Supplemental by " + usersSupplemental[supplemental.AuthorId].NetId + ': ' + supplemental.Title}
+						else
+							option(id='#{supplemental.id}' value='') #{usersSupplemental[supplemental.AuthorId].NetId + ': ' + supplemental.Title}
+
+		input(id='proposalId' type='hidden' value='#{proposal.id}' )
+		if editor
+			br
+			a(href='/supplementals/new/#{proposal.id}' id='supplementalLink') Create Supplemental
 
 		-var total = 0;
 		table.0.items(class='#{(proposal.Status == 4 ? "funded" : "" )}')
@@ -189,7 +206,7 @@ block content
 				th Subtotal
 			
 			each item in items
-				if item.PartialId === null
+				if item.SupplementalId === null
 					+item(item)
 			+total()
 
@@ -209,6 +226,20 @@ block content
 						+item(item)
 				+total()
 
+		each supplemental in supplementals
+			table(class='#{supplemental.id} #{supplemental.Status == 1 ? "funded" : ""}').items.hidden
+				
+				tr.item-head
+					th Item
+					th Group
+					th Unit Price
+					th Quantity
+					th Subtotal		
+
+				each item in items
+					if item.SupplementalId == supplemental.id	
+						+item(item)
+				+total()
 
 
 mixin item(item)

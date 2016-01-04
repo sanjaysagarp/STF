@@ -15,7 +15,7 @@ router.all('/supplemental*', shib.ensureAuth('/login'), function(req, res, next)
 
 
 //create a new supplemental with duplicated items
-router.get('/supplemental/new/:id', function(req, res) {
+router.get('/supplementals/new/:id', function(req, res) {
 	db.User.find({
 		where: {RegId: req.user.regId}
 	}).then(function(user) {
@@ -31,13 +31,13 @@ router.get('/supplemental/new/:id', function(req, res) {
 			}).then(function(items) {
 				var redirect;
 
-				//create thye partial
+				//create the supplemental
 				db.Supplemental.create({
 					AuthorId: user.id,
 					ProposalId: req.params.id
 				}).then(function(supplemental) {
 					
-					//create each duplicated item, bound tot he partial
+					//create each duplicated item, bound to the supplemental -- Do we want this?
 					for (item in items) {
 						var i = items[item].dataValues;
 						i.id = null;
@@ -48,7 +48,7 @@ router.get('/supplemental/new/:id', function(req, res) {
 					}
 					redirect = supplemental.id;
 
-				//redirect to new partial
+				//redirect to new supplemental
 				}).then(function() {
 					res.redirect('/supplemental/' + redirect + '/0');
 				})
