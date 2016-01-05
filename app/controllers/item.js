@@ -51,11 +51,14 @@ router.post('/items/new', function(req, res) {
 router.get('/item/delete/:id', function(req, res) {
 	db.Item.find({ where: {id: req.params.id} }).then(function(item) {
 		var partial = item.PartialId
+		var supplemental = item.SupplementalId
 		db.Proposal.find({ where: {id: item.ProposalId} }).then(function(proposal) {
 			if (h.approvedEditor(res, req.user, proposal)) {
 				item.destroy().then(function() {
-					if (partial) {
+					if (partial && (proposal.Status >= 1 && proposal.Status <= 3)) {
 						res.redirect('/partial/' + partial + '/0')
+					} else if (supplemental || proposal.Status == 4) { //change to &&
+						res.redirect('/supplemental/' + supplemental + '/0')
 					} else if (proposal.Status != 0) { //if a proposal is submitted, goto showpage
 						res.redirect('/proposals/' + proposal.id);
 					} else { //go back to the edit proposal page

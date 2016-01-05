@@ -180,7 +180,8 @@ block content
 			a(href='/partials/new/#{proposal.id}' id='partialLink') Create Partial
 
 		if supplementals.length > 0
-			|<br/> Supplementals
+			br
+			| Supplementals
 			select#supplemental.form-control
 				if proposal.Status == 4
 					option(id='0' value='') Funded Original Proposal Items
@@ -193,7 +194,6 @@ block content
 
 		input(id='proposalId' type='hidden' value='#{proposal.id}' )
 		if editor
-			br
 			a(href='/supplementals/new/#{proposal.id}' id='supplementalLink') Create Supplemental
 
 		-var total = 0;

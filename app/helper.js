@@ -29,13 +29,13 @@ module.exports = {
 				redir = true;
 			} if (res.locals.isAdmin || (
 				(u.regId == p.PrimaryRegId) ||
-				(u.netId == p.PrimaryNetId) ||
-				(u.netId == p.BudgetNetId) ||
-				(u.netId == p.DeanNetId) || 
-				(u.netId == p.StudentNetId) ||
-				(u.netId == p.AdditionalContactNetId1) ||
-				(u.netId == p.AdditionalContactNetId2) ||
-				(u.netId == p.AdditionalContactNetId3)
+				(u.netId.toLowerCase() == p.PrimaryNetId) ||
+				(u.netId.toLowerCase() == p.BudgetNetId) ||
+				(u.netId.toLowerCase() == p.DeanNetId) || 
+				(u.netId.toLowerCase() == p.StudentNetId) ||
+				(u.netId.toLowerCase() == p.AdditionalContactNetId1) ||
+				(u.netId.toLowerCase() == p.AdditionalContactNetId2) ||
+				(u.netId.toLowerCase() == p.AdditionalContactNetId3)
 				) && p.Status == 0)	{
 				return true;
 			} else {

@@ -474,7 +474,7 @@ router.get('/proposals/:id', function(req, res) {
 								var committeeMember = false;
 								if (req.user) {
 									editor = h.approvedEditor(res, req.user, proposal, false);
-									committeeMember = h.activeCommitteeMember(res, req.user.regId);
+									committeeMember = h.activeCommitteeMember(res, req.user.regId, false);
 									loggedIn = true;
 								}
 
