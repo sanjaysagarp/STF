@@ -35,18 +35,35 @@ nav.navbar.navbar-default.sub-nav
 						li: a(href='/proposals/myproposals') My Proposals
 						li(role='seperator' class='divider')
 						li: a(href='/metrics') Metrics
+				//li.dropdown
+					//a.dropdown-toggle(href='#', data-toggle='dropdown') Committee 
+						//span.caret
+					//ul.dropdown-menu(role='menu')
+						//li: a(href='http://www.washington.edu/itconnect/wares/acquiring-software-and-hardware/keyserver-help-for-it-staff/') Key Server
+						//li: a(href='/calendar') Calendar
+						//li: a(href='/policies') Policies
 				li.dropdown
-					a.dropdown-toggle(href='#', data-toggle='dropdown') Committee 
+					a.dropdown-toggle(href='#', data-toggle='dropdown') Documents
 						span.caret
 					ul.dropdown-menu(role='menu')
+						li: a(href='/documents') Browse
 						li: a(href='http://www.washington.edu/itconnect/wares/acquiring-software-and-hardware/keyserver-help-for-it-staff/') Key Server
-						li: a(href='/calendar') Calendar
 						li: a(href='/policies') Policies
-				li: a(href='/documents') Documents
+				li: a(href='/calendar') Calendar
+
+
 				//- todo li: a(href='#') Explore
 			ul.nav.navbar-nav.navbar-right
 				if isAdmin
 					li: a(href='/admin') Admin
+				if isCommitteeMember
+					ul.nav.navbar-nav
+						li.dropdown
+							a.dropdown-toggle(href='#', data-toggle='dropdown') Committee Member
+								span.caret
+							ul.dropdown-menu(role='menu')
+								li: a(href='/metrics') Metrics
+								li: a(href='/metrics/voting') Voting
 				li.active
 					if netId
 						a(href='/user')= netId
