@@ -132,11 +132,19 @@ app.use(function adminAndMemberCheck(req, res, next) {
 				RegId: req.user.regId
 			}
 		}).then(function(user) {
-			if (user && user.Permissions && user.Permissions == 2) {
-				res.locals.isAdmin = true;
-			} else {
-				res.locals.isAdmin = false;
+			if (user && user.Permissions) {
+				if (user.Permissions == 2) {
+					res.locals.isAdmin = true;
+					res.locals.isCommitteeMember = false;
+				} else if (user.Permissions == 1) {
+					res.locals.isCommitteeMember = true;
+					res.locals.isAdmin = false;
+				} else {
+					res.locals.isAdmin = false;
+					res.locals.isCommitteeMember = false;
+				}
 			}
+			
 			next();
 		});
 	} else { //needed or it doesnt wait for callback
