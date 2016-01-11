@@ -48,31 +48,31 @@ block content
 							td #{proposal.id}
 							if proposal.Status == 0
 								td: a(href='/proposals/update/#{proposal.id}') #{proposal.ProposalTitle} 
-								td #{proposal.FastTrack ? "[FT] ": ""}Unsubmitted
+								td #{proposal.FastTrack ? "[FT] ": ""}#{proposal.UAC ? "[UAC] ": ""}Unsubmitted
 							if proposal.Status == 1
 								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle} 
-								td #{proposal.FastTrack ? "[FT] ": ""}Submitted
+								td #{proposal.FastTrack ? "[FT] ": ""}#{proposal.UAC ? "[UAC] ": ""}Submitted
 							if proposal.Status == 2
 								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle}
-								td #{proposal.FastTrack ? "[FT] ": ""}In Voting
+								td #{proposal.FastTrack ? "[FT] ": ""}#{proposal.UAC ? "[UAC] ": ""}In Voting
 							if proposal.Status == 3
 								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle}
-								td #{proposal.FastTrack ? "[FT] ": ""}Awaiting Decision
+								td #{proposal.FastTrack ? "[FT] ": ""}#{proposal.UAC ? "[UAC] ": ""}Awaiting Decision
 							if proposal.Status == 4
 								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle}
-								td #{proposal.FastTrack ? "[FT] ": ""}Funded
+								td #{proposal.FastTrack ? "[FT] ": ""}#{proposal.UAC ? "[UAC] ": ""}Funded
 							if proposal.Status == 5
 								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle}
-								td #{proposal.FastTrack ? "[FT] ": ""}Partially Funded
+								td #{proposal.FastTrack ? "[FT] ": ""}#{proposal.UAC ? "[UAC] ": ""}Partially Funded
 							if proposal.Status == 6
 								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle}
-								td #{proposal.FastTrack ? "[FT] ": ""}Not Funded
+								td #{proposal.FastTrack ? "[FT] ": ""}#{proposal.UAC ? "[UAC] ": ""}Not Funded
 							if proposal.Status == 7
 								td #{proposal.ProposalTitle}
-								td #{proposal.FastTrack ? "[FT] ": ""}Cancelled by User
+								td #{proposal.FastTrack ? "[FT] ": ""}#{proposal.UAC ? "[UAC] ": ""}Cancelled by User
 							if proposal.Status == 8
 								td #{proposal.ProposalTitle}
-								td #{proposal.FastTrack ? "[FT] ": ""}Cancelled by Admin
+								td #{proposal.FastTrack ? "[FT] ": ""}#{proposal.UAC ? "[UAC] ": ""}Cancelled by Admin
 
 
 							td: a(href='/proposals/category/#{proposal.Category}') #{categories[proposal.Category].name}

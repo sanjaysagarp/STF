@@ -51,9 +51,9 @@ module.exports = {
 
 		if (uRegId.id === undefined) {
 			return db.User.find({where: {RegId: uRegId}})
-			.then(function(u) {
-				testUser(res, u, redir)
-			})
+				.then(function(u) {
+					testUser(res, u, redir)
+				})
 		} else {
 			return testUser(res, uRegId, redir)
 		}
@@ -61,7 +61,8 @@ module.exports = {
 		function testUser(res, u, redir) {
 			if (redir == null) {
 				redir = true;
-			} if (u && u.Permissions > 0) {
+			}
+			if (u && u.Permissions > 0) {
 				return true;
 			} else {
 				if (redir) {

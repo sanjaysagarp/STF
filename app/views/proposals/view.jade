@@ -34,10 +34,10 @@ block content
 							td !{status}
 						tr
 							th Metrics
-							if proposal.Status == 0
+							if !isCommitteeMember && !isAdmin
 								td: | View Metrics
 							else
-								td: a(href='/metrics/#{proposal.id}') View Metrics
+								td: a(href='/metrics/#{proposal.id}') View/Create Metrics
 
 			.col-sm-12.col-md-8
 				h3 Contact Info
@@ -175,7 +175,7 @@ block content
 						option(id='#{partial.id}' value='') #{usersPartial[partial.AuthorId].NetId + ': ' + partial.Title} 
 
 		input(id='proposalId' type='hidden' value='#{proposal.id}' )
-		if committeeMember
+		if isCommitteeMember
 			a(href='/partials/new/#{proposal.id}' id='partialLink') Create Partial
 
 		if supplementals.length > 0

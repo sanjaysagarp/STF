@@ -11,13 +11,14 @@ block content
 			|  / 
 			a(href='/proposals/#{proposal.id}') View Proposal
 			
-			p= questions.general[1]
+			p= questions.impact[1]
 			.row
-				- for (index in questions.general) {
+				//- var q = [questions.impact, questions.method, questions.accessibility]
+				- for (index in questions.impact) {
 					- var n = 1
 					- var count = 0
-					- var val = questions.general[index]
-					- for (i in questions.general[index]) {
+					- var val = questions.impact[index]
+					- for (i in questions.impact[index]) {
 					- 	count++;
 					- }
 					//-p  #{count}  
@@ -30,27 +31,56 @@ block content
 									p.score score: 
 										//-p= metric[index + n]
 										if n == 1
-											input(name='#{index + n}' type='number' size='3' autofocus='autofocus' required='required' min='1' max='5' value='#{(metric) ? metric[index + n] : ""}')
+											input(name='#{index}' type='number' size='3' autofocus='autofocus' required='required' min='1' max='5' value='#{(metric) ? metric[index] : ""}')
 										else
-											input(name='#{index + n}' type='number' size='3' required='required' min='1' max='5' value='#{(metric) ? metric[index + n] : ""}')
+											input(name='#{index}' type='number' size='3' required='required' min='1' max='5' value='#{(metric) ? metric[index] : ""}')
+						- n++ 
+				- }
+				- for (index in questions.method) {
+					- var n = 1
+					- var count = 0
+					- var val = questions.method[index]
+					- for (i in questions.method[index]) {
+					- 	count++;
+					- }
+					//-p  #{count}  
+					while n < count
+						.col-lg-3.col-md-4.col-sm-6.col-xs-12.cols
+							.question-wrap
+								h4= val.name
+								p #{val[n]}
+								.input-wrap-outer
+									p.score score: 
+										//-p= metric[index + n]
+										if n == 1
+											input(name='#{index}' type='number' size='3' autofocus='autofocus' required='required' min='1' max='5' value='#{(metric) ? metric[index] : ""}')
+										else
+											input(name='#{index}' type='number' size='3' required='required' min='1' max='5' value='#{(metric) ? metric[index] : ""}')
+						- n++ 
+				- }
+				- for (index in questions.accessibility) {
+					- var n = 1
+					- var count = 0
+					- var val = questions.accessibility[index]
+					- for (i in questions.accessibility[index]) {
+					- 	count++;
+					- }
+					//-p  #{count}  
+					while n < count
+						.col-lg-3.col-md-4.col-sm-6.col-xs-12.cols
+							.question-wrap
+								h4= val.name
+								p #{val[n]}
+								.input-wrap-outer
+									p.score score: 
+										//-p= metric[index + n]
+										if n == 1
+											input(name='#{index}' type='number' size='3' autofocus='autofocus' required='required' min='1' max='5' value='#{(metric) ? metric[index] : ""}')
+										else
+											input(name='#{index}' type='number' size='3' required='required' min='1' max='5' value='#{(metric) ? metric[index] : ""}')
 						- n++ 
 				- }
 
-
-				- var n = 1
-				- var count = 0
-				- for (i in questions.special[proposal.Category]) {
-				- 	count++
-				- }
-				while n < count
-					.col-lg-3.col-md-4.col-sm-6.col-xs-12.cols
-						.question-wrap
-							h4= questions.special[proposal.Category].name
-							p #{questions.special[proposal.Category][n]}
-							.input-wrap-outer
-								p.score score: 
-									input(name= '#{"X" + n}' type='number' size='3' required='required' min='1' max='5' value='#{(metric) ? metric["X" + n] : ""}')
-					- n++
 				.col-xs-12
 					.question-wrap
 						h4 Additional Notes

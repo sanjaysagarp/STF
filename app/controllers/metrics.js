@@ -272,25 +272,46 @@ router.get('/metrics/:id', function(req, res) {
 
 					//assemble general questions into a list
 					var questionList = {};
-					for (var key in questions.general) { //A, C, D etc.
-						if (questions.general.hasOwnProperty(key)) {
-							var obj = questions.general[key];
+					for (var key in questions.impact) { //A, C, D etc.
+						if (questions.impact.hasOwnProperty(key)) {
+							var obj = questions.impact[key];
 							for (var prop in obj) {
 								if (obj.hasOwnProperty(prop) && prop != "name") {
-									questionList[key + prop] = obj[prop];
+									questionList[key] = obj[prop];
+								}
+							}
+						}
+					}
+					// 
+					for (var key in questions.method) { //A, C, D etc.
+						if (questions.method.hasOwnProperty(key)) {
+							var obj = questions.method[key];
+							for (var prop in obj) {
+								if (obj.hasOwnProperty(prop) && prop != "name") {
+									questionList[key] = obj[prop];
+								}
+							}
+						}
+					}
+					for (var key in questions.accessibility) { //A, C, D etc.
+						if (questions.accessibility.hasOwnProperty(key)) {
+							var obj = questions.accessibility[key];
+							for (var prop in obj) {
+								if (obj.hasOwnProperty(prop) && prop != "name") {
+									questionList[key] = obj[prop];
 								}
 							}
 						}
 					}
 
 					//add the special questions into the list
-					for (var obj in questions.special[proposal.Category]) {
+					/*for (var obj in questions.special[proposal.Category]) {
 						for (var prop in obj) {
 							if (obj.hasOwnProperty(prop) && obj != 'name') {
 								questionList['X' + obj] = questions.special[proposal.Category][obj];
 							}
 						}
-					}
+					}*/
 
 					var userData = {};
 					for (var obj in users) {

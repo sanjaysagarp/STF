@@ -133,6 +133,7 @@ router.post('/proposals/:id', shib.ensureAuth('/login'), function postProposal(r
 				Category: req.body["category"],
 				Department: req.body["department"],
 				FastTrack: (req.body["fastTrack"] == 'on' ? 1 : 0),
+				UAC: (req.body["UAC"] == 'on' ? 1 : 0),
 				PrimaryName: req.body["PrimaryName"],
 				PrimaryTitle: req.body["primary-title"],
 				PrimaryNetId: req.body["primary-netId"].toLowerCase(),
@@ -471,10 +472,8 @@ router.get('/proposals/:id', function(req, res) {
 								var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
 								var editor = false;
 								var loggedIn = false;
-								var committeeMember = false;
 								if (req.user) {
 									editor = h.approvedEditor(res, req.user, proposal, false);
-									committeeMember = h.activeCommitteeMember(res, req.user.regId, false);
 									loggedIn = true;
 								}
 
@@ -487,7 +486,6 @@ router.get('/proposals/:id', function(req, res) {
 									usersSupplemental: usersSupplemental,
 									created: day,
 									items: items,
-									committeeMember : committeeMember,
 									loggedIn: loggedIn,
 									endorsements: endorsements,
 									categories: categories,

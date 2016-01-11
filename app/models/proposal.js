@@ -5,6 +5,7 @@ module.exports = function(sequelize, DataTypes) {
 		Category: DataTypes.STRING,
 		Department: DataTypes.STRING,
 		FastTrack: 'TINYINT',
+		UAC: 'TINYINT',
 		PrimaryRegId: DataTypes.STRING,
 		PrimaryNetId: DataTypes.STRING,
 		PrimaryName: DataTypes.STRING,

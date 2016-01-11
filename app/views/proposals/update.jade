@@ -87,8 +87,17 @@ block content
 											if proposal.FastTrack
 												input#fastTrack(name='fastTrack' type='checkbox' checked)
 											else
-												input#fastTrack(name='fastTrack' type='checkbox')
+												input#fastTrack(name='fastTrack' type='checkbox' disabled='disabled')
 											span.help-block Fast track proposals receive expedited funding if approved. Only proposals that demonstrate a need for fast track will be considered.
+
+									.form-group
+										label.col-md-4.control-label(for='UAC') UAC
+
+										.col-md-4#fastTrackWrap
+											if proposal.UAC
+												input#UAC(name='UAC' type='checkbox' checked)
+											else
+												input#UAC(name='UAC' type='checkbox')
 
 									.form-group
 										label.col-md-4.control-label(for='save')
