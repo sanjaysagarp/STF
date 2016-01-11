@@ -34,10 +34,10 @@ block content
 							td !{status}
 						tr
 							th Metrics
-							if !isCommitteeMember && !isAdmin
+							if proposal.Status == 0
 								td: | View Metrics
 							else
-								td: a(href='/metrics/#{proposal.id}') View/Create Metrics
+								td: a(href='/metrics/#{proposal.id}') View Metrics
 
 			.col-sm-12.col-md-8
 				h3 Contact Info

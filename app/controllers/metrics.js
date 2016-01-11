@@ -30,6 +30,7 @@ router.get('/metrics', function(req, res) { //todo unspaghetti this
 		order: ['ProposalId']
 	}).then(function(metrics) {
 		var scores = {};
+		var totalPercent = 100;
 		for (var i = 0; i < metrics.length; i++) {
 			var line = metrics[i].dataValues;
 			var proposalId = line.ProposalId;
@@ -42,7 +43,16 @@ router.get('/metrics', function(req, res) { //todo unspaghetti this
 			var sum = 0;
 			var count = 0;
 			for (score in line) {
-				sum += line[score];
+				var weight = 1;
+				if (count < 5) {
+					weight = 6.7;
+				} else if (count < 8) {
+					weight = 11.1;
+				} else {
+					weight = 16.6;
+				}
+				sum += ((line[score] * weight) / totalPercent);
+				//console.log(score);
 				count++;
 			}
 			if (!scores[proposalId]) {
@@ -59,19 +69,12 @@ router.get('/metrics', function(req, res) { //todo unspaghetti this
 				total += prop[sum]
 				count++;
 			}
-			scores[proposal] = total / count; //MISSING TOTAL Q NUMBER, comment below is partial souloution
-		}
+			scores[proposal] = total / count; 		}
 
 		db.Proposal.findAll({
 			order: [['id', 'DESC']],
 			where: {id: Object.keys(scores)}
 		}).then(function(proposals) {
-/*			for (score in scores) {
-				console.log(score)
-				var cat = proposals[12].Category;
-				var questionCount = questions.general.length + questions.special[cat].length - 1;
-				scores[score] = scores[score] / questionCount;
-			}*/
 			res.render('metrics/index', {
 				title: 'All Metric Scores',
 				proposals: proposals,

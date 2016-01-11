@@ -34,4 +34,4 @@ block content
 							tr
 								td: b= proposal.id
 								td: a(href='/proposals/#{proposal.id}')= proposal.ProposalTitle
-								td: a(href='/metrics/#{proposal.id}')= scores[proposal.id]
+								td: a(href='/metrics/#{proposal.id}')= scores[proposal.id].toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
