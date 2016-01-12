@@ -29,6 +29,24 @@ td {
 	padding-top: 2px;
 }
 
+.colsContact {
+	height: 100%;
+	display: flex;
+	height: auto; 
+	flex: 1 1 auto;
+}
+
+.rowsContact {
+	overflow: overflow;
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+	margin-top: 10px;
+}
+
+.contacts {
+	display: flex;
+}
 .contacts > div > table > tbody > th {
 	padding: 3px;
 }

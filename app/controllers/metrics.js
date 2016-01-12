@@ -44,7 +44,7 @@ router.get('/metrics', function(req, res) { //todo unspaghetti this
 			var count = 0;
 			for (score in line) {
 				var weight = 1;
-				if (count < 5) {
+				if (count < 5) { //5 = length of metric.impact?
 					weight = 6.7;
 				} else if (count < 8) {
 					weight = 11.1;

@@ -12,7 +12,7 @@ block content
 			a(href='/proposals/#{proposal.id}') View Proposal
 			
 			p= questions.impact[1]
-			.row
+			.rowMetrics
 				//- var q = [questions.impact, questions.method, questions.accessibility]
 				- for (index in questions.impact) {
 					- var n = 1
@@ -23,7 +23,7 @@ block content
 					- }
 					//-p  #{count}  
 					while n < count
-						.col-lg-3.col-md-4.col-sm-6.col-xs-12.cols
+						.col-lg-3.col-md-4.col-sm-6.col-xs-12.colsMetrics
 							.question-wrap
 								h4= val.name
 								p #{val[n]}
@@ -45,7 +45,7 @@ block content
 					- }
 					//-p  #{count}  
 					while n < count
-						.col-lg-3.col-md-4.col-sm-6.col-xs-12.cols
+						.col-lg-3.col-md-4.col-sm-6.col-xs-12.colsMetrics
 							.question-wrap
 								h4= val.name
 								p #{val[n]}
@@ -67,7 +67,7 @@ block content
 					- }
 					//-p  #{count}  
 					while n < count
-						.col-lg-3.col-md-4.col-sm-6.col-xs-12.cols
+						.col-lg-3.col-md-4.col-sm-6.col-xs-12.colsMetrics
 							.question-wrap
 								h4= val.name
 								p #{val[n]}

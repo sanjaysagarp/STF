@@ -24,8 +24,8 @@ block content
 					
 					each val, index in list
 						th.selectors= index
-
-					th Notes
+					if isAdmin || isCommitteeMember
+						th Notes
 				each val, index in list
 					tr: td.hidden(id="#{index}" colspan='100')= val
 
@@ -35,4 +35,5 @@ block content
 						each val, index in list
 							td= metric[index]
 							-j++
-						td= metric.Notes
+						if isAdmin || isCommitteeMember
+							td= metric.Notes

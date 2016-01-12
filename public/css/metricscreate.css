@@ -1,12 +1,12 @@
-.cols {
+.colsMetrics {
 	height: 100%;
 	display: flex;
 	height: auto; 
 	flex: 1 1 auto;
 }
 
-.row {
-	overflow: hidden;
+.rowMetrics {
+	overflow: overflow;
 	display: flex;
 	flex-wrap: wrap;
 	flex-direction: row;

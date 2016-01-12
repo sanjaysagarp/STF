@@ -39,10 +39,10 @@ block content
 							else
 								td: a(href='/metrics/#{proposal.id}') View Metrics
 
-			.col-sm-12.col-md-8
+			.col-sm-12.col-md-8.rowsContact
 				h3 Contact Info
 				.row.contacts
-					.col-xs-12.col-sm-6.col-md-6
+					.col-xs-12.col-sm-6.col-md-6.colsContact
 						table
 							tbody
 								th.contactType Primary
@@ -61,7 +61,7 @@ block content
 								tr
 									th Mailbox
 									td= proposal.PrimaryMail
-					.col-xs-12.col-sm-6.col-md-6
+					.col-xs-12.col-sm-6.col-md-6.colsContact
 						table
 							tbody
 								th.contactType Budget
@@ -80,7 +80,10 @@ block content
 								tr
 									th Mailbox
 									td= proposal.BudgetMail
-					.col-xs-12.col-sm-6.col-md-6
+		.row
+			.col-sm-12.col-md-8.col-md-offset-4.rowsContact
+				.row.contacts
+					.col-xs-12.col-sm-6.col-md-6.colsContact
 						table
 							tbody
 								th.contactType Dean
@@ -99,7 +102,7 @@ block content
 								tr
 									th Mailbox
 									td= proposal.DeanMail
-					.col-xs-12.col-sm-6.col-md-6
+					.col-xs-12.col-sm-6.col-md-6.colsContact
 						table
 							tbody
 								th.contactType Student
