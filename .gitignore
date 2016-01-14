@@ -3,3 +3,5 @@ public/docs
 node_modules
 security
 config/
+.vscode
+DS_STORE
