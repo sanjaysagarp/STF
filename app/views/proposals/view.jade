@@ -39,9 +39,9 @@ block content
 							else
 								td: a(href='/metrics/#{proposal.id}') View Metrics
 
-			.col-sm-12.col-md-8.rowsContact
+			.col-sm-12.col-md-8
 				h3 Contact Info
-				.row.contacts
+				.row.contacts.rowsContact
 					.col-xs-12.col-sm-6.col-md-6.colsContact
 						table
 							tbody
@@ -81,8 +81,8 @@ block content
 									th Mailbox
 									td= proposal.BudgetMail
 		.row
-			.col-sm-12.col-md-8.col-md-offset-4.rowsContact
-				.row.contacts
+			.col-sm-12.col-md-8.col-md-offset-4
+				.row.contacts.rowsContact
 					.col-xs-12.col-sm-6.col-md-6.colsContact
 						table
 							tbody
@@ -147,6 +147,9 @@ block content
 		p= proposal.TechnologyResources
 		h3 Financial Resources
 		p= proposal.FinancialResources
+		if isCommitteeMember || isAdmin
+			h3 STF Feedback
+			p= proposal.proposalFeedback
 		h3 Endorsements
 		if endorsements
 			each endorsement in endorsements

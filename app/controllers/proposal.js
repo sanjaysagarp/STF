@@ -34,8 +34,6 @@ router.get('/proposals/create', shib.ensureAuth('/login'), function createPropos
 router.get('/proposals/myproposals', shib.ensureAuth('/login'), function myProposals(req, res) {
 	db.Proposal.findAll({
 		where: {
-			//PrimaryRegId : req.user.regId
-			//dean, budget, primary, students
 			$or : {
 				//PrimaryRegId : req.user.regId,
 				PrimaryNetId : req.user.netId.toLowerCase(),
@@ -165,6 +163,7 @@ router.post('/proposals/:id', shib.ensureAuth('/login'), function postProposal(r
 				AdditionalContactNetId3: req.body["con3-netId"].toLowerCase(),
 				Abstract: req.body["abstract"],
 				Background: req.body["Background"],
+				ProposalFeedback: req.body["ProposalFeedback"],
 				StudentsEstimated: req.body["StudentsEstimated"],
 				EstimateJustification: req.body["EstimateJustification"],
 				ResearchScholarship: req.body["ResearchScholarship"],
@@ -239,6 +238,7 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 
 	var Abstract = req.body["abstract"];
 	var Background = req.body["background"];
+	var ProposalFeedback = req.body["ProposalFeedback"];
 	var StudentsEstimated = req.body["StudentsEstimated"];
 	var EstimateJustification = req.body["EstimateJustification"];
 	var ResearchScholarship = req.body["ResearchScholarship"];
@@ -291,6 +291,7 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 		AdditionalContactNetId3: AdditionalContactNetId3,
 		Abstract: Abstract,
 		Background: Background,
+		ProposalFeedback: ProposalFeedback,
 		StudentsEstimated: StudentsEstimated,
 		EstimateJustification: EstimateJustification,
 		ResearchScholarship: ResearchScholarship,

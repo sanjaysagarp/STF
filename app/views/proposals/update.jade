@@ -98,7 +98,7 @@ block content
 												input#UAC(name='UAC' type='checkbox' checked)
 											else
 												input#UAC(name='UAC' type='checkbox')
-											span.help-block The Committee will work alongside the Student Tech Fee Uniform Access Committee (UAC) for the funding of uniform access services. Only proposals that will be available to and serve the needs of students from every UW campus can be considered as UAC.
+											span.help-block Uniform Access Committee proposals are proposals that cover UW Seattle, Bothell, and Tacoma campuses. Only proposals that will be accessible on all three campuses can be considered UAC proposals.
 
 									.form-group
 										label.col-md-4.control-label(for='save')
@@ -172,7 +172,7 @@ block content
 											.col-md-4
 												input#budget-phone.form-control.input-md(name='budget-phone', type='text', placeholder='999-999-9999',value="#{proposal.BudgetPhone}")
 										.form-group
-											label.col-md-4.control-label(for='budget-mail') Mail
+											label.col-md-4.control-label(for='budget-mail') Mailbox
 											.col-md-4
 												input#budget-mail.form-control.input-md(name='budget-mail', type='text', placeholder='abc', value="#{proposal.BudgetMail}")
 								h4.text-center  Dean/Departmental-Head
@@ -198,7 +198,7 @@ block content
 											.col-md-4
 												input#ddh-phone.form-control.input-md(name='ddh-phone', type='text', placeholder='999-999-9999' value="#{proposal.DeanPhone}")
 										.form-group
-											label.col-md-4.control-label(for='ddh-mail') Mail
+											label.col-md-4.control-label(for='ddh-mail') Mailbox
 											.col-md-4
 												input#ddh-mail.form-control.input-md(name='ddh-mail', type='text', placeholder='abc', value="#{proposal.DeanMail}")
 								h4.text-center  Student
@@ -226,7 +226,7 @@ block content
 												input#stu-phone.form-control.input-md(name='stu-phone', type='text', placeholder='999-999-9999', value="#{proposal.StudentPhone}")
 												span.help-block Due to the public nature of the UW, your phone will be shared freely
 										.form-group
-											label.col-md-4.control-label(for='stu-mail') Mail
+											label.col-md-4.control-label(for='stu-mail') Mailbox
 											.col-md-4
 												input#stu-mail.form-control.input-md(name='stu-mail', type='text', placeholder='abc', value="#{proposal.StudentMail}")
 												span.help-block Not Required
@@ -316,7 +316,12 @@ block content
 											label.col-md-4.control-label(for='Background') Background
 											.col-md-8
 												textarea#background.form-control(name='Background') #{proposal.Background}
-												#abstract.span.help-block Please situate the proposal in the context of past requests and student need
+												#background.span.help-block Please situate the proposal in the context of past requests and student need
+										.form-group
+											label.col-md-4.control-label(for='proposalFeedback') Feedback 
+											.col-md-8
+												textarea#proposalFeedback.form-control(name='ProposalFeedback') #{proposal.ProposalFeedback}
+												#proposalFeedback.span.help-block How did you hear of the STF proposal process?
 										.form-group
 											label.col-md-4.control-label(for='StudentsEstimated') Estimated Student Use
 											.col-md-4

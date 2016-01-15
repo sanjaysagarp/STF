@@ -38,6 +38,7 @@ module.exports = function(sequelize, DataTypes) {
 		AdditionalContactNetId3: DataTypes.STRING,
 		Abstract: DataTypes.TEXT,
 		Background: DataTypes.TEXT('medium'),
+		ProposalFeedback: DataTypes.TEXT('medium'),
 		StudentsEstimated: DataTypes.INTEGER,
 		EstimateJustification: DataTypes.TEXT('medium'),
 		ResearchScholarship: DataTypes.TEXT('medium'),
