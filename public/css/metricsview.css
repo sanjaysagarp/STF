@@ -12,3 +12,22 @@ table {
 .table-striped-column > tbody > tr th:nth-of-type(odd) {
   background-color: #F2F2F2;
 }
+
+th { 
+	cursor: pointer; 
+}
+
+.selectors:after {
+	content: ' ';
+	position: relative;
+	border: 8px solid transparent;
+}
+
+.selectors:after {
+  top: 10px;
+  border-top-color: silver;
+}
+
+.selectors {
+  padding-left: 4px;
+}
