@@ -32,6 +32,14 @@ router.get('/admin', function(req, res) {
 	res.render('admin/index');
 });
 
+router.get('/admin/users', function(req, res) {
+	db.User.findAll().then(function(users) {
+		res.render('admin/users',{
+			users: users
+		});
+	});
+});
+
 
 //Receives data from the admin page. Depending on the requested action,
 //follows through and changes site data.

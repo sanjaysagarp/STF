@@ -49,7 +49,16 @@ nav.navbar.navbar-default.sub-nav
 				//- todo li: a(href='#') Explore
 			ul.nav.navbar-nav.navbar-right
 				if isAdmin
-					li: a(href='/admin') Admin
+					ul.nav.navbar-nav
+						li.dropdown
+							a.dropdown-toggle(href='#', data-toggle='dropdown') Admin
+								span.caret
+							ul.dropdown-menu(role='menu')
+								li: a(href='/metrics') Metrics
+								li: a(href='/metrics/voting') Voting
+								li: a(href='/admin/users') View Users
+								li(role='seperator' class='divider')
+								li: a(href='/admin') Advanced
 				if isCommitteeMember
 					ul.nav.navbar-nav
 						li.dropdown

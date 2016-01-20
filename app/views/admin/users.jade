@@ -1,0 +1,28 @@
+extends ../head
+
+append css
+	link(rel='stylesheet' href='../css/admin.css')
+	
+block content
+	.jumbotron(style='background: url(../img/admin.jpg); background-position: center 15%; background-repeat: no-repeat; background-size: cover;')
+		.container
+			h1 Admin Panel
+			p Edit and change things others can't!
+			
+	.container
+		h2 Users
+		table.table-striped.table#dynatable
+			if users.length != 0
+				thead
+					tr
+						th NetId
+						th First Name
+						th Last Name
+						th Permissions
+				tbody
+					- each user in users
+						tr
+							td #{user.NetId}
+							td #{user.FirstName}
+							td #{user.LastName}
+							td #{user.Permissions == 1 ? "Committee Member" : ""}#{user.Permissions == 2 ? "Admin" : ""}
