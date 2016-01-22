@@ -33,7 +33,7 @@ router.get('/metrics', function(req, res) { //todo unspaghetti this
 		var totalPercent = 100;
 		for (var i = 0; i < metrics.length; i++) {
 			var line = metrics[i].dataValues;
-			var proposalId = line.ProposalId;
+			var proposalId = line.ProposalId; 
 			delete line.id;
 			delete line.Notes;
 			delete line.AuthorId;
@@ -41,19 +41,10 @@ router.get('/metrics', function(req, res) { //todo unspaghetti this
 			delete line.createdAt;
 			delete line.updatedAt;
 			var sum = 0;
-			var count = 0;
+			var weight = 10; //weight is number of metric questions
 			for (score in line) {
-				var weight = 1;
-				if (count < 5) { //5 = length of metric.impact?
-					weight = 6.7;
-				} else if (count < 8) {
-					weight = 11.1;
-				} else {
-					weight = 16.6;
-				}
 				sum += ((line[score] * weight) / totalPercent);
 				//console.log(score);
-				count++;
 			}
 			if (!scores[proposalId]) {
 				scores[proposalId] = {};
@@ -306,6 +297,7 @@ router.get('/metrics/:id', function(req, res) {
 							}
 						}
 					}
+					
 
 					//add the special questions into the list
 					/*for (var obj in questions.special[proposal.Category]) {

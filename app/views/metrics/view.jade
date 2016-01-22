@@ -24,16 +24,22 @@ block content
 					
 					each val, index in list
 						th.selectors= index
+					th Total
 					if isAdmin || isCommitteeMember
 						th Notes
+					
+
 				each val, index in list
 					tr: td.hidden(id="#{index}" colspan='100')= val
 
 				each metric in metrics
 					tr
 						td= users[metric.AuthorId].NetId
+						- var total = 0
 						each val, index in list
 							td= metric[index]
+							- total += metric[index];
 							-j++
+						td= total
 						if isAdmin || isCommitteeMember
 							td= metric.Notes
