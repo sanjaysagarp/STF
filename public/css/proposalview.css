@@ -36,13 +36,7 @@ td {
 	flex: 1 1 auto;
 }
 
-.rowsContact {
-	overflow: overflow;
-	display: flex;
-	flex-wrap: wrap;
-	flex-direction: row;
-	margin-top: 10px;
-}
+
 
 .contacts {
 	display: flex;
@@ -131,6 +125,25 @@ table {
 	width: 100%;
 }
 
+.colsContact > table {
+	width: auto;
+}
+.colsContact {
+	display:block;
+}
+@media (max-width: 992px) {
+	table {
+		width: auto;
+	}
+	.rowsContact {
+		overflow: overflow;
+		display: flex;
+		flex-wrap: wrap;
+		flex-direction: row;
+		margin-top: 10px;
+	}
+}
+
 .funded .item-head {
 	background-color: #DFF0D8 !important;
 }
@@ -142,4 +155,3 @@ table {
 .funded .info-first-line > td {
 	background-color: #FAFAFA;
 }
-

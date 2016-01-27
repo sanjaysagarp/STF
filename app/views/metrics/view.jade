@@ -24,7 +24,7 @@ block content
 					
 					each val, index in list
 						th.selectors= index
-					th Total
+					th Avg
 					if isAdmin || isCommitteeMember
 						th Notes
 					
@@ -36,10 +36,12 @@ block content
 					tr
 						td= users[metric.AuthorId].NetId
 						- var total = 0
+						- var j = 0
 						each val, index in list
 							td= metric[index]
 							- total += metric[index];
 							-j++
-						td= total
+						- total = total / j;
+						td= total.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 						if isAdmin || isCommitteeMember
 							td= metric.Notes
