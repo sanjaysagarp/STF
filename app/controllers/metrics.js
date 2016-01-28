@@ -44,7 +44,6 @@ router.get('/metrics', function(req, res) { //todo unspaghetti this
 			var weight = 10; //weight is number of metric questions
 			for (score in line) {
 				sum += ((line[score] * weight) / totalPercent);
-				//console.log(score);
 			}
 			if (!scores[proposalId]) {
 				scores[proposalId] = {};
@@ -60,7 +59,8 @@ router.get('/metrics', function(req, res) { //todo unspaghetti this
 				total += prop[sum]
 				count++;
 			}
-			scores[proposal] = total / count; 		}
+			scores[proposal] = total / count; 		
+		}
 
 		db.Proposal.findAll({
 			order: [['id', 'DESC']],
@@ -187,13 +187,39 @@ function renderVotingFullOrPartial(fullPage, req, res) {
 						}).then(function(metrics) {
 
 							//attach the metrics data to the proposal
+							var avgScores = [];
+							var totalAvg = [];
 							for (metric in metrics) {
 								if (data[metrics[metric].ProposalId].metrics === undefined) {
 									data[metrics[metric].ProposalId].metrics = {};
 								}
 								data[metrics[metric].ProposalId].metrics[metrics[metric].id] = metrics[metric].dataValues;
+								var authorId = metrics[metric].dataValues.AuthorId;
+								var proposalId = metrics[metric].dataValues.ProposalId;
+								
+								var total = 0;
+								var i = 0;
+								
+								//Assigns average metric score to each member
+								for (index in metrics[metric].dataValues) {
+									//console.log(index);
+									if(i>2 && i<13) {
+										total += metrics[metric].dataValues[index];
+									}
+									i++;
+								}
+								avgScores[authorId] = (total / 10).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); //10 is # of metrics
+								
+								var total = 0;
+								
+								for (index in avgScores) {
+									total += (avgScores[index] * 1.0);
+								}
+								totalAvg[proposalId] = (total / Object.keys(avgScores).length).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+								
 							}
-
+							//Gets the total average for metrics of a proposal
+							
 							//get all the votes by the user
 							db.Vote.findAll({
 								where: {
@@ -222,18 +248,20 @@ function renderVotingFullOrPartial(fullPage, req, res) {
 										data[ends[end].ProposalId].ends++;
 									}
 
-
 									//we did it! make the page!
 									db.User.findAll().then(function(users) {
 										var userData = {};
 										for (userN in users) {
 											userData[users[userN].id] = users[userN];
 										}
+										//console.log(totalAvg);
 										res.render((fullPage ? 'metrics/voting' : 'metrics/votingpartial'), {
 											title: 'STF Voting',
 											user: user,
 											users: userData,
 											data: data,
+											avgScores: avgScores,
+											totalAvg: totalAvg,
 											voted: alreadySubmitted
 										}); 
 									});

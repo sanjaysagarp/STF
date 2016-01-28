@@ -24,16 +24,22 @@ if data
 					if proposal.metrics
 						.metrics
 							h4 Metrics
+							-var avg = 0
+							-var i = 0
 							each metric in proposal.metrics
 								.row
 									.col-xs-6
 										p: b #{users[metric.AuthorId].NetId}
 									.col-xs-6.text-right
-										p <b>Score:</b> 3.12
+										-avg += (avgScores[metric.AuthorId] * 1.0)
+										-i++
+										p <b>Score: #{avgScores[metric.AuthorId]}</b> 
 								p= metric.Notes
 								hr
 
-							p <b>Total Average</b> 4.5
+							-avg = (avg / i)
+							p <b>Total Average</b>
+							p= avg.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 				h4 Voting
 				if proposal.Status == 2 
 					if voted.indexOf(proposal.id) === -1
