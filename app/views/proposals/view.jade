@@ -212,7 +212,7 @@ block content
 				th Subtotal
 			
 			each item in items
-				if item.SupplementalId === null
+				if item.SupplementalId === null && item.PartialId === null
 					+item(item)
 			+total()
 
