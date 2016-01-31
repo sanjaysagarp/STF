@@ -57,14 +57,16 @@ $(document).ready(function() {
 				$("#totalScore").val(average)
 		})
 
-		//only used during the create page
+		//only used during the create page -- NEEDS A WAY FOR ADMIN TO DISABLE/ENABLE
 		$('#title').keypress(function(e) {
-			if ($(this).val().length < 10) {
-				$('#create').addClass("disabled");
-				$('.form-button').addClass("disabled");
-			} else {
-				$('#create').removeClass("disabled");
-				$('.form-button').removeClass("disabled");
+			if(false) {
+				if ($(this).val().length < 10) {
+					$('#create').addClass("disabled");
+					$('.form-button').addClass("disabled");
+				} else {
+					$('#create').removeClass("disabled");
+					$('.form-button').removeClass("disabled");
+				}
 			}
 		})
 

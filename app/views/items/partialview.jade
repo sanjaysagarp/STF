@@ -73,7 +73,9 @@ block content
 							.form-group
 								label.col-md-4.control-label(for='saveItem')
 								.col-md-4
-									button#saveItem.btn.btn-default.form-button(name='saveItem', type="submit") Save
+									form.form-horizontal#editItem(name='editPartial', method='post')
+										input(type='hidden' name='delete' value='false')
+										button#saveItem.btn.btn-default.form-button(type="submit") Save
 							.form-group
 								.col-md-4.col-md-offset-4
 									a(href='/proposals/#{proposal.id}')

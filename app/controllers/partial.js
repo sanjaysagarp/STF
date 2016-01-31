@@ -149,7 +149,8 @@ router.post('/partial/:partial/:item', function(req, res) {
 						});
 					});
 				} else {
-					if (req.body['delete']) {
+					if (req.body['delete'] == 'true') {
+							console.log("WHY!!!!");
 							res.redirect('/proposals/' + partial.ProposalId);
 							partial.destroy()
 						

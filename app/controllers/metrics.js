@@ -210,13 +210,6 @@ function renderVotingFullOrPartial(fullPage, req, res) {
 								}
 								avgScores[authorId] = (total / 10).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); //10 is # of metrics
 								
-								var total = 0;
-								
-								for (index in avgScores) {
-									total += (avgScores[index] * 1.0);
-								}
-								totalAvg[proposalId] = (total / Object.keys(avgScores).length).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-								
 							}
 							//Gets the total average for metrics of a proposal
 							
@@ -261,7 +254,6 @@ function renderVotingFullOrPartial(fullPage, req, res) {
 											users: userData,
 											data: data,
 											avgScores: avgScores,
-											totalAvg: totalAvg,
 											voted: alreadySubmitted
 										}); 
 									});

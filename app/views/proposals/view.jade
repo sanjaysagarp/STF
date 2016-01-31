@@ -181,8 +181,9 @@ block content
 						option(id='#{partial.id}' value='') #{usersPartial[partial.AuthorId].NetId + ': ' + partial.Title} 
 
 		input(id='proposalId' type='hidden' value='#{proposal.id}' )
-		if isCommitteeMember
+		if isCommitteeMember || isAdmin
 			a(href='/partials/new/#{proposal.id}' id='partialLink') Create Partial
+			br
 
 		if supplementals.length > 0
 			br
