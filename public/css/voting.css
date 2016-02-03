@@ -15,6 +15,10 @@
 	margin-top: 10px;
 }
 
+.notes {
+	white-space: pre-line;
+}
+
 #toast-container {
 	margin-top: 10px;
 }

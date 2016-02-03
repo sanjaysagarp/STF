@@ -44,4 +44,4 @@ block content
 						- total = total / j;
 						td= total.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 						if isAdmin || isCommitteeMember
-							td= metric.Notes
+							td(style="white-space: pre-line;")= metric.Notes

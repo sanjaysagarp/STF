@@ -34,8 +34,9 @@ if data
 										-avg += (avgScores[metric.AuthorId] * 1.0)
 										-i++
 										p <b>Score: #{avgScores[metric.AuthorId]}</b> 
-								p= metric.Notes
-								hr
+								.notes
+									p= metric.Notes
+									hr
 
 							-avg = (avg / i)
 							p <b>Total Average</b>
