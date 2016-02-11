@@ -37,11 +37,11 @@ router.get('/calendar', function serveCalendar(req, res) {
 
 
 //displays the hellowworld page
-router.get('/helloworld', shib.ensureAuth('/login'), shib.ensureAuth('/login'), function serveHelloWorld(req, res) {
-	res.render('simples/helloworld',
-		{message : req.session.message}
-	);
-});
+// router.get('/helloworld', shib.ensureAuth('/login'), shib.ensureAuth('/login'), function serveHelloWorld(req, res) {
+// 	res.render('simples/helloworld',
+// 		{message : req.session.message}
+// 	);
+// });
 
 
 //displays the about page
