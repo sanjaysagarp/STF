@@ -7,7 +7,7 @@ module.exports = function(sequelize, DataTypes) {
     ProposalId: 'MEDIUMINT',
     PartialId: 'MEDIUMINT',
     SupplementalId: 'MEDIUMINT',
-		ItemName: DataTypes.STRING,
+	ItemName: DataTypes.STRING,
     Group: DataTypes.STRING,
     Quantity: DataTypes.INTEGER,
     Price: DataTypes.FLOAT,
