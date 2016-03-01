@@ -32,6 +32,9 @@ router.get('/admin', function(req, res) {
 	res.render('admin/index');
 });
 
+
+
+//display a view of all users and permissions
 router.get('/admin/users', function(req, res) {
 	db.User.findAll().then(function(users) {
 		res.render('admin/users',{

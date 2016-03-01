@@ -1,0 +1,25 @@
+extends ../head
+
+append css
+	link(rel='stylesheet' href='css/admin.css')
+
+block content
+	.jumbotron(style='background: url(img/admin.jpg); background-position: center 15%; background-repeat: no-repeat; background-size: cover;')
+		.container
+			h1 Admin Panel
+			p Edit and change things others can't!
+
+	.container
+		if message
+			h3= subject
+			p= message
+
+		h2 Create Award Letters
+		p Enter the funded proposal and additional information to create an award letter
+		form(method='post')
+			input(type='text', name='proposalId', placeholder='ProposalID', size='10')
+			select(name='reportType') 
+				option(value='0') Quarterly
+				option(value='1') Anually
+				option(value='2') Both
+			button Submit
