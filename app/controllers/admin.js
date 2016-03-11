@@ -14,7 +14,6 @@ module.exports = function(app) {
 	app.use('/', router);
 };
 
-
 //Ensure that anyone asking for a '/admin' page is a logged in user, and is an 
 //administrator of the site
 router.all('/admin*', shib.ensureAuth('/login'), function(req, res, next) {
@@ -30,6 +29,11 @@ router.all('/admin*', shib.ensureAuth('/login'), function(req, res, next) {
 //display admin page
 router.get('/admin', function(req, res) {
 	res.render('admin/index');
+});
+
+//display award creation page
+router.get('/admin/award', function(req, res) {
+	res.render('admin/award');
 });
 
 

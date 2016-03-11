@@ -57,13 +57,13 @@ router.post('/admin/award', shib.ensureAuth('/login'), function(req, res) {
 		})
 		.then(function(items) {
 			var total = 0.0;
-			if (proposal.status == 4) { //fully funded
+			if (proposal.Status == 4) { //fully funded
 				for (var item in items) {
-					if (item.SupplementalId === null && item.PartialId === null) {
+					if (item.SupplementalId == null && item.PartialId == null) {
 						total += Math.round(item.Price * item.Quantity);
 					}
 				}
-			} else if(proposal.status == 5) { //partially funded
+			} else if(proposal.Status == 5) { //partially funded
 				for (var item in items) {
 					//checks the id of the funded partial with the items
 					if(item.PartialId == proposal.PartialFunded) {
@@ -76,17 +76,24 @@ router.post('/admin/award', shib.ensureAuth('/login'), function(req, res) {
 					message: "Please decide funding or not for proposal " +  proposal.id + " before creating an award letter"
 				});
 			}
+			console.log(total)
 			total.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			console.log(total)
 			
 			db.Award.create({
 				ProposalId: proposal.id,
 				ReportType: req.body.reportType,
 				FundedAmount: total,
-				AwardDate: moment().format('MMMM Do YYYY'),
+				AwardDate: moment().format(),
 				BudgetDate: moment().month(awardDetails.BudgetMonth).format('MMMM YYYY'),
 				OversightStartDate: moment().month(awardDetails.OversightStartMonth).add(3, 'years').format('YYYY'),
-				OversightEndDate: moment().month(awardDetails.OversightEndMonth).add(7, 'years').format('YYYY')
+				OversightEndDate: moment().month(awardDetails.OversightEndMonth).add(7, 'years').format('YYYY'),
+				updatedAt: moment().format(),
+				createdAt: moment().format()
 			});
+			
+		})
+		.then(function() {
 			res.render('admin/award', {
 				subject: 'Award Letter Successfully Created',
 				message: "An award letter has been created for proposal " +  proposal.id

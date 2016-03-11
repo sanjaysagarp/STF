@@ -20,6 +20,6 @@
     "passport-uwshib": "*",
     "request": "^2.58.0",
     "sequelize": "^2.0.6",
-    "serve-favicon": "^2.2.1",
+    "serve-favicon": "^2.2.1"
   }
 }
