@@ -12,7 +12,7 @@ module.exports = function(app) {
 	app.use('/', router);
 };
 
-router.get('/proposals/award/:id', shib.ensureAuth('/login'), function(req, res) {
+router.get('/proposals/award/:id', function(req, res) {
 	//get whether the proposal is computer lab or not
 	//get primaryuser
 	//need to create view for this and create schema for awards
@@ -25,13 +25,25 @@ router.get('/proposals/award/:id', shib.ensureAuth('/login'), function(req, res)
 	.then(function(award) {
 		db.Proposal.find({
 			where: {
-				id: req.body.proposalId
+				id: req.params.id
 			}
 		})
 		.then(function(proposal) {
+			//format dates
+			var awardDate = moment(award.AwardDate).format('MMMM Do YYYY');
+			var budgetMonth = moment(award.BudgetMonth).format('MMMM YYYY');
+			var oversightStartDate = moment(award.OversightStartDate).format('MMMM YYYY');
+			var oversightEndDate = moment(award.OversightEndDate).format('MMMM YYYY');
+			var total = award.FundedAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 			res.render('proposals/award', {
+				title: "Award Letter",
 				proposal: proposal,
-				award: award
+				award: award,
+				awardDate: awardDate,
+				budgetMonth: budgetMonth,
+				oversightStartDate: oversightStartDate,
+				oversightEndDate: oversightEndDate,
+				total: total
 			});
 		});
 	})
@@ -47,65 +59,65 @@ router.post('/admin/award', shib.ensureAuth('/login'), function(req, res) {
 			id: req.body.proposalId
 		}
 	}).then(function(proposal) {
-		// need to check if either partial or original proposal is funded
-		// if partial funded, retrieve the funded items based on the retrieved partial id from the proposal schema
-		// Original items will be retrieved from item where item.partialid = null and item.proposalid = req.params.id
-		db.Item.findAll({
+		db.Award.find({
 			where: {
 				ProposalId: req.body.proposalId
 			}
 		})
-		.then(function(items) {
-			var total = 0.0;
-			if (proposal.Status == 4) { //fully funded
-				for (var item in items) {
-					if (item.SupplementalId == null && item.PartialId == null) {
-						total += Math.round(item.Price * item.Quantity);
-					}
-				}
-			} else if(proposal.Status == 5) { //partially funded
-				for (var item in items) {
-					//checks the id of the funded partial with the items
-					if(item.PartialId == proposal.PartialFunded) {
-						total += Math.round(item.Price * item.Quantity);
-					}
-				}
+		.then(function(award) {
+			//If award already exists
+			if(award) {
+				res.send({message: "Duplicate"});
 			} else {
-				res.render('admin/award', {
-					subject: 'Proposal has not been voted on',
-					message: "Please decide funding or not for proposal " +  proposal.id + " before creating an award letter"
+				db.Item.findAll({
+					where: {
+						ProposalId: req.body.proposalId
+					}
+				})
+				.then(function(items) {
+					var total = 0.0;
+					if (proposal.Status == 4) { //fully funded
+						for (item in items) {
+							if (items[item].SupplementalId == null && items[item].PartialId == null) {
+								total += Math.round(items[item].Price * items[item].Quantity);
+							}
+						}
+					} else if(proposal.Status == 5) { //partially funded
+						for (item in items) {
+							//checks the id of the funded partial with the items
+							if(items[item].PartialId == items[item].PartialFunded) {
+								total += Math.round(items[item].Price * items[item].Quantity);
+							}
+						}
+					} else {
+						res.send({message: "Proposal status is invalid"});
+					}
+					
+					if (total != 0.0) {
+						db.Award.create({
+							ProposalId: proposal.id,
+							ReportType: req.body.reportType,
+							FundedAmount: total,
+							AwardDate: moment().format(),
+							BudgetDate: moment().month(awardDetails.BudgetMonth).format('MMMM YYYY'),
+							OversightStartDate: moment().month(awardDetails.OversightStartMonth).add(3, 'years').format('YYYY'),
+							OversightEndDate: moment().month(awardDetails.OversightEndMonth).add(7, 'years').format('YYYY'),
+							updatedAt: moment().format(),
+							createdAt: moment().format()
+						});
+							res.send({message: "Success"});
+					}
+				})
+				.catch(function(err) {
+					console.log(err);
+					res.render('admin/award', {
+						subject: 'Oops',
+						message: "Proposal " + req.body.proposalId + " does not exist"
+					});
 				});
 			}
-			console.log(total)
-			total.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-			console.log(total)
-			
-			db.Award.create({
-				ProposalId: proposal.id,
-				ReportType: req.body.reportType,
-				FundedAmount: total,
-				AwardDate: moment().format(),
-				BudgetDate: moment().month(awardDetails.BudgetMonth).format('MMMM YYYY'),
-				OversightStartDate: moment().month(awardDetails.OversightStartMonth).add(3, 'years').format('YYYY'),
-				OversightEndDate: moment().month(awardDetails.OversightEndMonth).add(7, 'years').format('YYYY'),
-				updatedAt: moment().format(),
-				createdAt: moment().format()
-			});
-			
-		})
-		.then(function() {
-			res.render('admin/award', {
-				subject: 'Award Letter Successfully Created',
-				message: "An award letter has been created for proposal " +  proposal.id
-			});
-		})
-		.catch(function(err) {
-			console.log(err);
-			res.render('admin/award', {
-				subject: 'Oops',
-				message: "Proposal " + req.body.proposalId + " does not exist"
-			});
 		});
+
 		
 	});
 });

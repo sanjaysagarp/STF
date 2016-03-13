@@ -38,6 +38,10 @@ block content
 								td: | View Metrics
 							else
 								td: a(href='/metrics/#{proposal.id}') View Metrics
+						if award
+							tr
+								th Award Letter
+								td: a(href='/proposals/award/#{proposal.id}') View Letter
 
 			.col-sm-12.col-md-8
 				h3 Contact Info

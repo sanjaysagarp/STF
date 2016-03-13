@@ -3,12 +3,12 @@ extends ../head
 block content
 	.container
 		h1 Award Letter for #{proposal.ProposalTitle}
-		p Date: #{award.AwardDate}
+		p Date: #{awardDate}
 		br
-		p It is a pleasure to inform you that the Student Technology Fee Committee has approved your proposal #{award.ProposalId} for #{award.FundedAmount}. By accepting STF funds, the proposal author and department agree to the requirements of this award letter, as well as stipulations under STF Compliance. 
+		p It is a pleasure to inform you that the Student Technology Fee Committee has approved your proposal #{award.ProposalId} for $#{total}. By accepting STF funds, the proposal author and department agree to the requirements of this award letter, as well as stipulations under STF Compliance. 
 		
 		h2 Reporting Requirements
-		p STF will require [quarterly – annual] reports for this proposal. Reporting documents can be found on your proposal page. Reports are due on the following dates:
+		p STF will require reports for this proposal. Reporting documents can be found on your proposal page. Reports are due on the following dates:
 		ul
 		if award.ReportType == 0 || award.ReportType == 2
 			li
@@ -21,13 +21,13 @@ block content
 			li
 				i Annual – August 31st
 		h2 Budgets and Use of Funds
-		p STF will create a unique budget number for this proposal upon the request of your budget coordinator in early #[strong #{award.BudgetDate}]. Funds must be spent from this account only on items indicated in your proposal and all purchases must be made using this unique budget number. Budgets must be ready to close by May 10th of the following year.
+		p STF will create a unique budget number for this proposal upon the request of your budget coordinator in early #[strong #{budgetMonth}]. Funds must be spent from this account only on items indicated in your proposal and all purchases must be made using this unique budget number. Budgets must be ready to close by May 10th of the following year.
 		
 		h2 STF Stickers
 		p All equipment purchased with STF funds must be identified with an STF sticker and the phrase "Funded by the Student Technology Fee” must appear in web pages and other printed or electronic material advertising/identifying the resource.  Email #[a(href='mailto:techfee@uw.edu') techfee@uw.edu] if you require stickers.
 		
 		h2 Compliance
-		p The equipment in your proposal is under STF compliance as stated at this link. Equipment uder $10,000 in value are under oversight until July 2019. Equipment over $10,000 are under oversight until July 2023. After these periods, equipment becomes the property of the department. (Refer to the #[a(href='/policies#compliance' target="_blank") Compliance Policy]).
+		p The equipment in your proposal is under STF compliance as stated at this link. Equipment uder $10,000 in value are under oversight until #{oversightStartDate}. Equipment over $10,000 are under oversight until #{oversightEndDate}. After these periods, equipment becomes the property of the department. (Refer to the #[a(href='/policies#compliance' target="_blank") Compliance Policy]).
 		
 		if proposal.Category == "L"
 			h2 Key Server

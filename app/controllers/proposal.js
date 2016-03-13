@@ -266,7 +266,6 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 		PrimaryName: PrimaryName,
 		PrimaryTitle: PrimaryTitle,
 		PrimaryPhone: PrimaryPhone,
-		PrimaryNetId: PrimaryNetId,
 		PrimaryMail: PrimaryMail,
 		BudgetName: BudgetName,
 		BudgetTitle: BudgetTitle,
@@ -436,7 +435,7 @@ router.get('/proposals/:id', function(req, res) {
 					//Implement supplemental after partials
 					db.Supplemental.findAll({
 						where : {
-							ProposalID: req.params.id
+							ProposalId: req.params.id
 						}
 					}).then(function(supplementals) {
 						//need to get users of supplementals (creators)
@@ -459,39 +458,45 @@ router.get('/proposals/:id', function(req, res) {
 									id: userPartialIds
 								}
 							}).then(function(usersPartialRaw) {
+								db.Award.find({
+									where: {
+										ProposalId: req.params.id
+									}
+								}).then(function(award) {
+									//re-orient data
+									var usersPartial = {};
+									for (userPartialRaw in usersPartialRaw) {
+										usersPartial[usersPartialRaw[userPartialRaw].id] = usersPartialRaw[userPartialRaw];
+									}
 
-								//re-orient data
-								var usersPartial = {};
-								for (userPartialRaw in usersPartialRaw) {
-									usersPartial[usersPartialRaw[userPartialRaw].id] = usersPartialRaw[userPartialRaw];
-								}
+									//create written date
+									var cr = new Date(proposal.createdAt);
+									var months = ["January", "February", "March", "April", "May", "June", "July", 
+												"August", "September", "October", "November", "December"];
+									var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
+									var editor = false;
+									var loggedIn = false;
+									if (req.user) {
+										editor = h.approvedEditor(res, req.user, proposal, false);
+										loggedIn = true;
+									}
 
-								//create written date
-								var cr = new Date(proposal.createdAt);
-								var months = ["January", "February", "March", "April", "May", "June", "July", 
-								              "August", "September", "October", "November", "December"];
-								var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
-								var editor = false;
-								var loggedIn = false;
-								if (req.user) {
-									editor = h.approvedEditor(res, req.user, proposal, false);
-									loggedIn = true;
-								}
-
-								res.render('proposals/view', {
-									title: proposal.ProposalTitle,
-									proposal: proposal,
-									partials: partials,
-									supplementals: supplementals,
-									usersPartial: usersPartial,
-									usersSupplemental: usersSupplemental,
-									created: day,
-									items: items,
-									loggedIn: loggedIn,
-									endorsements: endorsements,
-									categories: categories,
-									editor: editor,
-									status: h.proposalStatus(proposal.Status)
+									res.render('proposals/view', {
+										title: proposal.ProposalTitle,
+										proposal: proposal,
+										partials: partials,
+										supplementals: supplementals,
+										usersPartial: usersPartial,
+										usersSupplemental: usersSupplemental,
+										created: day,
+										items: items,
+										loggedIn: loggedIn,
+										endorsements: endorsements,
+										categories: categories,
+										editor: editor,
+										award: award,
+										status: h.proposalStatus(proposal.Status)
+									});
 								});
 							});
 						});

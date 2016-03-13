@@ -1,7 +1,10 @@
 extends ../head
 
 append css
-	link(rel='stylesheet' href='css/admin.css')
+	link(rel='stylesheet' href='../css/admin.css')
+
+append js
+	script(src='/js/award.js')
 
 block content
 	.jumbotron(style='background: url(../img/admin.jpg); background-position: center 15%; background-repeat: no-repeat; background-size: cover;')
@@ -22,4 +25,5 @@ block content
 				option(value='0') Quarterly
 				option(value='1') Anually
 				option(value='2') Both
-			button Submit
+			button#submitButton Submit
+		div#notification
