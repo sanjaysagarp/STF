@@ -47,20 +47,17 @@ router.get('/admin/users', function(req, res) {
 	});
 });
 
-
-//Receives data from the admin page. Depending on the requested action,
-//follows through and changes site data.
-router.post('/admin', function(req, res) {
-	
-	//Add or change a user's type
-	if (req.body.addChange) {
-		db.User.find({ where: { NetId: req.body.netId} })
+//add/changes permissions for a user with a valid NetId
+router.post('/admin/addChange', function(req, res) {
+	if (req.body.netIdAddChange) {
+		db.User.find({ where: { NetId: req.body.netIdAddChange} })
 		.then(function(user) {
 			
 			if (user) { //A user exists, update their type
 				user.updateAttributes({
 					Permissions: req.body.permissions
-				}).then(function() {
+				})
+				.then(function() {
 					var status
 					switch (req.body.permissions) {
 						case 0:
@@ -70,28 +67,28 @@ router.post('/admin', function(req, res) {
 						case 2:
 							status = "admin.";
 					}
-					res.render('admin/index', {
-						subject: 'User Update Successful',
-						message: 'NetID ' + req.body.netId + ' has been set to ' + status
-					});
+					res.send({message: "NetID permissions updated"});
 				});
 
 			} else { //A user does not exist, create one
 				db.User.create({
-					NetId: req.body.netId,
+					NetId: req.body.netIdAddChange,
 					Permissions: req.body.permissions
-				}).then(function() {
-					res.render('admin/index', {
-						subject: 'User Creation Successful',
-						message: 'NetID ' + req.body.netId + ' has been added as a' + ((req.body.permissions - 1) ? 'n admin.' : ' basic user.')
-					})
+				})
+				.then(function() {
+					res.send({message: "NetID added and permissions updated"});
 				})
 			}
 		})
+	} else {
+		res.send({message: "Enter a vald NetID"});
+	}
+});
 
-	//Remove a user and destroy all their user data (besides proposals)
-	} else if (req.body.remove && req.body.sure) {
-		db.User.find({ where: {NetId: req.body.netId} })
+//removes user and all relevant data EXCEPT SUPPLEMENTALS -- NEED TO IMPLEMENT
+router.post('/admin/userRemove', function(req, res) {
+	if (req.body.sure == "1") {
+		db.User.find({ where: {NetId: req.body.netIdUserRemove} })
 		.then(function(user) {
 
 			if (user) { //Destroy the found user and user data
@@ -111,31 +108,34 @@ router.post('/admin', function(req, res) {
 					.then(db.Vote.destroy({ where: {VoterId: user.id} })) //delete votes
 					.then(user.destroy()) //delete user
 					.then(function() {
-						res.render('admin/index', {
-							subject: 'User Delete Successful',
-							message: 'NetID ' + req.body.netId + ' and all relevant data has been deleted permanantly.'
-						})
+						res.send({message:"User deleted"});
 					})
 				});	
 				
 
 			} else { //there is no user
-				res.render('admin/index', {
-					subject: 'Unknown NetID',
-					message: 'NetID ' + req.body.netId + " was not found."
-				});
+				res.send({message: "Invalid NetID"});
+				
 			}
 		});
-
-	//jump to proposal edit page
-	} else if (req.body.editProposal) {
-		res.redirect('/proposals/update/' + req.body.proposalId);
-
-	//something went wrong
 	} else {
-		res.render('admin/index', {
-			subject: 'Malformed Request or Incorrect Data',
-			message: 'The action you tried to take failed. No changes were made.'
-		});
+		res.send({message:"Confirm deletion"});
+	}
+});
+
+//Renders a proposal edit page for admins
+router.get('/admin/editProposal', function(req, res) {
+	if(req.query.proposalId && req.query.proposalId > 0) {
+		db.Proposal.find({where: {id: req.query.proposalId}})
+		.then(function(proposal) {
+			if(proposal) {
+				res.send({message:"redirect"});
+			} else {
+				res.send({message:"proposal number invalid"});
+			}
+		})
+		
+	} else {
+		res.send({message:"empty box"});
 	}
 });

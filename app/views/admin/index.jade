@@ -3,6 +3,9 @@ extends ../head
 append css
 	link(rel='stylesheet' href='css/admin.css')
 
+append js
+	script(src='/js/admin.js')
+
 block content
 	.jumbotron(style='background: url(img/admin.jpg); background-position: center 15%; background-repeat: no-repeat; background-size: cover;')
 		.container
@@ -16,32 +19,30 @@ block content
 
 		h2 Add or Change Member
 		p Add or change the status of a committee member. Basic members can create metrics and vote. Admin members can do everything you can. Disabled members are unable to do anything. Changing your own account WILL work.
-		form(method='post')
-			input(type='hidden', name='addChange', value='true')
-			input(type='text', name='netId', placeholder='NetID', size='14')
+		form(method='post', action='/admin/addChange')
+			input(type='text', name='netIdAddChange', placeholder='NetID', size='14')
 			select(name='permissions') 
 				option(value='1') Basic
 				option(value='0') Disabled
 				option(value='2') Admin
-			button Submit
+			button#addChangeButton Submit
 
 		h2 Remove Member
 		p Remove a member from the committee. All metrics and voting data from the member will be expunged. You cannot undo this action. If you're looking to stop a member from completing actions, but still keep their data, use the above disable option
-		form(method='post')
-			input(type='hidden', name='remove', value='true')
-			input(type='text', name='netId', placeholder='NetID', size='14')
+		form(method='post', action='/admin/userRemove')
+			input(type='text', name='netIdUserRemove', placeholder='NetID', size='14')
 			|  Are you sure? 
 			label 
-				input(type='radio', name='sure', value='true')
+				input(type='radio', name='sure', value="1")
 				| Yes 
 			label 
-				input(type='radio', name='sure', value='false', checked='checked')
+				input(type='radio', name='sure', value="0", checked='checked')
 				| No 
-				button Submit
+				button#userRemoveButton Submit
 
 		h2 Edit a Proposal
 		p You have super-special access to edit any proposal, even ones that have been submitted. Enter a proposal number to jump to its edit page
-		form(method='post')
-			input(type='hidden', name='editProposal', value='true')
+		form(method='get', action='/admin/editProposal')
 			input(type='number', name='proposalId')
-			button Submit
+			button#editProposalButton Submit
+		div#notification
