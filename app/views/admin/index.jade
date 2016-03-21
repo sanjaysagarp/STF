@@ -2,10 +2,11 @@ extends ../head
 
 append css
 	link(rel='stylesheet' href='css/admin.css')
+	link(href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet")
 
 append js
 	script(src='/js/admin.js')
-
+	script(src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js")
 block content
 	.jumbotron(style='background: url(img/admin.jpg); background-position: center 15%; background-repeat: no-repeat; background-size: cover;')
 		.container
@@ -17,6 +18,22 @@ block content
 			h3= subject
 			p= message
 
+		h2 Update Submission Settings
+		form(method='post', action='/admin/updateSettings')
+			fieldset.form-group
+				if settings.ProposalSubmissions == 1 
+					input(name="submissions", type="checkbox", id="toggle-trigger", checked, data-on="Opened", data-off="Closed",data-toggle="toggle", data-size="small")
+				else
+					input(name="submissions", type="checkbox", id="toggle-trigger", data-on="Opened", data-off="Closed", data-toggle="toggle", data-size="small")
+				label Request for Proposals (RFP) submissions
+			fieldset.form-group
+				if settings.FastTrack == 1
+					input(name="fasttrack", type="checkbox", id="toggle-trigger", checked, data-on="Opened", data-off="Closed",data-toggle="toggle", data-size="small")
+				else
+					input(name="fasttrack", type="checkbox", id="toggle-trigger", data-on="Opened", data-off="Closed", data-toggle="toggle", data-size="small")
+				label Fast Track option
+		button#updateSettingsButton Update
+		
 		h2 Add or Change Member
 		p Add or change the status of a committee member. Basic members can create metrics and vote. Admin members can do everything you can. Disabled members are unable to do anything. Changing your own account WILL work.
 		form(method='post', action='/admin/addChange')

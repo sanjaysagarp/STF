@@ -125,4 +125,41 @@ $(document).ready(function(){
 				}
 		});
 	});
+	
+	$('#updateSettingsButton').on('click', function(e) {
+		e.preventDefault();
+		$.ajax({
+				method: 'POST',
+				url: "/admin/updateSettings",
+				data: {
+					submissions: $('[name="submissions"]').prop('checked'),
+					fasttrack: $('[name="fasttrack"]').prop('checked')
+				},
+				dataType: 'json',
+				success: function(data) {
+					if(data) {
+						if(data.message == "updated") {
+							$("#notification").css("display", "block");
+							$("#notification").addClass("alert alert-success");
+							$("#notification").html("Proposal settings have been updated!");
+							$("#notification").fadeOut( 3000 );
+						} else {
+							$("#notification").css("display", "block");
+							$("#notification").addClass("alert alert-danger");
+							$("#notification").html("Somethings went wrong, try again.");
+							$("#notification").fadeOut( 3000 );
+						}
+					} else {
+						$("#notification").css("display", "block");
+						$("#notification").addClass("alert alert-danger");
+						$("#notification").html("Something went wrong");
+						$("#notification").fadeOut( 3000 );
+					}
+					
+				},
+				failure: function(err) {
+					console.log(err);
+				}
+		});
+	});
 });

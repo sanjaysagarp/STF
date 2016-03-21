@@ -1,13 +1,13 @@
 //Controller for the admin page. 
 
-var promise = require('bluebird')
+var promise = require('bluebird');
 var express = require('express');
 var	router = express.Router();
 var	db = require('../models');
 var shib = require('passport-uwshib');
 var categories = require('../../config/categories');
 var questions = require('../../config/metricsquestions');
-var h = require('../helper')
+var h = require('../helper');
 
 
 module.exports = function(app) {
@@ -28,7 +28,13 @@ router.all('/admin*', shib.ensureAuth('/login'), function(req, res, next) {
 
 //display admin page
 router.get('/admin', function(req, res) {
-	res.render('admin/index');
+	db.Admin.find({ where: {id: 1} })
+	.then(function(settings) {
+		res.render('admin/index', {
+			settings: settings
+		});
+	})
+	
 });
 
 //display award creation page
@@ -58,15 +64,6 @@ router.post('/admin/addChange', function(req, res) {
 					Permissions: req.body.permissions
 				})
 				.then(function() {
-					var status
-					switch (req.body.permissions) {
-						case 0:
-							status = "disabled.";
-						case 1:
-							status = "basic.";
-						case 2:
-							status = "admin.";
-					}
 					res.send({message: "NetID permissions updated"});
 				});
 
@@ -115,12 +112,44 @@ router.post('/admin/userRemove', function(req, res) {
 
 			} else { //there is no user
 				res.send({message: "Invalid NetID"});
-				
 			}
 		});
 	} else {
 		res.send({message:"Confirm deletion"});
 	}
+});
+
+//update proposal settings (open/close submissions for rfp). Retrieves true and false data under parser
+//(submissions / fastrack)
+router.post('/admin/updateSettings', function(req, res) {
+	var submissions, fasttrack;
+	if(req.body.submissions == 'true') {
+		submissions = 1;
+	} else {
+		submissions = 0;
+	}
+	if(req.body.fasttrack == 'true') {
+		fasttrack = 1;
+	} else {
+		fasttrack = 0;
+	}
+	db.Admin.find({
+		where: {id: 1}
+	})
+	.then(function(settings) {
+		if(settings) {
+			settings.updateAttributes({
+				ProposalSubmissions: submissions,
+				FastTrack: fasttrack,
+				updatedAt: Date.now
+			})
+			.then(function() {
+				res.send({message:"updated"});
+			});
+		} else {
+			res.send({message:"Somethings went wrong, try again."});
+		}
+	});
 });
 
 //Renders a proposal edit page for admins
