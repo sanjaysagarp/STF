@@ -22,12 +22,16 @@ router.get('/proposals', function(req, res, next) {
 //show the create a proposal page
 router.get('/proposals/create', shib.ensureAuth('/login'), function createProposal(req, res) {
 	getDepartments(function(departments) {
-		res.render('proposals/create', {
-			title: 'New Proposal',
-			categories: categories,
-			departments: departments
+		db.Admin.find({where: {id:1} })
+		.then(function(settings) {
+			res.render('proposals/create', {
+				title: 'New Proposal',
+				categories: categories,
+				departments: departments,
+				settings: settings
+			});
 		});
-	})
+	});
 });
 
 //display proposals that the user has created
@@ -382,14 +386,18 @@ router.get('/proposals/update/:id', shib.ensureAuth('/login'), function(req, res
 				}
 			}).then(function(item){
 				getDepartments(function(departments) {
-					res.render('proposals/update', {
-						title: 'Update Proposal ' + proposal.ProposalTitle,
-						proposal: proposal,
-						items: item,
-						categories: categories,
-						departments: departments
+					db.Admin.find({where: {id:1}})
+					.then(function(settings) {
+						res.render('proposals/update', {
+							title: 'Update Proposal ' + proposal.ProposalTitle,
+							proposal: proposal,
+							items: item,
+							categories: categories,
+							departments: departments,
+							settings: settings
+						});
 					});
-				})
+				});
 			});
 		} else {
 			if (proposal.Status == 1) {

@@ -86,8 +86,10 @@ block content
 										.col-md-4#fastTrackWrap
 											if proposal.FastTrack
 												input#fastTrack(name='fastTrack' type='checkbox' checked)
+											else if settings.FastTrack == 0
+												input#fastTrack(name='fastTrack' type='checkbox' disabled)
 											else
-												input#fastTrack(name='fastTrack' type='checkbox' disabled='disabled')
+												input#fastTrack(name='fastTrack' type='checkbox')
 											span.help-block Fast track proposals receive expedited funding if approved. Only proposals that demonstrate a need for fast track will be considered.
 
 									.form-group
