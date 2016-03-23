@@ -78,7 +78,47 @@ router.post('/admin/addChange', function(req, res) {
 			}
 		})
 	} else {
-		res.send({message: "Enter a vald NetID"});
+		res.send({message: "Enter a valid NetID"});
+	}
+});
+
+//Change status of proposal
+router.post('/admin/proposalChange', function(req, res) {
+	if (req.body.proposalChangeId) {
+		db.Proposal.find({ where: { id: req.body.proposalChangeId} })
+		.then(function(proposal) {
+			
+			if (proposal) { //A proposal exists - update status
+				proposal.updateAttributes({
+					Status: req.body.proposalStatus
+				})
+				.then(function() {
+					var num = parseInt(req.body.proposalStatus);
+					var status;
+					switch(num) {
+						case 0:
+							status = "\"Working Proposal\""
+							break;
+						case 1:
+							status = "\"Submitted Proposal\""
+							break;
+						case 6:
+							status = "\"Not Funded\""
+							break;
+						case 8:
+							status = "\"Cancelled\""
+							break;
+					}
+					res.send({message: "Proposal " + req.body.proposalChangeId + " status has been updated to " + status });
+				});
+
+			} else {
+				
+				res.send({message: "Proposal does not exist!"});
+			}
+		})
+	} else {
+		res.send({message: "Enter a valid ProposalID"});
 	}
 });
 

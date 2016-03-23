@@ -22,10 +22,52 @@ $(document).ready(function(){
 							$("#notification").addClass("alert alert-success");
 							$("#notification").html($('[name="netIdAddChange"]').val() + " has been added with current permissions");
 							$("#notification").fadeOut( 3000 );
-						} else if (data.message == "Enter a vald NetID") {
+						} else if (data.message == "Enter a valid NetID") {
 							$("#notification").css("display", "block");
 							$("#notification").addClass("alert alert-danger");
 							$("#notification").html("Please fill out the NetID box");
+							$("#notification").fadeOut( 3000 );
+						}
+					} else {
+						$("#notification").css("display", "block");
+						$("#notification").addClass("alert alert-danger");
+						$("#notification").html("Something went wrong");
+						$("#notification").fadeOut( 3000 );
+					}
+					
+				},
+				failure: function(err) {
+					console.log(err);
+				}
+		});
+	});
+
+	$('#proposalChangeButton').on('click', function(e) {
+		e.preventDefault();
+		$.ajax({
+				method: 'POST',
+				url: "/admin/proposalChange",
+				data: {
+					proposalStatus: $('[name="proposalStatus"]').val(),
+					proposalChangeId: $('[name="proposalChangeId"]').val()
+				},
+				dataType: 'json',
+				success: function(data) {
+					if(data) {
+						if(data.message == "Proposal does not exist!") {
+							$("#notification").css("display", "block");
+							$("#notification").addClass("alert alert-danger");
+							$("#notification").html(data.message);
+							$("#notification").fadeOut( 3000 );
+						} else if (data.message == "Enter a valid ProposalID") {
+							$("#notification").css("display", "block");
+							$("#notification").addClass("alert alert-danger");
+							$("#notification").html(data.message);
+							$("#notification").fadeOut( 3000 );
+						} else {
+							$("#notification").css("display", "block");
+							$("#notification").addClass("alert alert-success");
+							$("#notification").html(data.message);
 							$("#notification").fadeOut( 3000 );
 						}
 					} else {
@@ -143,6 +185,7 @@ $(document).ready(function(){
 							$("#notification").addClass("alert alert-success");
 							$("#notification").html("Proposal settings have been updated!");
 							$("#notification").fadeOut( 3000 );
+							window.location.href = '/proposals/update/' + $('[name="proposalId"]').val();
 						} else {
 							$("#notification").css("display", "block");
 							$("#notification").addClass("alert alert-danger");
