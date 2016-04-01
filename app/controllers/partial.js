@@ -20,7 +20,7 @@ router.get('/partials/new/:id', function(req, res) {
 		where: {RegId: req.user.regId}
 	}).then(function(user) {
 
-		if (h.activeCommitteeMember(res, user)) {
+		if (res.locals.isCommitteeMember || res.locals.isAdmin) {
 
 			//get all base items from the original proposal
 			db.Item.findAll({
@@ -44,6 +44,7 @@ router.get('/partials/new/:id', function(req, res) {
 						i.createdAt = null;
 						i.updatedAt = null;
 						i.PartialId = partial.id;
+						console.log(i);
 						db.Item.create(i);
 					}
 					redirect = partial.id;
@@ -68,7 +69,8 @@ router.get('/partial/:partial/:item', function(req, res) {
 		if (h.activeCommitteeMember(res, user)) {
 
 			//get the partial 
-			db.Partial.findById(req.params.partial).then(function(partial) {
+			db.Partial.find({where : {id: req.params.partial}})
+				.then(function(partial) {
 				
 				//so long as the author is the partial's author or the user is an admin
 				if (res.locals.isAdmin || (partial && partial.AuthorId == user.id)) {
@@ -115,9 +117,9 @@ router.get('/partial/:partial/:item', function(req, res) {
 					h.displayErrorPage(res, 'The requested partial could not be found or you are not the author',
 						'Requested does not Exist');
 				}
-			})
+				});
 		} 
-	})
+	});
 });
 
 
@@ -128,51 +130,51 @@ router.post('/partial/:partial/:item', function(req, res) {
 			RegId: req.user.regId
 		}
 	}).then (function(user) {
-		db.Partial.findById(req.params.partial)
-		.then(function(partial) {
-			if (res.locals.isAdmin || (partial && partial.AuthorId == user.id)) {
-				if (req.params.item != 0) {
-					db.Item.find({
-						where: {
-							id: req.params.item
-						}
-					}).then(function(item) {
-						db.Item.update(req.body, {
+		db.Partial.find({where : {id: req.params.partial}})
+			.then(function(partial) {
+				if (res.locals.isAdmin || (partial && partial.AuthorId == user.id)) {
+					if (req.params.item != 0) {
+						db.Item.find({
 							where: {
 								id: req.params.item
 							}
 						}).then(function(item) {
-							if (!item) {
-								res.send(404);
-							} 
-							res.redirect('/partial/' + req.params.partial + '/' + req.params.item)
-						});
-					});
-				} else {
-					if (req.body['delete'] == 'true') {
-							console.log("WHY!!!!");
-							res.redirect('/proposals/' + partial.ProposalId);
-							partial.destroy()
-						
-							db.Item.destroy({
+							db.Item.update(req.body, {
 								where: {
-									PartialId: req.params.partial
+									id: req.params.item
 								}
-							})
+							}).then(function(item) {
+								if (!item) {
+									res.send(404);
+								} 
+								res.redirect('/partial/' + req.params.partial + '/' + req.params.item)
+							});
+						});
 					} else {
-						db.Partial.update({
-							Title: req.body['PartialTitle']
-						}, {
-							where: {id: req.params.partial}
-						}).then(function() {
-							res.redirect('/partial/' + req.params.partial + '/' + req.params.item)
-						})
+						if (req.body['delete'] == 'true') {
+								console.log("WHY!!!!");
+								res.redirect('/proposals/' + partial.ProposalId);
+								partial.destroy()
+							
+								db.Item.destroy({
+									where: {
+										PartialId: req.params.partial
+									}
+								})
+						} else {
+							db.Partial.update({
+								Title: req.body['PartialTitle']
+							}, {
+								where: {id: req.params.partial}
+							}).then(function() {
+								res.redirect('/partial/' + req.params.partial + '/' + req.params.item)
+							})
+						}
 					}
+				} else {
+					h.displayErrorPage(res, 'You cannot edit this item', 'Change Refused');
 				}
-			} else {
-				h.displayErrorPage(res, 'You cannot edit this item', 'Change Refused');
-			}
-		})
-	})
+			});
+	});
 });
 

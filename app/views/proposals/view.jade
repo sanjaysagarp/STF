@@ -198,12 +198,13 @@ block content
 				else
 					each supplemental in supplementals
 						if supplemental.Status == 1
-							option(id='#{supplemental.id}' value='' selected) #{"Funded Supplemental by " + usersSupplemental[supplemental.AuthorId].NetId + ': ' + supplemental.Title}
+							option(id='#{supplemental.id}' value='' selected) #{"Funded Supplemental by " + supplemental.Author + ': ' + supplemental.Title}
 						else
-							option(id='#{supplemental.id}' value='') #{usersSupplemental[supplemental.AuthorId].NetId + ': ' + supplemental.Title}
+							option(id='#{supplemental.id}' value='') #{supplemental.Author + ': ' + supplemental.Title}
 
 		input(id='proposalId' type='hidden' value='#{proposal.id}' )
-		if editor
+		
+		if editor || isAdmin
 			a(href='/supplementals/new/#{proposal.id}' id='supplementalLink') Create Supplemental
 
 		-var total = 0;

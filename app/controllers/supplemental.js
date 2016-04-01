@@ -16,81 +16,87 @@ router.all('/supplemental*', shib.ensureAuth('/login'), function(req, res, next)
 
 //create a new supplemental with duplicated items
 router.get('/supplementals/new/:id', function(req, res) {
-	db.User.find({
-		where: {RegId: req.user.regId}
-	}).then(function(user) {
-		//THIS SHOULD WORK -- IF NOT, you're not finding proposal correctly
-		if (h.approvedEditor(res, req.user, db.Proposal.find({where:{id: req.params.id}}))) {
+	//THIS SHOULD WORK -- IF NOT, you're not finding proposal correctly
+	if (res.locals.isAdmin || res.locals.isCommitteeMember || h.approvedEditor(res, res.user, db.Proposal.find({where:{id: req.params.id}}))) {
 
-			//get all base items from the original proposal
-			db.Item.findAll({
-				where: {
-					ProposalId: req.params.id,
-					SupplementalId: null
-				}
-			}).then(function(items) {
-				var redirect;
+		//get all funded items from the original proposal
+		db.Item.findAll({
+			where: {
+				ProposalId: req.params.id,
+				SupplementalId: null,
+				PartialId: null
+			}
+		}).then(function(items) {
+			var redirect;
 
-				//create the supplemental
-				db.Supplemental.create({
-					AuthorId: user.id,
-					ProposalId: req.params.id
-				}).then(function(supplemental) {
-					
-					//create each duplicated item, bound to the supplemental -- Do we want this?
-					for (item in items) {
-						var i = items[item].dataValues;
-						i.id = null;
-						i.createdAt = null;
-						i.updatedAt = null;
-						i.SupplementalId = supplemental.id;
-						db.Item.create(i);
-					}
-					redirect = supplemental.id;
-
-				//redirect to new supplemental
-				}).then(function() {
-					res.redirect('/supplemental/' + redirect + '/0');
-				})
+			//create the supplemental
+			db.Supplemental.create({
+				Author: res.locals.netId,
+				ProposalId: req.params.id
 			})
-		}
-	})
+			.then(function(supplemental) {
+				
+				//create each duplicated item, bound to the supplemental -- Do we want this?
+				for (item in items) {
+					var i = items[item].dataValues;
+					i.id = null;
+					i.createdAt = null;
+					i.updatedAt = null;
+					i.SupplementalId = supplemental.id;
+					db.Item.create(i);
+				}
+				redirect = supplemental.id;
+
+			//redirect to new supplemental
+			})
+			.then(function() {
+				res.redirect('/supplemental/' + redirect + '/0');
+			});
+		});
+	} else {
+		h.displayErrorPage(res, 'The requested supplemental could not be found or you are not the author',
+						'Requested does not Exist');
+	}
 });
 
-//get a supplemental by its item
+
 router.get('/supplemental/:supplemental/:item', function(req, res) {
-	db.User.find( {
-		where: {
-			RegId: req.user.regId
-		}
-	}).then(function(user) {
-		//Should change check to if editor
-		if (true || h.activeCommitteeMember(res, user)) {
-
-			//get the supplemental 
-			db.Supplemental.findById(req.params.supplemental).then(function(supplemental) {
-				
-				//so long as the author is the supplemental's author or the user is an admin
-				if (res.locals.isAdmin || (supplemental)) {
-					db.Proposal.find({
+	//find supplemental
+	//check res.locals.netId with netid associated with supplemental
+	//get all items and render page
+	db.Supplemental.find({
+		where: {id:req.params.supplemental}
+	})
+	.then(function(supplemental) {
+		//if supplemental not found
+		if(!supplemental) {
+			h.displayErrorPage(res, 'The requested supplemental could not be found',
+						'Supplemental not found!');
+		} else {
+			//check if user is author of supplemental or an admin
+			if (res.locals.netId == supplemental.Author || res.locals.isAdmin) {
+				//retrieve items and render page!
+				db.Proposal.find({
 						where: {
-							id: supplemental.ProposalId,
+							id: supplemental.ProposalId
 						}
-					}).then(function(proposal) {
-
+					})
+					.then(function(proposal) {
 						//need to check proposal status (if submitted or awaiting decision)
 						//grab all items that match the supplemental
 						db.Item.findAll({
 							where: {
-								SupplementalId: supplemental.id,
+								SupplementalId: supplemental.id
 							}
-						}).then(function(items) {
+						})
+						.then(function(items) {
 							if (req.params.item != 0) {
 								db.Item.find({
 									where: {
 										id: req.params.item
 									}
-								}).then(function(item) {
+								})
+								.then(function(item) {
 									res.render('items/supplementalview',{
 										title: 'Supplemental for ' + proposal.ProposalTitle,
 										item: item,
@@ -98,7 +104,7 @@ router.get('/supplemental/:supplemental/:item', function(req, res) {
 										supplemental: supplemental,
 										proposal: proposal
 									});									
-								})
+								});
 							} else {
 								res.render('items/supplementalview',{
 									title: 'Supplemental for ' + proposal.ProposalTitle,
@@ -108,70 +114,71 @@ router.get('/supplemental/:supplemental/:item', function(req, res) {
 									proposal: proposal
 								});
 							}
-						})
-					})
-
-				} else { 
-					h.displayErrorPage(res, 'The requested supplemental could not be found or you are not the author',
-						'Requested does not Exist');
-				}
-			})
-		} 
-	})
-});
-
-
-//change item data on a supplemental
-router.post('/supplemental/:supplemental/:item', function(req, res) {
-	db.User.find({
-		where: {
-			RegId: req.user.regId
-		}
-	}).then (function(user) {
-		db.Supplemental.findById(req.params.supplemental)
-		.then(function(supplemental) {
-			if (res.locals.isAdmin || (supplemental && supplemental.AuthorId == user.id)) {
-				if (req.params.item != 0) {
-					db.Item.find({
-						where: {
-							id: req.params.item
-						}
-					}).then(function(item) {
-						db.Item.update(req.body, {
-							where: {
-								id: req.params.item
-							}
-						}).then(function(item) {
-							if (!item) {
-								res.send(404);
-							} 
-							res.redirect('/supplemental/' + req.params.supplemental + '/' + req.params.item)
 						});
 					});
-				} else {
-					if (req.body['delete']) {
-							res.redirect('/proposals/' + supplemental.ProposalId);
-							supplemental.destroy()
-						
-							db.Item.destroy({
-								where: {
-									SupplementalId: req.params.supplemental
-								}
-							})
-					} else {
-						db.Supplemental.update({
-							Title: req.body['SupplementalTitle']
-						}, {
-							where: {id: req.params.supplemental}
-						}).then(function() {
-							res.redirect('/supplemental/' + req.params.supplemental + '/' + req.params.item)
-						})
-					}
-				}
 			} else {
-				h.displayErrorPage(res, 'You cannot edit this item', 'Change Refused');
+				h.displayErrorPage(res, 'You are not the author of this supplemental',
+						'You do not have permission!');
 			}
-		})
-	})
+		}
+	});
 });
 
+//deletes a supplemental and all items associated with it
+router.post('/supplemental/delete/:supplemental', function(req, res) {
+	db.Supplemental.find({
+		where: {id:req.params.supplemental}
+	})
+	.then(function(supplemental) {
+		if(!supplemental) {
+			h.displayErrorPage(res, 'The requested supplemental does not exist',
+						'Supplemental not found!');
+		} else {
+			supplemental.destroy();
+			db.Item.destroy({
+				where: {
+					SupplementalId: req.params.supplemental
+				}
+			})
+			.then(function() {
+				res.redirect('/proposals/' + supplemental.ProposalId);
+			});
+		}
+	});
+});
+
+//update title of supplemental and redirects
+router.post('/supplemental/:supplemental/:item', function(req, res) {
+	if(req.params.item == 0) {
+		db.Supplemental.update(
+		{
+			Title: req.body['SupplementalTitle']
+		}, 
+		{
+			where: {id: req.params.supplemental}
+		})
+		.then(function() {
+			res.redirect('/supplemental/' + req.params.supplemental + '/' + req.params.item)
+		});
+	} else {
+		db.Item.find({
+			where: {
+				id: req.params.item
+			}
+		})
+		.then(function(item) {
+			db.Item.update(req.body, {
+				where: {
+					id: req.params.item
+				}
+			})
+			.then(function(item) {
+				if (!item) {
+					res.send(404);
+				} 
+				res.redirect('/supplemental/' + req.params.supplemental + '/' + req.params.item)
+			});
+		});
+	}
+	
+});
