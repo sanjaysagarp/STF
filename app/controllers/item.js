@@ -21,6 +21,20 @@ router.get('/items/new/:proposal', function(req, res) {itemMaker(req, res)});
 //makes a new blank item that is part of a partial
 router.get('/items/new/:partial/:proposal', function(req, res) {itemMaker(req, res)});
 
+router.get('/items/new/supplemental/:supplemental/:proposal', function(req, res) {itemMakerSupplemental(req, res)});
+
+//makes a new blank item that belongs to a partial or proposal
+function itemMakerSupplemental(req, res) {
+	if (h.approvedEditor(res, req.user, req.params.proposal)) {
+		db.Item.create({
+			ProposalId: req.params.proposal,
+			SupplementalId: req.params.supplemental
+		}).then(function(item) {
+			res.redirect('/supplemental/' + req.params.supplemental + "/" + item.id)
+		});
+	}
+}
+
 //makes a new blank item that belongs to a partial or proposal
 function itemMaker(req, res) {
 	if (h.approvedEditor(res, req.user, req.params.proposal)) {
@@ -50,24 +64,24 @@ router.post('/items/new', function(req, res) {
 //deletes an item by its id
 router.get('/item/delete/:id', function(req, res) {
 	db.Item.find({ where: {id: req.params.id} }).then(function(item) {
-		var partial = item.PartialId
-		var supplemental = item.SupplementalId
+		var partial = item.PartialId;
+		var supplemental = item.SupplementalId;
 		db.Proposal.find({ where: {id: item.ProposalId} }).then(function(proposal) {
-			if (h.approvedEditor(res, req.user, proposal)) {
+			if (res.locals.isAdmin || h.approvedEditor(res, req.user, proposal)) {
 				item.destroy().then(function() {
-					if (partial && (proposal.Status >= 1 && proposal.Status <= 3)) {
+					if (partial != null) {
 						res.redirect('/partial/' + partial + '/0')
-					} else if (supplemental || proposal.Status == 4) { //change to &&
+					} else if (supplemental != null) {
 						res.redirect('/supplemental/' + supplemental + '/0')
 					} else if (proposal.Status != 0) { //if a proposal is submitted, goto showpage
 						res.redirect('/proposals/' + proposal.id);
 					} else { //go back to the edit proposal page
 						res.redirect('/proposals/update/' + proposal.id + '#step-7');
 					}
-				})
+				});
 			}
-		})
-	})
+		});
+	});
 });
 
 
