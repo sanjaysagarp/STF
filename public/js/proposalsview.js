@@ -77,8 +77,8 @@ window.addEventListener('load', function() {
 				supplementalLink.href = '/supplementals/new/' + proposalId;
 				supplementalLink.innerHTML = 'Create Supplemental';
 			} else {
-				supplementalLink.href = '/supplemental/' + supplemental + '/0';
-				supplementalLink.innerHTML = 'Edit Supplemental';
+				supplementalLink.href = '/supplemental/view/' + supplemental;
+				supplementalLink.innerHTML = 'View Supplemental';
 			}
 		}
 	}

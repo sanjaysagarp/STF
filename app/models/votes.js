@@ -9,3 +9,5 @@ module.exports = function(sequelize, DataTypes) {
 	
 	return Vote;
 }
+
+//VoterId corresponds to UserId

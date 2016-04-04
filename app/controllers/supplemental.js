@@ -13,6 +13,34 @@ module.exports = function(app) {
 //ensure login on all supplemental pages
 router.all('/supplemental*', shib.ensureAuth('/login'), function(req, res, next) {next()} );
 
+//renders the supplemental view/voting page
+router.get('/supplemental/view/:supplemental', function(req, res) {
+	db.Supplemental.find({
+		where: {id: req.params.supplemental}
+	})
+	.then(function(supplemental) {
+		db.Proposal.find({
+			where: {id: supplemental.ProposalId}
+		})
+		.then(function(proposal) {
+			//find all items associated with supplemental
+			db.Item.findAll({
+				where: {
+					ProposalId: proposal.id,
+					SupplementalId: req.params.supplemental
+					}
+			})
+			.then(function(items) {
+				res.render('proposals/supplemental',{
+					title: 'Supplemental for ' + proposal.ProposalTitle,
+					supplemental: supplemental,
+					items: items
+				});
+			});
+		});
+	
+	});
+});
 
 //create a new supplemental with duplicated items
 router.get('/supplementals/new/:id', function(req, res) {
@@ -180,5 +208,5 @@ router.post('/supplemental/:supplemental/:item', function(req, res) {
 			});
 		});
 	}
-	
 });
+

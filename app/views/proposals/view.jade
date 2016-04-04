@@ -193,14 +193,12 @@ block content
 			br
 			| Supplementals
 			select#supplemental.form-control
-				if proposal.Status == 4
-					option(id='0' value='') Funded Original Proposal Items
-				else
-					each supplemental in supplementals
-						if supplemental.Status == 1
-							option(id='#{supplemental.id}' value='' selected) #{"Funded Supplemental by " + supplemental.Author + ': ' + supplemental.Title}
-						else
-							option(id='#{supplemental.id}' value='') #{supplemental.Author + ': ' + supplemental.Title}
+				option(id='0' value='') Select a Supplemental
+				each supplemental in supplementals
+					if supplemental.Status == 1
+						option(id='#{supplemental.id}' value='' selected) #{"Funded Supplemental by " + usersSupplemental[supplemental.AuthorId].NetId + ': ' + supplemental.Title}
+					else
+						option(id='#{supplemental.id}' value='') #{supplemental.Author + ': ' + supplemental.Title}
 
 		input(id='proposalId' type='hidden' value='#{proposal.id}' )
 		
