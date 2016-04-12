@@ -28,23 +28,140 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 				where: {
 					ProposalId: proposal.id,
 					SupplementalId: req.params.supplemental
-					}
+				}
 			})
-			.then(function(items) {
-				res.render('proposals/supplemental',{
-					title: 'Supplemental for ' + proposal.ProposalTitle,
-					supplemental: supplemental,
-					items: items
-				});
+			.then(function(itemsRaw) {
+				//find all items associated with proposal
+				//item, price, quantity
+				var items = [];
+				for (itemRaw in itemsRaw) {
+					var i = {
+						ItemName: itemsRaw[itemRaw].ItemName,
+						Group: itemsRaw[itemRaw].Group,
+						Price: itemsRaw[itemRaw].Price,
+						Quantity: itemsRaw[itemRaw].Quantity,
+						Description: itemsRaw[itemRaw].Description,
+						Justification: itemsRaw[itemRaw].Justification
+					};
+					
+					items.push(i);
+				}
+				//check if proposal status is fully funded to get items from that
+				if(proposal.Status == 4) {
+					db.Item.findAll({
+						where: {
+							ProposalId: proposal.id,
+							SupplementalId: null,
+							PartialId: null
+						}
+					})
+					.then(function(originalItemsRaw) {
+						//need to parse through both original FUNDED ITEMS -- check proposal for status (5 is partial funded, 4 is fully funded)
+						//create a new list of different items
+						//how to compare the lists?
+						var originalItems = [];
+						for (originalItemRaw in originalItemsRaw) {
+							var i = {
+								ItemName: originalItemsRaw[originalItemRaw].ItemName,
+								Group: originalItemsRaw[originalItemRaw].Group,
+								Price: originalItemsRaw[originalItemRaw].Price,
+								Quantity: originalItemsRaw[originalItemRaw].Quantity,
+								Description: originalItemsRaw[originalItemRaw].Description,
+								Justification: originalItemsRaw[originalItemRaw].Justification
+							};
+							originalItems.push(i);
+						}
+						//parse through supplemental items
+						//check if supplemental item is found in original items - if no: add to modifiedItemsList
+						var modifiedItems = [];
+						//searches through supplemental items
+						// console.log(items);
+						// console.log("SPACE");
+						for (item in items) {
+							//foreach sup item, check if it's found in the original funded items
+							//if not, add to modified items
+							//FOR SOME REASON UNDEFINED KEEPS APPEARING AS THE FIRST ITEM WHUHAYIYNBR4EAIU
+							if(items[item] && (!contains(items[item], originalItems))) {
+								console.log(items[item]);
+								modifiedItems.push(items[item]);
+							}
+						}
+						// console.log(items);
+						// console.log("SPACE");
+						// console.log(originalItems);
+						// console.log("SPACE");
+						for (originalItem in originalItems) {
+							if(originalItems[originalItem] != undefined && (!contains(originalItems[originalItems], items))) {
+								modifiedItems.push(originalItems[originalItem]);
+							}
+						}
+						console.log(modifiedItems);
+						res.render('proposals/supplemental',{
+							title: 'Supplemental for ' + proposal.ProposalTitle,
+							supplemental: supplemental,
+							items: items,
+							originalItems: originalItems,
+							modifiedItems: modifiedItems
+						});
+					});
+				//proposal--partially funded
+				} else if (proposal.Status == 5) {
+					db.Item.findAll({
+						where: {
+							ProposalId: proposal.id,
+							SupplementalId: null,
+							PartialId: proposal.PartialFunded
+						}
+					})
+					.then(function(partialItemsRaw) {
+						//need to parse through both original FUNDED ITEMS -- check proposal for status (5 is partial funded, 4 is fully funded)
+						//create a new list of different items
+						//how to compare the lists?
+						var partialItems = [];
+						for (partialItemRaw in partialItemsRaw) {
+							var i = {
+								ItemName: partialItemsRaw[partialItemRaw].ItemName,
+								Group: partialItemsRaw[partialItemRaw].Group,
+								Price: partialItemsRaw[partialItemRaw].Price,
+								Quantity: partialItemsRaw[partialItemRaw].Quantity,
+								Description: partialItemsRaw[partialItemRaw].Description,
+								Justification: partialItemsRaw[partialItemRaw].Justification
+							};
+							partialItems.push(i);
+						}
+						
+						//parse through supplemental items
+						//check if supplemental item is found in original items - if no: add to modifiedItemsList
+						var modifiedItems = [];
+						for (item in items) {
+							if(!contains(items[item], partialItems)) {
+								modifiedItems.push(items[item]);
+							}
+						}
+						
+						//check if supplemental items are found in original items
+						//if it isn't, add to separate lists (one for olditems and one for new items)
+						//once those lists are separate, highlight that as what is changed (red text)
+						res.render('proposals/supplemental',{
+							title: 'Supplemental for ' + proposal.ProposalTitle,
+							supplemental: supplemental,
+							items: items,
+							originalItems: partialItems,
+							modifiedItems: modifiedItems
+						});
+					});
+				} else {
+					h.displayErrorPage(res, 'The requested supplemental does not exist',
+						'Supplemental not found!');
+				}
+				
 			});
 		});
-	
 	});
 });
 
 //create a new supplemental with duplicated items
 router.get('/supplementals/new/:id', function(req, res) {
-	//THIS SHOULD WORK -- IF NOT, you're not finding proposal correctly
 	if (res.locals.isAdmin || res.locals.isCommitteeMember || h.approvedEditor(res, res.user, db.Proposal.find({where:{id: req.params.id}}))) {
 
 		//get all funded items from the original proposal
@@ -131,7 +248,7 @@ router.get('/supplemental/:supplemental/:item', function(req, res) {
 										items: items,
 										supplemental: supplemental,
 										proposal: proposal
-									});									
+									});
 								});
 							} else {
 								res.render('items/supplementalview',{
@@ -210,3 +327,11 @@ router.post('/supplemental/:supplemental/:item', function(req, res) {
 	}
 });
 
+function contains(supItem, itemArray) {
+	for(item in itemArray) {
+		if(supItem != null && itemArray[item].ItemName == supItem.ItemName && itemArray[item].Quantity == supItem.Quantity && itemArray[item].Price == supItem.Price) {
+			return true;
+		}
+	}
+	return false;
+}

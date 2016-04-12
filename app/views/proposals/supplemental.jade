@@ -1,5 +1,70 @@
 extends ../head
 
+append css
+	link(rel='stylesheet', href='/css/supplemental.css')
+	
 block content
 	.container
-		h2 HELLOooo
+		h2 #{supplemental.Title}
+		-var total = 0;
+		table.0.items
+			tr.item-head
+				th Item
+				th Group
+				th Unit Price
+				th Quantity
+				th Subtotal
+			
+			each item in items
+				+item(item)
+			+total()
+			
+		h2 Modified Items
+		-var total = 0;
+		table.0.items
+			tr.item-head
+				th Item
+				th Unit Price
+				th Quantity
+				th Subtotal
+			
+			each modifiedItem in modifiedItems
+				+item(modifiedItem)
+			+total()
+			
+mixin item(item)
+	tr.item-info.info-first-line
+		if editor
+			td <h4>#{item.ItemName}</h4> (<a href='/item/#{item.id}'>edit</a>)
+		else 
+			td: h4= item.ItemName
+		td= item.Group
+		td= "$" + item.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+
+		td= item.Quantity
+		td= "$" + (Math.round(item.Price * item.Quantity * 100) / 100).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+	tr.item-info
+		td(colspan='5')
+			span Description: 
+			| #{item.Description}
+	tr.item-info.info-last-line
+		td(colspan='5')
+			span Justification: 
+			| #{item.Justification}
+
+	-total+= (Math.round(item.Price * item.Quantity * 100) / 100);
+
+mixin total() 
+	tr.item-head
+		td: h3 Summary
+		td 
+		td 
+		td 
+		td Total
+	tr.item-head
+		td
+		td
+		td
+		td
+		td= '$' + total.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+	-total = 0;

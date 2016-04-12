@@ -77,8 +77,8 @@ router.get('/contact', function serveContact(req, res) {
 		title : 'Contact Us',
 		
 		contacts : [{
-			title : 'Chair',
-			name : 'David Goldstone',
+			title : 'Co-Chairs',
+			name : 'Bryce Knolton and Kiehl Sundt',
 			email : 'TechFee@uw.edu'
 		}, {	
 			title : 'Program Coordinator',

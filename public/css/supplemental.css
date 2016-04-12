@@ -1,0 +1,56 @@
+.container {
+	white-space: pre-line;
+}
+
+.items {
+	margin: 8px;
+	border-radius: 6px;
+}
+
+.items h4 {
+	font-weight: bold;
+}
+
+.items > tbody > tr.item-info,
+.items > tbody > tr.item-info,
+.items > tbody > tr.item-info {
+	background-color: #DDDDDD;
+}
+
+.item-head {
+	background-color: #FAFAFA; 
+	font-size: 1.2em;
+}
+
+.item-info {
+	background-color: #EEEEEE;
+}
+
+.item-info > td {
+	padding-bottom: 0px;
+	padding-top: 0px;
+}
+
+.info-first-line > td {
+	padding-bottom: 6px;
+	padding-top: 5px;
+	background-color: #EEEEEE;
+	margin-bottom: 4px;
+}
+
+.item-info span {
+	color: rgb(75, 46, 131);
+	font-weight: bold;
+}
+
+.info-last-line > td {
+	padding-bottom: 10px;
+}
+
+.hidden {
+	display: none;
+}
+
+table {
+	width: 100%;
+}
