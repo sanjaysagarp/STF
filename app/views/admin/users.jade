@@ -25,4 +25,4 @@ block content
 							td #{user.NetId}
 							td #{user.FirstName}
 							td #{user.LastName}
-							td #{user.Permissions == 1 ? "Committee Member" : ""}#{user.Permissions == 2 ? "Admin" : ""}
+							td #{user.Permissions == 0 ? "Disabled" : ""}#{user.Permissions == 1 ? "Committee Member" : ""}#{user.Permissions == 2 ? "Admin" : ""}

@@ -36,7 +36,7 @@ module.exports = {
 				(u.netId.toLowerCase() == p.AdditionalContactNetId1) ||
 				(u.netId.toLowerCase() == p.AdditionalContactNetId2) ||
 				(u.netId.toLowerCase() == p.AdditionalContactNetId3)
-				) && p.Status == 0)	{
+				)&& p.Status < 2)	{ 
 				return true;
 			} else {
 				if (redir) {

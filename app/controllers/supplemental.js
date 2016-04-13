@@ -75,27 +75,24 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 						//check if supplemental item is found in original items - if no: add to modifiedItemsList
 						var modifiedItems = [];
 						//searches through supplemental items
-						// console.log(items);
-						// console.log("SPACE");
 						for (item in items) {
 							//foreach sup item, check if it's found in the original funded items
 							//if not, add to modified items
-							//FOR SOME REASON UNDEFINED KEEPS APPEARING AS THE FIRST ITEM WHUHAYIYNBR4EAIU
-							if(items[item] && (!contains(items[item], originalItems))) {
-								console.log(items[item]);
-								modifiedItems.push(items[item]);
+							if(!contains(items[item], originalItems)) {
+								if(items[item] != undefined) {
+									modifiedItems.push(items[item]);
+								}
 							}
 						}
-						// console.log(items);
-						// console.log("SPACE");
-						// console.log(originalItems);
-						// console.log("SPACE");
+						
 						for (originalItem in originalItems) {
-							if(originalItems[originalItem] != undefined && (!contains(originalItems[originalItems], items))) {
-								modifiedItems.push(originalItems[originalItem]);
+							if(!contains(originalItems[originalItems], items)) {
+								if(originalItems[originalItem] != undefined) {
+									modifiedItems.push(originalItems[originalItem]);
+								}
 							}
 						}
-						console.log(modifiedItems);
+						
 						res.render('proposals/supplemental',{
 							title: 'Supplemental for ' + proposal.ProposalTitle,
 							supplemental: supplemental,
