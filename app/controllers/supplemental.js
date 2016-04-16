@@ -43,7 +43,6 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 						Description: itemsRaw[itemRaw].Description,
 						Justification: itemsRaw[itemRaw].Justification
 					};
-					
 					items.push(i);
 				}
 				//check if proposal status is fully funded to get items from that
@@ -78,18 +77,60 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 						for (item in items) {
 							//foreach sup item, check if it's found in the original funded items
 							//if not, add to modified items
-							if(!contains(items[item], originalItems)) {
+							var c = notContains(items[item], originalItems);
+							if(c != undefined) {
 								if(items[item] != undefined) {
-									modifiedItems.push(items[item]);
+									var i;
+									if(c.Price != items[item].Price && c.Quantity != items.Quantity) {
+										i = {
+											ItemName: items[item].ItemName,
+											Group: items[item].Group,
+											PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[item].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+											Price: items[item].Price,
+											QuantityText: c.Quantity + " >> " + items[item].Quantity,
+											Quantity: items[item].Quantity,
+											Description: items[item].Description,
+											Justification: items[item].Justification
+										};
+									} else if(c.Price != items[item].Price) {
+										i = {
+											ItemName: items[item].ItemName,
+											Group: items[item].Group,
+											PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[items].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+											Price: items[item].Price,
+											Quantity: items[item].Quantity,
+											Description: items[item].Description,
+											Justification: items[item].Justification
+										};
+									} else {
+										i = {
+											ItemName: items[item].ItemName,
+											Group: items[item].Group,
+											Price: items[item].Price,
+											QuantityText: c.Quantity + " >> " + items[item].Quantity,
+											Quantity: items[item].Quantity,
+											Description: items[item].Description,
+											Justification: items[item].Justification
+										};
+									}
+									modifiedItems.push(i);
 								}
 							}
 						}
 						
 						for (originalItem in originalItems) {
-							if(!contains(originalItems[originalItems], items)) {
-								if(originalItems[originalItem] != undefined) {
-									modifiedItems.push(originalItems[originalItem]);
-								}
+							var c = getDeletedItems(originalItems[originalItem], items)
+							if(c != undefined) {
+								var i = {
+									ItemName: c.ItemName,
+									Group: c.Group,
+									Price: c.Price,
+									QuantityText: c.Quantity + " >> " + 0,
+									Quantity: 0,
+									Description: c.Description,
+									Justification: c.Justification
+								};
+								modifiedItems.push(i);
 							}
 						}
 						
@@ -128,14 +169,67 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 						}
 						
 						//parse through supplemental items
-						//check if supplemental item is found in original items - if no: add to modifiedItemsList
+						//check if supplemental item is found in partial items - if no: add to modifiedItemsList
 						var modifiedItems = [];
 						for (item in items) {
-							if(!contains(items[item], partialItems)) {
-								modifiedItems.push(items[item]);
+							//foreach sup item, check if it's found in the partial funded items
+							//if not, add to modified items
+							var c = notContains(items[item], partialItems);
+							if(c != undefined) {
+								if(items[item] != undefined) {
+									var i;
+									if(c.Price != items[item].Price && c.Quantity != items.Quantity) {
+										i = {
+											ItemName: items[item].ItemName,
+											Group: items[item].Group,
+											PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[item].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+											Price: items[item].Price,
+											QuantityText: c.Quantity + " >> " + items[item].Quantity,
+											Quantity: items[item].Quantity,
+											Description: items[item].Description,
+											Justification: items[item].Justification
+										};
+									} else if(c.Price != items[item].Price) {
+										i = {
+											ItemName: items[item].ItemName,
+											Group: items[item].Group,
+											PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[items].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+											Price: items[item].Price,
+											Quantity: items[item].Quantity,
+											Description: items[item].Description,
+											Justification: items[item].Justification
+										};
+									} else {
+										i = {
+											ItemName: items[item].ItemName,
+											Group: items[item].Group,
+											Price: items[item].Price,
+											QuantityText: c.Quantity + " >> " + items[item].Quantity,
+											Quantity: items[item].Quantity,
+											Description: items[item].Description,
+											Justification: items[item].Justification
+										};
+									}
+									modifiedItems.push(i);
+								}
 							}
 						}
 						
+						for (partialItem in partialItems) {
+							var c = getDeletedItems(partialItems[partialItem], items)
+							if(c != undefined) {
+								var i = {
+									ItemName: c.ItemName,
+									Group: c.Group,
+									Price: c.Price,
+									QuantityText: c.Quantity + " >> " + 0,
+									Quantity: 0,
+									Description: c.Description,
+									Justification: c.Justification
+								};
+								modifiedItems.push(i);
+							}
+						}
 						//check if supplemental items are found in original items
 						//if it isn't, add to separate lists (one for olditems and one for new items)
 						//once those lists are separate, highlight that as what is changed (red text)
@@ -324,11 +418,22 @@ router.post('/supplemental/:supplemental/:item', function(req, res) {
 	}
 });
 
-function contains(supItem, itemArray) {
+function notContains(supItem, itemArray) {
 	for(item in itemArray) {
-		if(supItem != null && itemArray[item].ItemName == supItem.ItemName && itemArray[item].Quantity == supItem.Quantity && itemArray[item].Price == supItem.Price) {
-			return true;
+		// console.log("SupplementalItem: " + supItem.ItemName + " Price: " + supItem.Price + " Quantity: " + supItem.Quantity);
+		// console.log("OriginalItem: " + itemArray[item].ItemName + " Price: " + itemArray[item].Price + " Quantity: " + itemArray[item].Quantity);
+		if(supItem != undefined && itemArray[item].ItemName == supItem.ItemName && (itemArray[item].Quantity != supItem.Quantity || itemArray[item].Price != supItem.Price)) {
+			return itemArray[item];
 		}
 	}
-	return false;
+	return undefined;
+}
+
+function getDeletedItems(singleItem, itemArray) {
+	for(item in itemArray) {
+		if(singleItem != undefined && singleItem.ItemName == itemArray[item].ItemName) {
+			return undefined;
+		}
+	}
+	return singleItem;
 }

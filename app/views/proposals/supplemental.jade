@@ -5,34 +5,36 @@ append css
 	
 block content
 	.container
-		h2 #{supplemental.Title}
-		-var total = 0;
-		table.0.items
-			tr.item-head
-				th Item
-				th Group
-				th Unit Price
-				th Quantity
-				th Subtotal
-			
-			each item in items
-				+item(item)
-			+total()
-			
-		h2 Modified Items
-		-var total = 0;
-		table.0.items
-			tr.item-head
-				th Item
-				th Group
-				th Unit Price
-				th Quantity
-				th Subtotal
-			
-			each modifiedItem in modifiedItems
-				+item(modifiedItem)
-			+total()
-			
+		.col-md-9.col-xs-12
+			h2 #{supplemental.Title}
+			-var total = 0;
+			table.0.items
+				tr.item-head
+					th Item
+					th Group
+					th Unit Price
+					th Quantity
+					th Subtotal
+				
+				each item in items
+					+item(item)
+				+total()
+				
+			h2 Modified Items
+			-var total = 0;
+			table.0.items
+				tr.item-head
+					th Item
+					th Group
+					th Unit Price
+					th Quantity
+					th Subtotal
+				
+				each modifiedItem in modifiedItems
+					+item(modifiedItem)
+
+		.col-md-3.hidden-xs.hidden-sm.sidebar.hidden-print
+			h3 Voting
 mixin item(item)
 	tr.item-info.info-first-line
 		if editor
@@ -40,9 +42,17 @@ mixin item(item)
 		else 
 			td: h4= item.ItemName
 		td= item.Group
-		td= "$" + item.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-
-		td= item.Quantity
+		
+		if item.PriceText
+			td= "$" + item.PriceText
+		else
+			td= "$" + item.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+		
+		if item.QuantityText
+			td= item.QuantityText
+		else
+			td= item.Quantity
+		
 		td= "$" + (Math.round(item.Price * item.Quantity * 100) / 100).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 	tr.item-info
 		td(colspan='5')
