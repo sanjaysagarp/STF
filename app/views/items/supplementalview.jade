@@ -71,6 +71,11 @@ block content
 								.col-md-4
 									input#SupplementalTitle.form-control.input-md(name='SupplementalTitle', type='text', placeholder='...', value="#{supplemental.Title}")
 							.form-group
+								label.col-md-4.control-label(for='Abstract') Abstract
+								.col-md-4
+									textarea#Abstract.form-control(name='Abstract', rows="7") #{supplemental.Abstract}
+									#Abstract.span.help-block Please provide context for this supplemental
+							.form-group
 								label.col-md-4.control-label(for='saveItem')
 								.col-md-4
 									button#saveItem.btn.btn-default.form-button(name='saveItem', type="submit") Save

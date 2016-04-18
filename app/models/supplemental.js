@@ -4,6 +4,7 @@ module.exports = function(sequelize, DataTypes) {
 		ProposalId: 'MEDIUMINT',
 		Author: 'VARCHAR(20)',
 		Title: 'VARCHAR(40)',
+		Abstract: 'TEXT',
 		Status: 'TINYINT(4)'
 	});
 

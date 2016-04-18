@@ -388,7 +388,8 @@ router.post('/supplemental/:supplemental/:item', function(req, res) {
 	if(req.params.item == 0) {
 		db.Supplemental.update(
 		{
-			Title: req.body['SupplementalTitle']
+			Title: req.body['SupplementalTitle'],
+			Abstract: req.body['Abstract']
 		}, 
 		{
 			where: {id: req.params.supplemental}
