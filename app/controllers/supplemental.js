@@ -23,6 +23,11 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 			where: {id: supplemental.ProposalId}
 		})
 		.then(function(proposal) {
+			
+			var editor = false;
+			if (req.user) {
+				editor = h.approvedEditor(res, req.user, proposal, false);
+			}
 			//find all items associated with supplemental
 			db.Item.findAll({
 				where: {
@@ -96,7 +101,7 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 										i = {
 											ItemName: items[item].ItemName,
 											Group: items[item].Group,
-											PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[items].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+											PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[item].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
 											Price: items[item].Price,
 											Quantity: items[item].Quantity,
 											Description: items[item].Description,
@@ -139,7 +144,8 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 							supplemental: supplemental,
 							items: items,
 							originalItems: originalItems,
-							modifiedItems: modifiedItems
+							modifiedItems: modifiedItems,
+							editor: editor
 						});
 					});
 				//proposal--partially funded
@@ -238,7 +244,8 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 							supplemental: supplemental,
 							items: items,
 							originalItems: partialItems,
-							modifiedItems: modifiedItems
+							modifiedItems: modifiedItems,
+							editor: editor
 						});
 					});
 				} else {
