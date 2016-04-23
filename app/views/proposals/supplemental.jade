@@ -39,18 +39,27 @@ block content
 		if isAdmin || isCommitteeMember
 			.col-md-3.hidden-xs.hidden-sm.sidebar.hidden-print
 				h3 Voting
-				// if vote 
-				// 	form.form-horizontal#editItem(name='voteSupplementalYes', method='post',action="/supplemental/vote/{#supplemental.id}/1")
-				// 		button.btn-default(name='approve', type="submit" disabled) Approve
-				// 	form.form-horizontal#editItem(name='voteSupplementalNo', method='post', action="/supplemental/vote/{#supplemental.id}/0")
-				// 		button.btn-default(name='deny', type="submit" disabled) Deny
-				// 	p You have already voted for this supplemental
-				// else 
-				// 	form.form-horizontal#editItem(name='voteSupplementalYes', method='post',action="/supplemental/vote/{#supplemental.id}/1")
-				// 		button.btn-default(name='approve', type="submit") Approve
-				// 	form.form-horizontal#editItem(name='voteSupplementalNo', method='post', action="/supplemental/vote/{#supplemental.id}/0")
-				// 		button.btn-default(name='deny', type="submit") Deny
-				
+				if supplemental.Status == 0
+					if vote 
+						form
+						select(name='voteDecision' disabled) 
+							option(value='1') Approve
+							option(value='0') Deny
+						button(disabled)#voteButton Submit
+						if vote.Value == 0
+							p You have already voted to approve this supplemental
+						if vote.Value == 1
+							p You have already voted to deny this supplemental
+					else 
+						form(method='post', action='/supplemental/vote/{#supplementalId}')
+						select(name='voteDecision') 
+							option(value='1') Approve
+							option(value='0') Deny
+						button#voteButton Submit
+				if supplemental.Status == 1
+					p This supplemental has been approved.
+				if supplemental.Status == 2
+					p this supplemental has been denied.
 				
 			
 				

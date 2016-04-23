@@ -12,3 +12,8 @@ module.exports = function(sequelize, DataTypes) {
 };
 
 //Author is netid 
+
+//Status
+//0 = open for voting
+//1 = approved
+//2 = denied
