@@ -41,6 +41,7 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 				var items = [];
 				for (itemRaw in itemsRaw) {
 					var i = {
+						id: itemsRaw[itemRaw].id,
 						ItemName: itemsRaw[itemRaw].ItemName,
 						Group: itemsRaw[itemRaw].Group,
 						Price: itemsRaw[itemRaw].Price,
@@ -81,6 +82,7 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 								var originalItems = [];
 								for (originalItemRaw in originalItemsRaw) {
 									var i = {
+										id: originalItemsRaw[originalItemRaw].id,
 										ItemName: originalItemsRaw[originalItemRaw].ItemName,
 										Group: originalItemsRaw[originalItemRaw].Group,
 										Price: originalItemsRaw[originalItemRaw].Price,
@@ -103,6 +105,7 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 											var i;
 											if(c.Price != items[item].Price && c.Quantity != items.Quantity) {
 												i = {
+													id: items[item].id,
 													ItemName: items[item].ItemName,
 													Group: items[item].Group,
 													PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[item].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -114,6 +117,7 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 												};
 											} else if(c.Price != items[item].Price) {
 												i = {
+													id: items[item].id,
 													ItemName: items[item].ItemName,
 													Group: items[item].Group,
 													PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[item].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -124,6 +128,7 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 												};
 											} else {
 												i = {
+													id: items[item].id,
 													ItemName: items[item].ItemName,
 													Group: items[item].Group,
 													Price: items[item].Price,
@@ -181,6 +186,7 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 								var partialItems = [];
 								for (partialItemRaw in partialItemsRaw) {
 									var i = {
+										id: partialItemsRaw[partialItemRaw].id,
 										ItemName: partialItemsRaw[partialItemRaw].ItemName,
 										Group: partialItemsRaw[partialItemRaw].Group,
 										Price: partialItemsRaw[partialItemRaw].Price,
@@ -203,6 +209,7 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 											var i;
 											if(c.Price != items[item].Price && c.Quantity != items.Quantity) {
 												i = {
+													id: items[item].id,
 													ItemName: items[item].ItemName,
 													Group: items[item].Group,
 													PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[item].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -214,6 +221,7 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 												};
 											} else if(c.Price != items[item].Price) {
 												i = {
+													id: items[item].id,
 													ItemName: items[item].ItemName,
 													Group: items[item].Group,
 													PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[item].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -224,6 +232,7 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 												};
 											} else {
 												i = {
+													id: items[item].id,
 													ItemName: items[item].ItemName,
 													Group: items[item].Group,
 													Price: items[item].Price,

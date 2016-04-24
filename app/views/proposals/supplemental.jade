@@ -39,37 +39,42 @@ block content
 				each modifiedItem in modifiedItems
 					+item(modifiedItem)
 
-		if isAdmin || isCommitteeMember 
+		if isAdmin || isCommitteeMember || editor
 			.col-md-3.hidden-xs.hidden-sm.sidebar.hidden-print
-				h3 Voting
-				if supplemental.Status == 0
-					if vote 
-						form
-							select(name='voteDecision' disabled) 
-								option(value='1') Approve
-								option(value='0') Deny
-							button(disabled)#voteButton Submit
-							if vote.Value == 1
-								p You have already voted to approve this supplemental
-							if vote.Value == 0
-								p You have already voted to deny this supplemental
-					else 
-						form(method='post', action='/api/v1/vote/supplemental/#{supplemental.id}')
-							select(name='voteDecision') 
-								option(value='1') Approve
-								option(value='0') Deny
-							button#voteButton Submit
-				if supplemental.Status == 1
-					p This supplemental has been approved.
-				if supplemental.Status == 2
-					p this supplemental has been denied.
+				if isAdmin || isCommitteeMember
+					h3 Voting
+					if supplemental.Status == 0
+						if vote 
+							form
+								select(name='voteDecision' disabled) 
+									option(value='1') Approve
+									option(value='0') Deny
+								button(disabled)#voteButton Submit
+								if vote.Value == 1
+									p You have already voted to approve this supplemental
+								if vote.Value == 0
+									p You have already voted to deny this supplemental
+						else 
+							form(method='post', action='/api/v1/vote/supplemental/#{supplemental.id}')
+								select(name='voteDecision') 
+									option(value='1') Approve
+									option(value='0') Deny
+								button#voteButton Submit
+					if supplemental.Status == 1
+						p This supplemental has been approved.
+					if supplemental.Status == 2
+						p this supplemental has been denied.
+				if editor
+					h3 Edit
+					p You have edit access to this supplemental.
+					a(href='/')
 				
 			
 				
 			
 mixin item(item)
 	tr.item-info.info-first-line
-		if editor || isAdmin
+		if item.id && (editor || isAdmin)
 			td <h4>#{item.ItemName}</h4> (<a href='/supplemental/#{supplemental.id}/#{item.id}'>edit</a>)
 		else 
 			td: h4= item.ItemName
