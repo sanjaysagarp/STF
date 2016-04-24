@@ -60,217 +60,219 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 				.then(function(user) {
 					db.Vote.find({
 						where: {
-							VoterId: user.id
+							VoterId: user.id,
+							SupplementalId: req.params.supplemental
 						}
 					})
-				})
-				.then(function(vote) {
-					//check if proposal status is fully funded to get items from that
-					if(proposal.Status == 4) {
-						db.Item.findAll({
-							where: {
-								ProposalId: proposal.id,
-								SupplementalId: null,
-								PartialId: null
-							}
-						})
-						.then(function(originalItemsRaw) {
-							//need to parse through both original FUNDED ITEMS -- check proposal for status (5 is partial funded, 4 is fully funded)
-							//create a new list of different items
-							//how to compare the lists?
-							var originalItems = [];
-							for (originalItemRaw in originalItemsRaw) {
-								var i = {
-									ItemName: originalItemsRaw[originalItemRaw].ItemName,
-									Group: originalItemsRaw[originalItemRaw].Group,
-									Price: originalItemsRaw[originalItemRaw].Price,
-									Quantity: originalItemsRaw[originalItemRaw].Quantity,
-									Description: originalItemsRaw[originalItemRaw].Description,
-									Justification: originalItemsRaw[originalItemRaw].Justification
-								};
-								originalItems.push(i);
-							}
-							//parse through supplemental items
-							//check if supplemental item is found in original items - if no: add to modifiedItemsList
-							var modifiedItems = [];
-							//searches through supplemental items
-							for (item in items) {
-								//foreach sup item, check if it's found in the original funded items
-								//if not, add to modified items
-								var c = notContains(items[item], originalItems);
-								if(c != undefined) {
-									if(items[item] != undefined) {
-										var i;
-										if(c.Price != items[item].Price && c.Quantity != items.Quantity) {
-											i = {
-												ItemName: items[item].ItemName,
-												Group: items[item].Group,
-												PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[item].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-												Price: items[item].Price,
-												QuantityText: c.Quantity + " >> " + items[item].Quantity,
-												Quantity: items[item].Quantity,
-												Description: items[item].Description,
-												Justification: items[item].Justification
-											};
-										} else if(c.Price != items[item].Price) {
-											i = {
-												ItemName: items[item].ItemName,
-												Group: items[item].Group,
-												PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[item].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-												Price: items[item].Price,
-												Quantity: items[item].Quantity,
-												Description: items[item].Description,
-												Justification: items[item].Justification
-											};
-										} else {
-											i = {
-												ItemName: items[item].ItemName,
-												Group: items[item].Group,
-												Price: items[item].Price,
-												QuantityText: c.Quantity + " >> " + items[item].Quantity,
-												Quantity: items[item].Quantity,
-												Description: items[item].Description,
-												Justification: items[item].Justification
-											};
+					.then(function(vote) {
+						//check if proposal status is fully funded to get items from that
+						if(proposal.Status == 4) {
+							db.Item.findAll({
+								where: {
+									ProposalId: proposal.id,
+									SupplementalId: null,
+									PartialId: null
+								}
+							})
+							.then(function(originalItemsRaw) {
+								//need to parse through both original FUNDED ITEMS -- check proposal for status (5 is partial funded, 4 is fully funded)
+								//create a new list of different items
+								//how to compare the lists?
+								var originalItems = [];
+								for (originalItemRaw in originalItemsRaw) {
+									var i = {
+										ItemName: originalItemsRaw[originalItemRaw].ItemName,
+										Group: originalItemsRaw[originalItemRaw].Group,
+										Price: originalItemsRaw[originalItemRaw].Price,
+										Quantity: originalItemsRaw[originalItemRaw].Quantity,
+										Description: originalItemsRaw[originalItemRaw].Description,
+										Justification: originalItemsRaw[originalItemRaw].Justification
+									};
+									originalItems.push(i);
+								}
+								//parse through supplemental items
+								//check if supplemental item is found in original items - if no: add to modifiedItemsList
+								var modifiedItems = [];
+								//searches through supplemental items
+								for (item in items) {
+									//foreach sup item, check if it's found in the original funded items
+									//if not, add to modified items
+									var c = notContains(items[item], originalItems);
+									if(c != undefined) {
+										if(items[item] != undefined) {
+											var i;
+											if(c.Price != items[item].Price && c.Quantity != items.Quantity) {
+												i = {
+													ItemName: items[item].ItemName,
+													Group: items[item].Group,
+													PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[item].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+													Price: items[item].Price,
+													QuantityText: c.Quantity + " >> " + items[item].Quantity,
+													Quantity: items[item].Quantity,
+													Description: items[item].Description,
+													Justification: items[item].Justification
+												};
+											} else if(c.Price != items[item].Price) {
+												i = {
+													ItemName: items[item].ItemName,
+													Group: items[item].Group,
+													PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[item].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+													Price: items[item].Price,
+													Quantity: items[item].Quantity,
+													Description: items[item].Description,
+													Justification: items[item].Justification
+												};
+											} else {
+												i = {
+													ItemName: items[item].ItemName,
+													Group: items[item].Group,
+													Price: items[item].Price,
+													QuantityText: c.Quantity + " >> " + items[item].Quantity,
+													Quantity: items[item].Quantity,
+													Description: items[item].Description,
+													Justification: items[item].Justification
+												};
+											}
+											modifiedItems.push(i);
 										}
+									}
+								}
+								
+								for (originalItem in originalItems) {
+									var c = getDeletedItems(originalItems[originalItem], items)
+									if(c != undefined) {
+										var i = {
+											ItemName: c.ItemName,
+											Group: c.Group,
+											Price: c.Price,
+											QuantityText: c.Quantity + " >> " + 0,
+											Quantity: 0,
+											Description: c.Description,
+											Justification: c.Justification
+										};
 										modifiedItems.push(i);
 									}
 								}
-							}
-							
-							for (originalItem in originalItems) {
-								var c = getDeletedItems(originalItems[originalItem], items)
-								if(c != undefined) {
-									var i = {
-										ItemName: c.ItemName,
-										Group: c.Group,
-										Price: c.Price,
-										QuantityText: c.Quantity + " >> " + 0,
-										Quantity: 0,
-										Description: c.Description,
-										Justification: c.Justification
-									};
-									modifiedItems.push(i);
-								}
-							}
-							
-							
-							res.render('proposals/supplemental',{
-								title: 'Supplemental for ' + proposal.ProposalTitle,
-								supplemental: supplemental,
-								items: items,
-								originalItems: originalItems,
-								modifiedItems: modifiedItems,
-								editor: editor,
-								vote: vote
+								
+								
+								res.render('proposals/supplemental',{
+									title: 'Supplemental for ' + proposal.ProposalTitle,
+									supplemental: supplemental,
+									items: items,
+									originalItems: originalItems,
+									modifiedItems: modifiedItems,
+									editor: editor,
+									vote: vote
+								});
 							});
-						});
-					//proposal--partially funded
-					} else if (proposal.Status == 5) {
-						db.Item.findAll({
-							where: {
-								ProposalId: proposal.id,
-								SupplementalId: null,
-								PartialId: proposal.PartialFunded
-							}
-						})
-						.then(function(partialItemsRaw) {
-							//need to parse through both original FUNDED ITEMS -- check proposal for status (5 is partial funded, 4 is fully funded)
-							//create a new list of different items
-							//how to compare the lists?
-							var partialItems = [];
-							for (partialItemRaw in partialItemsRaw) {
-								var i = {
-									ItemName: partialItemsRaw[partialItemRaw].ItemName,
-									Group: partialItemsRaw[partialItemRaw].Group,
-									Price: partialItemsRaw[partialItemRaw].Price,
-									Quantity: partialItemsRaw[partialItemRaw].Quantity,
-									Description: partialItemsRaw[partialItemRaw].Description,
-									Justification: partialItemsRaw[partialItemRaw].Justification
-								};
-								partialItems.push(i);
-							}
-							
-							//parse through supplemental items
-							//check if supplemental item is found in partial items - if no: add to modifiedItemsList
-							var modifiedItems = [];
-							for (item in items) {
-								//foreach sup item, check if it's found in the partial funded items
-								//if not, add to modified items
-								var c = notContains(items[item], partialItems);
-								if(c != undefined) {
-									if(items[item] != undefined) {
-										var i;
-										if(c.Price != items[item].Price && c.Quantity != items.Quantity) {
-											i = {
-												ItemName: items[item].ItemName,
-												Group: items[item].Group,
-												PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[item].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-												Price: items[item].Price,
-												QuantityText: c.Quantity + " >> " + items[item].Quantity,
-												Quantity: items[item].Quantity,
-												Description: items[item].Description,
-												Justification: items[item].Justification
-											};
-										} else if(c.Price != items[item].Price) {
-											i = {
-												ItemName: items[item].ItemName,
-												Group: items[item].Group,
-												PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[items].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-												Price: items[item].Price,
-												Quantity: items[item].Quantity,
-												Description: items[item].Description,
-												Justification: items[item].Justification
-											};
-										} else {
-											i = {
-												ItemName: items[item].ItemName,
-												Group: items[item].Group,
-												Price: items[item].Price,
-												QuantityText: c.Quantity + " >> " + items[item].Quantity,
-												Quantity: items[item].Quantity,
-												Description: items[item].Description,
-												Justification: items[item].Justification
-											};
+						//proposal--partially funded
+						} else if (proposal.Status == 5) {
+							db.Item.findAll({
+								where: {
+									ProposalId: proposal.id,
+									SupplementalId: null,
+									PartialId: proposal.PartialFunded
+								}
+							})
+							.then(function(partialItemsRaw) {
+								//need to parse through both original FUNDED ITEMS -- check proposal for status (5 is partial funded, 4 is fully funded)
+								//create a new list of different items
+								//how to compare the lists?
+								var partialItems = [];
+								for (partialItemRaw in partialItemsRaw) {
+									var i = {
+										ItemName: partialItemsRaw[partialItemRaw].ItemName,
+										Group: partialItemsRaw[partialItemRaw].Group,
+										Price: partialItemsRaw[partialItemRaw].Price,
+										Quantity: partialItemsRaw[partialItemRaw].Quantity,
+										Description: partialItemsRaw[partialItemRaw].Description,
+										Justification: partialItemsRaw[partialItemRaw].Justification
+									};
+									partialItems.push(i);
+								}
+								
+								//parse through supplemental items
+								//check if supplemental item is found in partial items - if no: add to modifiedItemsList
+								var modifiedItems = [];
+								for (item in items) {
+									//foreach sup item, check if it's found in the partial funded items
+									//if not, add to modified items
+									var c = notContains(items[item], partialItems);
+									if(c != undefined) {
+										if(items[item] != undefined) {
+											var i;
+											if(c.Price != items[item].Price && c.Quantity != items.Quantity) {
+												i = {
+													ItemName: items[item].ItemName,
+													Group: items[item].Group,
+													PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[item].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+													Price: items[item].Price,
+													QuantityText: c.Quantity + " >> " + items[item].Quantity,
+													Quantity: items[item].Quantity,
+													Description: items[item].Description,
+													Justification: items[item].Justification
+												};
+											} else if(c.Price != items[item].Price) {
+												i = {
+													ItemName: items[item].ItemName,
+													Group: items[item].Group,
+													PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[item].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+													Price: items[item].Price,
+													Quantity: items[item].Quantity,
+													Description: items[item].Description,
+													Justification: items[item].Justification
+												};
+											} else {
+												i = {
+													ItemName: items[item].ItemName,
+													Group: items[item].Group,
+													Price: items[item].Price,
+													QuantityText: c.Quantity + " >> " + items[item].Quantity,
+													Quantity: items[item].Quantity,
+													Description: items[item].Description,
+													Justification: items[item].Justification
+												};
+											}
+											modifiedItems.push(i);
 										}
+									}
+								}
+								
+								for (partialItem in partialItems) {
+									var c = getDeletedItems(partialItems[partialItem], items)
+									if(c != undefined) {
+										var i = {
+											ItemName: c.ItemName,
+											Group: c.Group,
+											Price: c.Price,
+											QuantityText: c.Quantity + " >> " + 0,
+											Quantity: 0,
+											Description: c.Description,
+											Justification: c.Justification
+										};
 										modifiedItems.push(i);
 									}
 								}
-							}
-							
-							for (partialItem in partialItems) {
-								var c = getDeletedItems(partialItems[partialItem], items)
-								if(c != undefined) {
-									var i = {
-										ItemName: c.ItemName,
-										Group: c.Group,
-										Price: c.Price,
-										QuantityText: c.Quantity + " >> " + 0,
-										Quantity: 0,
-										Description: c.Description,
-										Justification: c.Justification
-									};
-									modifiedItems.push(i);
-								}
-							}
-							//check if supplemental items are found in original items
-							//if it isn't, add to separate lists (one for olditems and one for new items)
-							//once those lists are separate, highlight that as what is changed (red text)
-							res.render('proposals/supplemental',{
-								title: 'Supplemental for ' + proposal.ProposalTitle,
-								supplemental: supplemental,
-								items: items,
-								originalItems: partialItems,
-								modifiedItems: modifiedItems,
-								editor: editor,
-								vote: vote
+								//check if supplemental items are found in original items
+								//if it isn't, add to separate lists (one for olditems and one for new items)
+								//once those lists are separate, highlight that as what is changed (red text)
+								res.render('proposals/supplemental',{
+									title: 'Supplemental for ' + proposal.ProposalTitle,
+									supplemental: supplemental,
+									items: items,
+									originalItems: partialItems,
+									modifiedItems: modifiedItems,
+									editor: editor,
+									vote: vote
+								});
 							});
-						});
-					} else {
-						h.displayErrorPage(res, 'The requested supplemental does not exist',
-							'Supplemental not found!');
-					}
+						} else {
+							h.displayErrorPage(res, 'The requested supplemental does not exist',
+								'Supplemental not found!');
+						}
+					});
 				});
+				
 			});
 		});
 	});
@@ -445,7 +447,7 @@ router.post('/supplemental/:supplemental/:item', function(req, res) {
 });
 
 //approve or deny a supplemental -- must check if there's enough votes to change supplemental status (only on vote accepted)
-router.post('/supplemental/vote/:supplemental', function(req, res) {
+router.post('/api/v1/vote/supplemental/:supplemental', function(req, res) {
 	//need to check if active user
 	db.User.find({
 		where: {
@@ -516,7 +518,7 @@ router.post('/supplemental/vote/:supplemental', function(req, res) {
 						});
 						
 						
-						res.send({message:"vote accepted"});
+						res.redirect('/supplemental/view/' + req.params.supplemental);
 					});
 				} else {
 					h.displayErrorPage(res, 'You have already voted for this supplemental',

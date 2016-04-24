@@ -2,7 +2,10 @@ extends ../head
 
 append css
 	link(rel='stylesheet', href='/css/supplemental.css')
-	
+
+append js
+	script(src='/js/supplemental.js')
+
 block content
 	.container
 		.col-md-9.col-xs-12
@@ -36,26 +39,26 @@ block content
 				each modifiedItem in modifiedItems
 					+item(modifiedItem)
 
-		if isAdmin || isCommitteeMember
+		if isAdmin || isCommitteeMember 
 			.col-md-3.hidden-xs.hidden-sm.sidebar.hidden-print
 				h3 Voting
 				if supplemental.Status == 0
 					if vote 
 						form
-						select(name='voteDecision' disabled) 
-							option(value='1') Approve
-							option(value='0') Deny
-						button(disabled)#voteButton Submit
-						if vote.Value == 0
-							p You have already voted to approve this supplemental
-						if vote.Value == 1
-							p You have already voted to deny this supplemental
+							select(name='voteDecision' disabled) 
+								option(value='1') Approve
+								option(value='0') Deny
+							button(disabled)#voteButton Submit
+							if vote.Value == 1
+								p You have already voted to approve this supplemental
+							if vote.Value == 0
+								p You have already voted to deny this supplemental
 					else 
-						form(method='post', action='/supplemental/vote/{#supplementalId}')
-						select(name='voteDecision') 
-							option(value='1') Approve
-							option(value='0') Deny
-						button#voteButton Submit
+						form(method='post', action='/api/v1/vote/supplemental/#{supplemental.id}')
+							select(name='voteDecision') 
+								option(value='1') Approve
+								option(value='0') Deny
+							button#voteButton Submit
 				if supplemental.Status == 1
 					p This supplemental has been approved.
 				if supplemental.Status == 2
