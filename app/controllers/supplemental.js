@@ -105,7 +105,6 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 											var i;
 											if(c.Price != items[item].Price && c.Quantity != items.Quantity) {
 												i = {
-													id: items[item].id,
 													ItemName: items[item].ItemName,
 													Group: items[item].Group,
 													PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[item].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -117,7 +116,6 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 												};
 											} else if(c.Price != items[item].Price) {
 												i = {
-													id: items[item].id,
 													ItemName: items[item].ItemName,
 													Group: items[item].Group,
 													PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[item].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -128,7 +126,6 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 												};
 											} else {
 												i = {
-													id: items[item].id,
 													ItemName: items[item].ItemName,
 													Group: items[item].Group,
 													Price: items[item].Price,
@@ -159,15 +156,32 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 									}
 								}
 								
-								
-								res.render('proposals/supplemental',{
-									title: 'Supplemental for ' + proposal.ProposalTitle,
-									supplemental: supplemental,
-									items: items,
-									originalItems: originalItems,
-									modifiedItems: modifiedItems,
-									editor: editor,
-									vote: vote
+								db.Vote.findAll({
+									where: {
+										SupplementalId: req.params.supplemental,
+										Value: 1
+									}
+								})
+								.then(function(yesVotes) {
+									db.Vote.findAll({
+										where: {
+											SupplementalId: req.params.supplemental,
+											Value: 0
+										}
+									})
+									.then(function(noVotes) {
+										res.render('proposals/supplemental',{
+											title: 'Supplemental for ' + proposal.ProposalTitle,
+											supplemental: supplemental,
+											items: items,
+											originalItems: originalItems,
+											modifiedItems: modifiedItems,
+											editor: editor,
+											vote: vote,
+											yesVotes: yesVotes,
+											noVotes: noVotes
+										});
+									});
 								});
 							});
 						//proposal--partially funded
@@ -209,7 +223,6 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 											var i;
 											if(c.Price != items[item].Price && c.Quantity != items.Quantity) {
 												i = {
-													id: items[item].id,
 													ItemName: items[item].ItemName,
 													Group: items[item].Group,
 													PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[item].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -221,7 +234,6 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 												};
 											} else if(c.Price != items[item].Price) {
 												i = {
-													id: items[item].id,
 													ItemName: items[item].ItemName,
 													Group: items[item].Group,
 													PriceText: c.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " >> $" + items[item].Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -232,7 +244,6 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 												};
 											} else {
 												i = {
-													id: items[item].id,
 													ItemName: items[item].ItemName,
 													Group: items[item].Group,
 													Price: items[item].Price,
@@ -265,14 +276,32 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 								//check if supplemental items are found in original items
 								//if it isn't, add to separate lists (one for olditems and one for new items)
 								//once those lists are separate, highlight that as what is changed (red text)
-								res.render('proposals/supplemental',{
-									title: 'Supplemental for ' + proposal.ProposalTitle,
-									supplemental: supplemental,
-									items: items,
-									originalItems: partialItems,
-									modifiedItems: modifiedItems,
-									editor: editor,
-									vote: vote
+								db.Vote.findAll({
+									where: {
+										SupplementalId: req.params.supplemental,
+										Value: 1
+									}
+								})
+								.then(function(yesVotes) {
+									db.Vote.findAll({
+										where: {
+											SupplementalId: req.params.supplemental,
+											Value: 0
+										}
+									})
+									.then(function(noVotes){
+										res.render('proposals/supplemental',{
+											title: 'Supplemental for ' + proposal.ProposalTitle,
+											supplemental: supplemental,
+											items: items,
+											originalItems: partialItems,
+											modifiedItems: modifiedItems,
+											editor: editor,
+											vote: vote,
+											yesVotes: yesVotes,
+											noVotes: noVotes
+										});
+									});
 								});
 							});
 						} else {
@@ -369,6 +398,8 @@ router.get('/supplemental/:supplemental/:item', function(req, res) {
 									}
 								})
 								.then(function(item) {
+									//show vote totals
+									
 									res.render('items/supplementalview',{
 										title: 'Supplemental for ' + proposal.ProposalTitle,
 										item: item,
@@ -491,9 +522,8 @@ router.post('/api/v1/vote/supplemental/:supplemental', function(req, res) {
 									Value: 1
 								}
 							})
-							.then(function(voteTotal) {
-								//check through votes - gotta check them manually?
-								if (voteTotal.length > ((committeeMembers.length / 2) + 1)) {
+							.then(function(yesVotes) {
+								if (yesVotes.length > Math.floor(((committeeMembers.length / 2) + 1))) {
 									//update supplmental to be funded
 									db.Supplemental.update(
 									{
@@ -511,9 +541,8 @@ router.post('/api/v1/vote/supplemental/:supplemental', function(req, res) {
 									Value: 0
 								}
 							})
-							.then(function(voteTotal) {
-								//check through votes - gotta check them manually?
-								if (voteTotal.length > ((committeeMembers.length / 2) + 1)) {
+							.then(function(noVotes) {
+								if (noVotes.length > Math.floor(((committeeMembers.length / 2) + 1))) {
 									//update supplmental to be not funded
 									db.Supplemental.update(
 									{

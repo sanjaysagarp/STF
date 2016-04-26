@@ -64,17 +64,27 @@ block content
 						p This supplemental has been approved.
 					if supplemental.Status == 2
 						p this supplemental has been denied.
-				if editor
-					h3 Edit
+					if noVotes
+						p #{noVotes.length} x Deny
+					else
+						p 0 x Deny
+					if yesVotes
+						p #{yesVotes.length} x Approve
+					else
+						p 0 x Approve
+				hr
+				if isAdmin || (editor && supplemental.Status == 0)
+					h3 Editor
 					p You have edit access to this supplemental.
-					a(href='/')
+					a(href='/supplemental/#{supplemental.id}/0') Edit Supplemental
+				br
 				
 			
 				
 			
 mixin item(item)
 	tr.item-info.info-first-line
-		if item.id && (editor || isAdmin)
+		if item.id && supplemental.Status == 0 && (editor || isAdmin)
 			td <h4>#{item.ItemName}</h4> (<a href='/supplemental/#{supplemental.id}/#{item.id}'>edit</a>)
 		else 
 			td: h4= item.ItemName
