@@ -14,7 +14,7 @@ block content
 			p #{supplemental.Abstract}
 			
 			-var total = 0;
-			table.0.items
+			table.0.items(class='#{supplemental.Status == 1 ? "funded" : ""}')
 				tr.item-head
 					th Item
 					th Group
