@@ -41,6 +41,7 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 				var items = [];
 				for (itemRaw in itemsRaw) {
 					var i = {
+						id: itemsRaw[itemRaw].id,
 						ItemName: itemsRaw[itemRaw].ItemName,
 						Group: itemsRaw[itemRaw].Group,
 						Price: itemsRaw[itemRaw].Price,
@@ -81,6 +82,7 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 								var originalItems = [];
 								for (originalItemRaw in originalItemsRaw) {
 									var i = {
+										id: originalItemsRaw[originalItemRaw].id,
 										ItemName: originalItemsRaw[originalItemRaw].ItemName,
 										Group: originalItemsRaw[originalItemRaw].Group,
 										Price: originalItemsRaw[originalItemRaw].Price,
@@ -154,15 +156,32 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 									}
 								}
 								
-								
-								res.render('proposals/supplemental',{
-									title: 'Supplemental for ' + proposal.ProposalTitle,
-									supplemental: supplemental,
-									items: items,
-									originalItems: originalItems,
-									modifiedItems: modifiedItems,
-									editor: editor,
-									vote: vote
+								db.Vote.findAll({
+									where: {
+										SupplementalId: req.params.supplemental,
+										Value: 1
+									}
+								})
+								.then(function(yesVotes) {
+									db.Vote.findAll({
+										where: {
+											SupplementalId: req.params.supplemental,
+											Value: 0
+										}
+									})
+									.then(function(noVotes) {
+										res.render('proposals/supplemental',{
+											title: 'Supplemental for ' + proposal.ProposalTitle,
+											supplemental: supplemental,
+											items: items,
+											originalItems: originalItems,
+											modifiedItems: modifiedItems,
+											editor: editor,
+											vote: vote,
+											yesVotes: yesVotes,
+											noVotes: noVotes
+										});
+									});
 								});
 							});
 						//proposal--partially funded
@@ -181,6 +200,7 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 								var partialItems = [];
 								for (partialItemRaw in partialItemsRaw) {
 									var i = {
+										id: partialItemsRaw[partialItemRaw].id,
 										ItemName: partialItemsRaw[partialItemRaw].ItemName,
 										Group: partialItemsRaw[partialItemRaw].Group,
 										Price: partialItemsRaw[partialItemRaw].Price,
@@ -256,14 +276,32 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 								//check if supplemental items are found in original items
 								//if it isn't, add to separate lists (one for olditems and one for new items)
 								//once those lists are separate, highlight that as what is changed (red text)
-								res.render('proposals/supplemental',{
-									title: 'Supplemental for ' + proposal.ProposalTitle,
-									supplemental: supplemental,
-									items: items,
-									originalItems: partialItems,
-									modifiedItems: modifiedItems,
-									editor: editor,
-									vote: vote
+								db.Vote.findAll({
+									where: {
+										SupplementalId: req.params.supplemental,
+										Value: 1
+									}
+								})
+								.then(function(yesVotes) {
+									db.Vote.findAll({
+										where: {
+											SupplementalId: req.params.supplemental,
+											Value: 0
+										}
+									})
+									.then(function(noVotes){
+										res.render('proposals/supplemental',{
+											title: 'Supplemental for ' + proposal.ProposalTitle,
+											supplemental: supplemental,
+											items: items,
+											originalItems: partialItems,
+											modifiedItems: modifiedItems,
+											editor: editor,
+											vote: vote,
+											yesVotes: yesVotes,
+											noVotes: noVotes
+										});
+									});
 								});
 							});
 						} else {
@@ -360,6 +398,8 @@ router.get('/supplemental/:supplemental/:item', function(req, res) {
 									}
 								})
 								.then(function(item) {
+									//show vote totals
+									
 									res.render('items/supplementalview',{
 										title: 'Supplemental for ' + proposal.ProposalTitle,
 										item: item,
@@ -482,9 +522,8 @@ router.post('/api/v1/vote/supplemental/:supplemental', function(req, res) {
 									Value: 1
 								}
 							})
-							.then(function(voteTotal) {
-								//check through votes - gotta check them manually?
-								if (voteTotal.length > ((committeeMembers.length / 2) + 1)) {
+							.then(function(yesVotes) {
+								if (yesVotes.length > Math.floor(((committeeMembers.length / 2) + 1))) {
 									//update supplmental to be funded
 									db.Supplemental.update(
 									{
@@ -502,9 +541,8 @@ router.post('/api/v1/vote/supplemental/:supplemental', function(req, res) {
 									Value: 0
 								}
 							})
-							.then(function(voteTotal) {
-								//check through votes - gotta check them manually?
-								if (voteTotal.length > ((committeeMembers.length / 2) + 1)) {
+							.then(function(noVotes) {
+								if (noVotes.length > Math.floor(((committeeMembers.length / 2) + 1))) {
 									//update supplmental to be not funded
 									db.Supplemental.update(
 									{

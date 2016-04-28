@@ -58,6 +58,7 @@ table {
 .sidebar {
 	background-color: #EEEEEE;
 	border-radius: 4px;
+	padding-bottom: 10px;
 }
 
 label {
@@ -73,4 +74,16 @@ button {
 select {
 	margin-left: 5px;
 	margin-right: 5px;
+}
+
+.funded .item-head {
+	background-color: #DFF0D8 !important;
+}
+
+.funded tr.item-info {
+	background-color: #EEEEEE !important;
+}
+
+.funded .info-first-line > td {
+	background-color: #FAFAFA;
 }
