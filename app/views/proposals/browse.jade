@@ -42,6 +42,8 @@ block content
 						th Status
 						th Category
 						th Department
+						if isAdmin || isCommitteeMember
+							th Updated
 				tbody
 					- each proposal in proposals
 						tr
@@ -77,5 +79,8 @@ block content
 
 							td: a(href='/proposals/category/#{proposal.Category}') #{categories[proposal.Category].name}
 							td: a(href='/proposals/department/#{proposal.Department}') #{proposal.Department}
+							
+							if isAdmin || isCommitteeMember
+								td #{moment(proposal.updatedAt).format('YYYY-MM-DD')}
 			else 
 				p There are no proposals yet!
