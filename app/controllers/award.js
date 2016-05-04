@@ -104,8 +104,18 @@ router.post('/admin/award', shib.ensureAuth('/login'), function(req, res) {
 							OversightEndDate: moment().month(awardDetails.OversightEndMonth).add(7, 'years').format('YYYY'),
 							updatedAt: moment().format(),
 							createdAt: moment().format()
-						});
+						})
+						.then(function(Award) {
+							//need to create quarterly/annual report layout too!
+							// db.Report.create({
+							// 	AwardId: Award.id,
+							// 	Deadline: Award.oversightStartDate //need deadline?
+							// });
+							
 							res.send({message: "Success"});
+						});
+						
+						
 					}
 				})
 				.catch(function(err) {

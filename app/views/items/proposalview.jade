@@ -39,11 +39,11 @@ block content
 						.form-group
 							label.col-md-4.control-label(for='Justification') Justification
 							.col-md-6
-								textarea#Justification.form-control(name='Justification') #{item.Justification} 
+								textarea(rows="5")#Justification.form-control(name='Justification') #{item.Justification} 
 						.form-group
 							label.col-md-4.control-label(for='Description') Description
 							.col-md-6
-								textarea#Description.form-control(name='Description') #{item.Description}
+								textarea(rows="5")#Description.form-control(name='Description') #{item.Description}
 						.form-group
 							.col-md-4.col-md-offset-4
 								button#saveItem.btn.btn-default.form-button(name='saveItem', type="submit") Save
