@@ -34,6 +34,7 @@ app.set('view engine', 'jade');
 var env = process.env.NODE_ENV || 'development';
 app.locals.ENV = env;
 app.locals.ENV_DEVELOPMENT = env == 'development';
+app.locals.moment = require('moment'); //momentjs can be accessed in jade templates
 
 app.use(favicon('public/img/favicon.ico'));
 app.use(logger('dev'));
