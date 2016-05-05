@@ -202,8 +202,10 @@ block content
 
 		input(id='proposalId' type='hidden' value='#{proposal.id}' )
 		
+		a(href='/supplementals/' id='supplementalLink' style="display:none;") View Supplemental
+		
 		if editor || isAdmin
-			a(href='/supplementals/new/#{proposal.id}' id='supplementalLink') Create Supplemental
+			a(href='/supplementals/new/#{proposal.id}') Create Supplemental
 
 		-var total = 0;
 		table.0.items(class='#{(proposal.Status == 4 ? "funded" : "" )}')
