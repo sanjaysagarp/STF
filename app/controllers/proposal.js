@@ -117,6 +117,28 @@ router.get('/proposal/submit/:id', shib.ensureAuth('/login'), function submitPro
 	})
 });
 
+//CHANGE AFTER FUNDING CYCLE
+// router.get('/proposal/submit/:year/:number', shib.ensureAuth('/login'), function submitProposal(req, res) {
+// 	db.Proposal.find({
+// 		where: {
+// 			year: req.params.year,
+// 			number: req.params.number
+// 		}
+// 	}).then(function(proposal) {
+// 		if (h.approvedEditor(res, req.user, proposal)) {
+// 			if (allSigned) {
+// 				proposal.update({
+// 					Status: 1
+// 				}).then(function() {
+// 					res.redirect('/proposals/' + proposal.year + "/" + proposal.number);
+// 				});
+// 			} else {
+// 				h.displayErrorPage(res, 'Not all signees have signed this proposal', 'Submittance Refused')
+// 			}
+// 		}
+// 	})
+// });
+
 
 //change a proposal's data
 router.post('/proposals/:id', shib.ensureAuth('/login'), function postProposal(req, res) {
@@ -329,6 +351,22 @@ router.get('/proposals/browse', function(req, res) {
 	});
 });
 
+//scale out for proposal browse after this year -- Activate this after funnding cycle!
+//so proposal authors don't get confuzzled
+// router.get('/proposals/:year', function(req, res) {
+// 	db.Proposal.findAll({
+// 		where: {
+// 			Status: [1, 2, 3, 4, 5, 6],
+// 			Year: req.params.year
+// 		}
+// 	}).then(function(proposals) {
+// 		res.render('proposals/browse',{
+// 			proposals: proposals,
+// 			title: "Browse all Proposals",
+// 			categories: categories
+// 		});
+// 	});
+// });
 
 router.get('/proposals/category/:cat', function(req, res) {
 	db.Proposal.findAll({
@@ -543,6 +581,8 @@ router.post('/proposals/endorsements/:id', shib.ensureAuth('/login'), function(r
 		res.redirect('/proposals/' + req.params.id);
 	});
 });
+
+
 
 
 function allSigned(proposal) {
