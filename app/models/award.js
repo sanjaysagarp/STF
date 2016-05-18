@@ -6,6 +6,7 @@ module.exports = function (sequelize, DataTypes) {
 		FundedAmount: DataTypes.FLOAT,
 		AwardDate: DataTypes.DATE,
 		BudgetDate: DataTypes.DATE,
+		Notes: 'MEDIUMTEXT',
 		OversightStartDate: DataTypes.DATE,
 		OversightEndDate: DataTypes.DATE
 	});

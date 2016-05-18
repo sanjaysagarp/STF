@@ -13,17 +13,71 @@ block content
 			p Edit and change things others can't!
 
 	.container
-		if message
-			h3= subject
-			p= message
-
-		h2 Create an Award Letter
-		p Enter the funded proposal and additional information to create an award letter
-		form(method='post')
-			input(type='text', name='proposalId', placeholder='ProposalID', size='10')
-			select(name='reportType') 
-				option(value='0') Quarterly
-				option(value='1') Anually
-				option(value='2') Both
-			button#submitButton Submit
+		ul.nav.nav-tabs
+			li.active
+				a(data-toggle="tab" href="#awards") Awards
+			li
+				a(data-toggle="tab" href="#denials") Denials
+		div.tab-content
+			div#awards.tab-pane.fade.in.active
+				form(method='post' action='/admin/award')
+					.form-group.col-md-12
+						h2 Create an Award Letter
+						p Enter the funded proposal and additional information to create an award letter
+						input(type='text', name='awardProposalId', placeholder='ProposalID', size='10')
+						select(name='reportType') 
+							option(value='0') Quarterly
+							option(value='1') Anually
+							option(value='2') Both
+					.form-group.col-md-12
+						h2 Template:
+						hr
+						h3 Reporting Requirements
+						p STF will require reports for this proposal. Reporting documents can be found on your proposal page. Reports are due on the following dates:
+						ul
+							li
+								i Quarterly 1 – September 10th 
+							li
+								i Quarterly 2 – January 10th
+							li
+								i Quarterly 3 – April 10th
+							li
+								i Annual – August 31st
+						h3 Budgets and Use of Funds
+						p STF will create a unique budget number for this proposal upon the request of your budget coordinator in early #[strong #{budgetMonth}]. Funds must be spent from this account only on items indicated in your proposal and all purchases must be made using this unique budget number. Budgets must be ready to close by May 10th of the following year.
+						
+						h3 STF Stickers
+						p All equipment purchased with STF funds must be identified with an STF sticker and the phrase "Funded by the Student Technology Fee” must appear in web pages and other printed or electronic material advertising/identifying the resource.  Email #[a(href='mailto:techfee@uw.edu') techfee@uw.edu] if you require stickers.
+						
+						h3 Compliance
+						p The equipment in your proposal is under STF compliance as stated at this link. Equipment uder $10,000 in value are under oversight until #{oversightStartDate}. Equipment over $10,000 are under oversight until #{oversightEndDate}. After these periods, equipment becomes the property of the department. (Refer to the #[a(href='/policies#compliance' target="_blank") Compliance Policy]).
+						
+						h3 Additional Notes (Optional):
+						textarea(rows="4")#awardNotes.form-control(name='awardNotes')
+						
+						p Any questions about your proposal can be directed to Program Coordinator at #[a(href='mailto:techfee@uw.edu') techfee@uw.edu].
+					.form-group.col-md-12
+						button#submitAwardButton Submit
+			div#denials.tab-pane
+				form(method='post' action='/admin/denial')
+					.form-group.col-md-12
+						h2 Create an Denial Letter
+						p Enter the not funded proposal and additional information to create an denial letter
+						input(type='text', name='denialProposalId', placeholder='ProposalID', size='10')
+					.form-group.col-md-12
+						h2 Template:
+						hr
+						p The Student Technology Fee Committee has decided not to fund your proposal. There were many proposals and the Committee had to make hard decisions. 
+		
+						p The following are notes pulled from discussions that the Committee had regarding your proposal. It is not a perfectly accurate statement of the decision, but the general argument that I personally complied for your understanding.
+						
+						p You can also review the minutes from our voting meetings on our website to look at the discussions.
+						h3 Additional Notes (Optional):
+						textarea(rows="4")#denialNotes.form-control(name='denialNotes')
+						
+						p We urge you to submit a proposal again next cycle. Please direct any questions to the Program Coordinator, Alton Lu, at #[a(href='mailto:techfee@uw.edu') techfee@uw.edu].
+					.form-group.col-md-12
+						button#submitDenialButton Submit
 		div#notification
+		
+			
