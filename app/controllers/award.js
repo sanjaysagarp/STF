@@ -58,29 +58,29 @@ router.get('/proposals/award/:id', function(req, res) {
 	});
 });
 
-router.get('/proposals/denial/:id', function(req, res) {
+router.get('/proposals/rejection/:id', function(req, res) {
 	db.Proposal.find({
 		where: {
 			id: req.params.id
 		}
 	})
 	.then(function(proposal) {
-		db.Denial.find({
+		db.Rejection.find({
 		where: {
 			ProposalId: req.params.id
 		}
 		})
-		.then(function(denial) {
-			if(denial) {
-				var denialDate = moment(new Date(denial.createdAt)).format('MMMM Do YYYY');
-				res.render('proposals/denial', {
-					title: "Denial Letter",
+		.then(function(rejection) {
+			if(rejection) {
+				var rejectionDate = moment(new Date(rejection.createdAt)).format('MMMM Do YYYY');
+				res.render('proposals/rejection', {
+					title: "Rejection Letter",
 					proposal: proposal,
-					denial: denial,
-					denialDate: denialDate
+					rejection: rejection,
+					rejectionDate: rejectionDate
 				});
 			} else {
-				h.displayErrorPage(res, 'Denial does not exist',
+				h.displayErrorPage(res, 'Rejection letter does not exist',
 					"Not Found");
 			}
 		});
@@ -89,37 +89,37 @@ router.get('/proposals/denial/:id', function(req, res) {
 	
 });
 
-router.post('/admin/denial', shib.ensureAuth('/login'), function(req, res) {
+router.post('/admin/rejection', shib.ensureAuth('/login'), function(req, res) {
 	db.Proposal.find({
 		where: {
-			id: req.body.denialProposalId
+			id: req.body.rejectionProposalId
 		}
 	})
 	.then(function(proposal) {
 		db.Award.find({
 			where: {
-				ProposalId: req.body.denialProposalId
+				ProposalId: req.body.rejectionProposalId
 			}
 		}).then(function(award) {
 			// this proposal has already been awarded
 			if(award) {
 				res.send({message:"Award exists"});
 			} else {
-				db.Denial.find({
+				db.Rejection.find({
 					where: {
-						ProposalId: req.body.denialProposalId
+						ProposalId: req.body.rejectionProposalId
 					}
 				})
-				.then(function(denial) {
-					if(denial) {
+				.then(function(rejection) {
+					if(rejection) {
 						res.send({message:"Duplicate"});
 					} else {
-						db.Denial.create({
+						db.Rejection.create({
 							ProposalId: proposal.id,
-							Notes: req.body.denialNotes,
+							Notes: req.body.rejectionNotes,
 							createdAt: moment().format()
 						})
-						.then(function(denial) {
+						.then(function(rejection) {
 							res.send({message: "Success"});
 						});
 					}
@@ -143,14 +143,14 @@ router.post('/admin/award', shib.ensureAuth('/login'), function(req, res) {
 		})
 		.then(function(award) {
 			//If award already exists
-			db.Denial.find({
+			db.Rejection.find({
 				where: {
 					ProposalId: req.body.awardProposalId
 				}
 			})
-			.then(function(denial) {
-				if(denial) {
-					res.send({message: "Denial exists"});
+			.then(function(rejection) {
+				if(rejection) {
+					res.send({message: "Rejection exists"});
 				} else {
 					if(award) {
 						res.send({message: "Duplicate"});

@@ -15,7 +15,7 @@ $(document).ready(function(){
 						if(data.message == "Success") {
 							$("#notification").css("display", "block");
 							$("#notification").addClass("alert alert-success");
-							$("#notification").html("Award letter successfully created for " + $('[name="proposalId"]').val() + "!");
+							$("#notification").html("Award letter successfully created for " + $('[name="awardProposalId"]').val() + "!");
 							$("#notification").fadeOut( 3000 );
 						} else if (data.message == "Proposal status is invalid") {
 							$("#notification").css("display", "block");
@@ -27,10 +27,10 @@ $(document).ready(function(){
 							$("#notification").addClass("alert alert-danger");
 							$("#notification").html("Proposal " + $('[name="awardProposalId"]').val() + " already has an award letter!");
 							$("#notification").fadeOut( 3000 );
-						} else if (data.message == "Denial exists") {
+						} else if (data.message == "Rejection exists") {
 							$("#notification").css("display", "block");
 							$("#notification").addClass("alert alert-danger");
-							$("#notification").html("Proposal " + $('[name="awardProposalId"]').val() + " already has a denial letter!");
+							$("#notification").html("Proposal " + $('[name="awardProposalId"]').val() + " already has a rejection letter!");
 							$("#notification").fadeOut( 3000 );
 						}
 					} else {
@@ -47,14 +47,14 @@ $(document).ready(function(){
 		});
 	});
 	
-	$('#submitDenialButton').on('click', function(e) {
+	$('#submitRejectionButton').on('click', function(e) {
 		e.preventDefault();
 		$.ajax({
 				method: 'POST',
-				url: "/admin/denial",
+				url: "/admin/rejection",
 				data: {
-					denialProposalId: $('[name="denialProposalId"]').val(),
-					denialNotes: $('[name="denialNotes"]').val()
+					rejectionProposalId: $('[name="rejectionProposalId"]').val(),
+					rejectionNotes: $('[name="rejectionNotes"]').val()
 				},
 				dataType: 'json',
 				success: function(data) {
@@ -62,17 +62,17 @@ $(document).ready(function(){
 						if(data.message == "Success") {
 							$("#notification").css("display", "block");
 							$("#notification").addClass("alert alert-success");
-							$("#notification").html("Denial letter successfully created for " + $('[name="denialProposalId"]').val() + "!");
+							$("#notification").html("Rejection letter successfully created for " + $('[name="rejectionProposalId"]').val() + "!");
 							$("#notification").fadeOut( 3000 );
 						} else if (data.message == "Award exists") {
 							$("#notification").css("display", "block");
 							$("#notification").addClass("alert alert-danger");
-							$("#notification").html("Proposal " + $('[name="denialProposalId"]').val() + " has an award letter!");
+							$("#notification").html("Proposal " + $('[name="rejectionProposalId"]').val() + " has an award letter!");
 							$("#notification").fadeOut( 3000 );
 						} else if (data.message == "Duplicate") {
 							$("#notification").css("display", "block");
 							$("#notification").addClass("alert alert-danger");
-							$("#notification").html("Proposal " + $('[name="denialProposalId"]').val() + " already has a denial letter!");
+							$("#notification").html("Proposal " + $('[name="rejectionProposalId"]').val() + " already has a rejection letter!");
 							$("#notification").fadeOut( 3000 );
 						}
 					} else {

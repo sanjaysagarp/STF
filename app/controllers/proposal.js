@@ -510,11 +510,11 @@ router.get('/proposals/:id', function(req, res) {
 									}
 								}).then(function(award) {
 									//re-orient data
-									db.Denial.find({
+									db.Rejection.find({
 										where: {
 											ProposalId: req.params.id
 										}
-									}).then(function(denial) {
+									}).then(function(rejection) {
 										var usersPartial = {};
 										for (userPartialRaw in usersPartialRaw) {
 											usersPartial[usersPartialRaw[userPartialRaw].id] = usersPartialRaw[userPartialRaw];
@@ -547,7 +547,7 @@ router.get('/proposals/:id', function(req, res) {
 											editor: editor,
 											award: award,
 											status: h.proposalStatus(proposal.Status),
-											denial: denial
+											rejection: rejection
 										});
 									});
 								});

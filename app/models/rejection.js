@@ -1,10 +1,10 @@
 module.exports = function (sequelize, DataTypes) {
 
-	var Denial = sequelize.define('Denial', {
+	var Rejection = sequelize.define('Rejection', {
 		ProposalId: 'MEDIUMINT',
 		YearId: 'MEDIUMINT',
 		Notes: 'MEDIUMTEXT'
 	});
 	
-	return Denial;
+	return Rejection;
 };

@@ -3,7 +3,7 @@ extends ../head
 block content
 	.container
 		h1 Proposal: #{proposal.ProposalTitle}
-		p Date: #{denialDate}
+		p Date: #{rejectionDate}
 		br
 		p The Student Technology Fee Committee has decided not to fund your proposal. There were many proposals and the Committee had to make hard decisions. 
 		
@@ -11,7 +11,7 @@ block content
 		
 		p You can also review the minutes from our voting meetings on our website to look at the discussions.
 		
-		if denial.Notes
-			p=denial.Notes
+		if rejection.Notes
+			p=rejection.Notes
 		
 		p We urge you to submit a proposal again next cycle. Please direct any questions to the Program Coordinator, Alton Lu, at #[a(href='mailto:techfee@uw.edu') techfee@uw.edu].

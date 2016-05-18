@@ -17,7 +17,7 @@ block content
 			li.active
 				a(data-toggle="tab" href="#awards") Awards
 			li
-				a(data-toggle="tab" href="#denials") Denials
+				a(data-toggle="tab" href="#rejections") Rejections
 		div.tab-content
 			div#awards.tab-pane.fade.in.active
 				form(method='post' action='/admin/award')
@@ -58,12 +58,12 @@ block content
 						p Any questions about your proposal can be directed to Program Coordinator at #[a(href='mailto:techfee@uw.edu') techfee@uw.edu].
 					.form-group.col-md-12
 						button#submitAwardButton Submit
-			div#denials.tab-pane
-				form(method='post' action='/admin/denial')
+			div#rejections.tab-pane
+				form(method='post' action='/admin/rejection')
 					.form-group.col-md-12
-						h2 Create an Denial Letter
-						p Enter the not funded proposal and additional information to create an denial letter
-						input(type='text', name='denialProposalId', placeholder='ProposalID', size='10')
+						h2 Create a Rejection Letter
+						p Enter the not funded proposal and additional information to create a rejection letter
+						input(type='text', name='rejectionProposalId', placeholder='ProposalID', size='10')
 					.form-group.col-md-12
 						h2 Template:
 						hr
@@ -73,11 +73,12 @@ block content
 						
 						p You can also review the minutes from our voting meetings on our website to look at the discussions.
 						h3 Additional Notes (Optional):
-						textarea(rows="4")#denialNotes.form-control(name='denialNotes')
+						textarea(rows="4")#denialNotes.form-control(name='rejectionNotes')
 						
 						p We urge you to submit a proposal again next cycle. Please direct any questions to the Program Coordinator, Alton Lu, at #[a(href='mailto:techfee@uw.edu') techfee@uw.edu].
 					.form-group.col-md-12
-						button#submitDenialButton Submit
+						button#submitRejectionButton Submit
+	.container
 		div#notification
 		
 			
