@@ -53,6 +53,7 @@ module.exports = function(sequelize, DataTypes) {
 		TechnologyResources: DataTypes.TEXT('medium'),
 		FinancialResources: DataTypes.TEXT('medium'),
 		Status: 'TINYINT',
+		LetterStatus: 'TINYINT',
 		VotingDisplay: 'TINYINT',
 		PartialFunded: 'MEDIUMINT'
 	});
@@ -60,7 +61,7 @@ module.exports = function(sequelize, DataTypes) {
 	return Proposal;
 };
 
-/* proposal status cosdes
+/* proposal status codes
 	0 = working proposal
 	1 = submitted proposal
 	2 = in voting
@@ -70,4 +71,10 @@ module.exports = function(sequelize, DataTypes) {
 	6 = Not Funded
 	7 = Cancelled by User
 	8 = Cancelled by Admin
+*/
+
+/* letter status codes
+	0 = no letter
+	1 = award letter
+	2 = rejection letter
 */

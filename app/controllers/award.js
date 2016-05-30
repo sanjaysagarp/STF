@@ -120,7 +120,16 @@ router.post('/admin/rejection', shib.ensureAuth('/login'), function(req, res) {
 							createdAt: moment().format()
 						})
 						.then(function(rejection) {
-							res.send({message: "Success"});
+							db.Proposal.update({
+								LetterStatus: 2
+							}, {
+								where: {
+									id: proposal.id
+								}
+							})
+							.then(function(e) {
+								res.send({message: "Success"});
+							});
 						});
 					}
 				});
@@ -198,8 +207,16 @@ router.post('/admin/award', shib.ensureAuth('/login'), function(req, res) {
 									// 	AwardId: Award.id,
 									// 	Deadline: Award.oversightStartDate //need deadline?
 									// });
-									
-									res.send({message: "Success"});
+									db.Proposal.update({
+										LetterStatus: 1
+									}, {
+										where: {
+											id: proposal.id
+										}
+									})
+									.then(function(e) {
+										res.send({message: "Success"});
+									});
 								});
 								
 								

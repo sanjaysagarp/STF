@@ -53,7 +53,8 @@ router.get('/proposals/myproposals', shib.ensureAuth('/login'), function myPropo
 		res.render('proposals/browse',{
 			proposals: proposals,
 			title: "My Proposals",
-			categories: categories
+			categories: categories,
+			myProposals: true
 		});
 	});
 });
