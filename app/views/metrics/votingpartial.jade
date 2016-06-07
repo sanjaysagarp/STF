@@ -17,7 +17,7 @@ if data
 						 / 
 						<a href='/metrics/#{proposal.id}'> View Metrics </a>
 					
-					p #{proposal.ends ? (proposal.ends + (proposal.ends == 1 ? ' Endorestment' : ' Endorsements')) : 'No Endorsements for this Proposal'} 
+					p #{proposal.ends ? (proposal.ends + (proposal.ends == 1 ? ' Endorsement' : ' Endorsements')) : 'No Endorsements for this Proposal'} 
 
 					h4 Abstract
 					p= proposal.Abstract

@@ -72,15 +72,12 @@ window.addEventListener('load', function() {
 
 	function changeSupplementalLink(supplemental) {		
 		var supplementalLink = document.getElementById('supplementalLink');
-		if (supplementalLink) {	
-			if (supplemental == 0) {
-				supplementalLink.href = '/supplementals/new/' + proposalId;
-				supplementalLink.innerHTML = 'Create Supplemental';
-			} else {
-				supplementalLink.href = '/supplemental/view/' + supplemental;
-				supplementalLink.innerHTML = 'View Supplemental';
-			}
+		if (supplementalLink && supplemental != 0) {	
+			supplementalLink.href = '/supplemental/view/' + supplemental;
+			supplementalLink.innerHTML = 'View Supplemental';
+			supplementalLink.style.display = "block";
+		} else {
+			supplementalLink.style.display = "none";
 		}
 	}
-
 });

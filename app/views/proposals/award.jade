@@ -21,16 +21,21 @@ block content
 			li
 				i Annual – August 31st
 		h2 Budgets and Use of Funds
-		p STF will create a unique budget number for this proposal upon the request of your budget coordinator in early #[strong #{budgetMonth}]. Funds must be spent from this account only on items indicated in your proposal and all purchases must be made using this unique budget number. Budgets must be ready to close by May 10th of the following year.
+		p STF will create a unique budget number for this proposal, which will be emailed to your budget coordinator in early #[strong #{budgetMonth}]. Funds must be spent from this account only on items indicated in your proposal and all purchases must be made using this unique budget number. Budgets must be ready to close by May 10th of the following year.
 		
 		h2 STF Stickers
 		p All equipment purchased with STF funds must be identified with an STF sticker and the phrase "Funded by the Student Technology Fee” must appear in web pages and other printed or electronic material advertising/identifying the resource.  Email #[a(href='mailto:techfee@uw.edu') techfee@uw.edu] if you require stickers.
 		
 		h2 Compliance
-		p The equipment in your proposal is under STF compliance as stated at this link. Equipment uder $10,000 in value are under oversight until #{oversightStartDate}. Equipment over $10,000 are under oversight until #{oversightEndDate}. After these periods, equipment becomes the property of the department. (Refer to the #[a(href='/policies#compliance' target="_blank") Compliance Policy]).
+		p The equipment in your proposal is under STF compliance for a set of years. Equipment under $10,000 in value are under oversight until #{oversightUnder}. Equipment over $10,000 are under oversight until #{oversightOver}. After these periods, equipment becomes the property of the department. (Refer to the #[a(href='/policies#compliance' target="_blank") Compliance Policy]).
 		
 		if proposal.Category == "L"
 			h2 Key Server
 			p You are required to install the ‘key client’ on every STF computer. You can follow this #[a(href='https://k2-distrib.s.uw.edu/' target="_blank") link] for instructions on how to install the key client. 
 		
+		if award.Notes
+			h2 Additional Notes
+			p=award.Notes
+		
 		p Any questions about your proposal can be directed to Program Coordinator at #[a(href='mailto:techfee@uw.edu') techfee@uw.edu].
+		

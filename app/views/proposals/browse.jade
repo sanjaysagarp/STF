@@ -42,6 +42,8 @@ block content
 						th Status
 						th Category
 						th Department
+						if myProposals
+							th Letter
 						if isAdmin || isCommitteeMember
 							th Updated
 				tbody
@@ -80,7 +82,17 @@ block content
 							td: a(href='/proposals/category/#{proposal.Category}') #{categories[proposal.Category].name}
 							td: a(href='/proposals/department/#{proposal.Department}') #{proposal.Department}
 							
+							if myProposals
+								if proposal.LetterStatus != 0
+									if proposal.LetterStatus == 1
+										td: a(href='/proposals/award/#{proposal.id}') View
+									else
+										td: a(href='/proposals/rejection/#{proposal.id}') View
+								else
+									td N/A
+							
 							if isAdmin || isCommitteeMember
 								td #{moment(proposal.updatedAt).format('YYYY-MM-DD')}
+							
 			else 
 				p There are no proposals yet!

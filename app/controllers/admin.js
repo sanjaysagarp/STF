@@ -8,6 +8,8 @@ var shib = require('passport-uwshib');
 var categories = require('../../config/categories');
 var questions = require('../../config/metricsquestions');
 var h = require('../helper');
+var moment = require('moment');
+var awardDetails = require('../../config/awarddetails');
 
 
 module.exports = function(app) {
@@ -33,13 +35,26 @@ router.get('/admin', function(req, res) {
 		res.render('admin/index', {
 			settings: settings
 		});
-	})
-	
+	});
 });
 
 //display award creation page
 router.get('/admin/award', function(req, res) {
-	res.render('admin/award');
+	var awardDate = moment().format();
+	var budgetMonth = moment().month(awardDetails.BudgetMonth).format('MMMM YYYY');
+	var oversightStartDate = moment().month(awardDetails.OversightStartMonth).add(3, 'years').format('YYYY');
+	var oversightEndDate = moment().month(awardDetails.OversightEndMonth).add(7, 'years').format('YYYY');
+	
+	awardDate = moment(awardDate).format('MMMM Do YYYY');
+	oversightStartDate = moment(new Date(oversightStartDate)).format('MMMM YYYY');
+	oversightEndDate = moment(new Date(oversightEndDate)).format('MMMM YYYY');
+	res.render('admin/award', {
+		title: "STF Admin",
+		awardDate: awardDate,
+		budgetMonth: awardDetails.BudgetMonth,
+		oversightStartDate: oversightStartDate,
+		oversightEndDate: oversightEndDate,
+	});
 });
 
 

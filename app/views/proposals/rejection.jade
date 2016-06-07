@@ -1,0 +1,21 @@
+extends ../head
+
+block content
+	.container
+		h1 Proposal: #{proposal.ProposalTitle}
+		p Date: #{rejectionDate}
+		br
+		p We regret to inform you that the Student Technology Fee Committee is unable to provide funding for your proposal. STF received numerous requests during our current grant cycle and unfortuantely could not support this specific project. 
+		
+		p The following are notes pulled from discussions that the Committee had regarding your proposal. It is not a perfectly accurate statement of the decision, but the general argument that I personally complied for your understanding.
+		
+		p You can also review the minutes from our voting meetings on our website to look at the discussions.
+		
+		if rejection.Notes
+			p
+				strong Additional Notes
+			p=rejection.Notes
+		
+		p Thank you for taking the time to work with the Committee through this long process. 
+
+		p We urge you to submit a proposal again next cycle. Please direct any questions and feedback about STF processes to the Program Coordinator, Alton Lu, at #[a(href='mailto:techfee@uw.edu') techfee@uw.edu].

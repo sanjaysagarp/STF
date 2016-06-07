@@ -53,7 +53,8 @@ router.get('/proposals/myproposals', shib.ensureAuth('/login'), function myPropo
 		res.render('proposals/browse',{
 			proposals: proposals,
 			title: "My Proposals",
-			categories: categories
+			categories: categories,
+			myProposals: true
 		});
 	});
 });
@@ -116,6 +117,28 @@ router.get('/proposal/submit/:id', shib.ensureAuth('/login'), function submitPro
 		}
 	})
 });
+
+//CHANGE AFTER FUNDING CYCLE
+// router.get('/proposal/submit/:year/:number', shib.ensureAuth('/login'), function submitProposal(req, res) {
+// 	db.Proposal.find({
+// 		where: {
+// 			year: req.params.year,
+// 			number: req.params.number
+// 		}
+// 	}).then(function(proposal) {
+// 		if (h.approvedEditor(res, req.user, proposal)) {
+// 			if (allSigned) {
+// 				proposal.update({
+// 					Status: 1
+// 				}).then(function() {
+// 					res.redirect('/proposals/' + proposal.year + "/" + proposal.number);
+// 				});
+// 			} else {
+// 				h.displayErrorPage(res, 'Not all signees have signed this proposal', 'Submittance Refused')
+// 			}
+// 		}
+// 	})
+// });
 
 
 //change a proposal's data
@@ -329,6 +352,22 @@ router.get('/proposals/browse', function(req, res) {
 	});
 });
 
+//scale out for proposal browse after this year -- Activate this after funnding cycle!
+//so proposal authors don't get confuzzled
+// router.get('/proposals/:year', function(req, res) {
+// 	db.Proposal.findAll({
+// 		where: {
+// 			Status: [1, 2, 3, 4, 5, 6],
+// 			Year: req.params.year
+// 		}
+// 	}).then(function(proposals) {
+// 		res.render('proposals/browse',{
+// 			proposals: proposals,
+// 			title: "Browse all Proposals",
+// 			categories: categories
+// 		});
+// 	});
+// });
 
 router.get('/proposals/category/:cat', function(req, res) {
 	db.Proposal.findAll({
@@ -472,38 +511,45 @@ router.get('/proposals/:id', function(req, res) {
 									}
 								}).then(function(award) {
 									//re-orient data
-									var usersPartial = {};
-									for (userPartialRaw in usersPartialRaw) {
-										usersPartial[usersPartialRaw[userPartialRaw].id] = usersPartialRaw[userPartialRaw];
-									}
+									db.Rejection.find({
+										where: {
+											ProposalId: req.params.id
+										}
+									}).then(function(rejection) {
+										var usersPartial = {};
+										for (userPartialRaw in usersPartialRaw) {
+											usersPartial[usersPartialRaw[userPartialRaw].id] = usersPartialRaw[userPartialRaw];
+										}
 
-									//create written date
-									var cr = new Date(proposal.createdAt);
-									var months = ["January", "February", "March", "April", "May", "June", "July", 
-												"August", "September", "October", "November", "December"];
-									var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
-									var editor = false;
-									var loggedIn = false;
-									if (req.user) {
-										editor = h.approvedEditor(res, req.user, proposal, false);
-										loggedIn = true;
-									}
+										//create written date
+										var cr = new Date(proposal.createdAt);
+										var months = ["January", "February", "March", "April", "May", "June", "July", 
+													"August", "September", "October", "November", "December"];
+										var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
+										var editor = false;
+										var loggedIn = false;
+										if (req.user) {
+											editor = h.approvedEditor(res, req.user, proposal, false);
+											loggedIn = true;
+										}
 
-									res.render('proposals/view', {
-										title: proposal.ProposalTitle,
-										proposal: proposal,
-										partials: partials,
-										supplementals: supplementals,
-										usersPartial: usersPartial,
-										usersSupplemental: usersSupplemental,
-										created: day,
-										items: items,
-										loggedIn: loggedIn,
-										endorsements: endorsements,
-										categories: categories,
-										editor: editor,
-										award: award,
-										status: h.proposalStatus(proposal.Status)
+										res.render('proposals/view', {
+											title: proposal.ProposalTitle,
+											proposal: proposal,
+											partials: partials,
+											supplementals: supplementals,
+											usersPartial: usersPartial,
+											usersSupplemental: usersSupplemental,
+											created: day,
+											items: items,
+											loggedIn: loggedIn,
+											endorsements: endorsements,
+											categories: categories,
+											editor: editor,
+											award: award,
+											status: h.proposalStatus(proposal.Status),
+											rejection: rejection
+										});
 									});
 								});
 							});
@@ -543,6 +589,8 @@ router.post('/proposals/endorsements/:id', shib.ensureAuth('/login'), function(r
 		res.redirect('/proposals/' + req.params.id);
 	});
 });
+
+
 
 
 function allSigned(proposal) {
