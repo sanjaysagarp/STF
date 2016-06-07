@@ -7,8 +7,8 @@ module.exports = function (sequelize, DataTypes) {
 		AwardDate: DataTypes.DATE,
 		BudgetDate: DataTypes.DATE,
 		Notes: 'MEDIUMTEXT',
-		OversightStartDate: DataTypes.DATE,
-		OversightEndDate: DataTypes.DATE
+		OversightOver: DataTypes.DATE,
+		OversightUnder: DataTypes.DATE
 	});
 	
 	return Award;

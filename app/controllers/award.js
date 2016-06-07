@@ -33,8 +33,8 @@ router.get('/proposals/award/:id', function(req, res) {
 			if(award){
 				var awardDate = moment(award.AwardDate).format('MMMM Do YYYY');
 				var budgetMonth = moment(award.BudgetMonth).format('MMMM YYYY');
-				var oversightStartDate = moment(award.OversightStartDate).format('MMMM YYYY');
-				var oversightEndDate = moment(award.OversightEndDate).format('MMMM YYYY');
+				var oversightOver = moment(award.OversightOver).format('MMMM YYYY');
+				var oversightUnder = moment(award.OversightUnder).format('MMMM YYYY');
 				var total = award.FundedAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 				res.render('proposals/award', {
 					title: "Award Letter",
@@ -42,8 +42,8 @@ router.get('/proposals/award/:id', function(req, res) {
 					award: award,
 					awardDate: awardDate,
 					budgetMonth: budgetMonth,
-					oversightStartDate: oversightStartDate,
-					oversightEndDate: oversightEndDate,
+					oversightOver: oversightOver,
+					oversightUnder: oversightUnder,
 					total: total
 				});
 			} else {
@@ -96,6 +96,7 @@ router.post('/admin/rejection', shib.ensureAuth('/login'), function(req, res) {
 		}
 	})
 	.then(function(proposal) {
+		//console.log(proposal);
 		db.Award.find({
 			where: {
 				ProposalId: req.body.rejectionProposalId
@@ -110,8 +111,8 @@ router.post('/admin/rejection', shib.ensureAuth('/login'), function(req, res) {
 						ProposalId: req.body.rejectionProposalId
 					}
 				})
-				.then(function(rejection) {
-					if(rejection) {
+				.then(function(r) {
+					if(r) {
 						res.send({message:"Duplicate"});
 					} else {
 						db.Rejection.create({
@@ -195,8 +196,8 @@ router.post('/admin/award', shib.ensureAuth('/login'), function(req, res) {
 									FundedAmount: total,
 									AwardDate: moment().format(),
 									BudgetDate: moment().month(awardDetails.BudgetMonth).format('MMMM YYYY'),
-									OversightStartDate: moment().month(awardDetails.OversightStartMonth).add(3, 'years').format('YYYY'),
-									OversightEndDate: moment().month(awardDetails.OversightEndMonth).add(7, 'years').format('YYYY'),
+									OversightOver: moment().month(awardDetails.OversightOver).add(3, 'years').format('YYYY'),
+									OversightUnder: moment().month(awardDetails.OversightUnder).add(7, 'years').format('YYYY'),
 									Notes: req.body.awardNotes,
 									updatedAt: moment().format(),
 									createdAt: moment().format()

@@ -7,6 +7,7 @@ $(document).ready(function(){
 				url: "/admin/award",
 				data: {
 					awardProposalId: $('[name="awardProposalId"]').val(),
+					reportType: $('[name="reportType"]').val(),
 					awardNotes: $('[name="awardNotes"]').val()
 				},
 				dataType: 'json',
