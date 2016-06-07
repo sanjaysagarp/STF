@@ -31,10 +31,11 @@ router.get('/proposals/award/:id', function(req, res) {
 		.then(function(proposal) {
 			//format dates
 			if(award){
-				var awardDate = moment(award.AwardDate).format('MMMM Do YYYY');
-				var budgetMonth = moment(award.BudgetMonth).format('MMMM YYYY');
-				var oversightOver = moment(award.OversightOver).format('MMMM YYYY');
-				var oversightUnder = moment(award.OversightUnder).format('MMMM YYYY');
+				console.log("WTF " + award.BudgetDate );
+				var awardDate = moment.utc(award.AwardDate).format('MMMM Do YYYY');
+				var budgetMonth = moment.utc(award.BudgetDate).format('MMMM YYYY');
+				var oversightOver = moment.utc(award.OversightOver).format('MMMM YYYY');
+				var oversightUnder = moment.utc(award.OversightUnder).format('MMMM YYYY');
 				var total = award.FundedAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 				res.render('proposals/award', {
 					title: "Award Letter",
