@@ -176,14 +176,14 @@ router.post('/admin/award', shib.ensureAuth('/login'), function(req, res) {
 							if (proposal.Status == 4) { //fully funded
 								for (item in items) {
 									if (items[item].SupplementalId == null && items[item].PartialId == null) {
-										total += Math.round(items[item].Price * items[item].Quantity);
+										total += items[item].Price * items[item].Quantity;
 									}
 								}
 							} else if(proposal.Status == 5) { //partially funded
 								for (item in items) {
 									//checks the id of the funded partial with the items
-									if(items[item].PartialId == items[item].PartialFunded) {
-										total += Math.round(items[item].Price * items[item].Quantity);
+									if(items[item].PartialId == proposal.PartialFunded) {
+										total += items[item].Price * items[item].Quantity;
 									}
 								}
 							} else {

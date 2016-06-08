@@ -42,18 +42,18 @@ router.get('/admin', function(req, res) {
 router.get('/admin/award', function(req, res) {
 	var awardDate = moment().format();
 	var budgetMonth = moment().month(awardDetails.BudgetMonth).format('MMMM YYYY');
-	var oversightStartDate = moment().month(awardDetails.OversightStartMonth).add(3, 'years').format('YYYY');
-	var oversightEndDate = moment().month(awardDetails.OversightEndMonth).add(7, 'years').format('YYYY');
+	var oversightOver = moment().month(awardDetails.OversightOver).add(3, 'years').format('YYYY');
+	var oversightUnder = moment().month(awardDetails.OversightUnder).add(7, 'years').format('YYYY');
 	
 	awardDate = moment(awardDate).format('MMMM Do YYYY');
-	oversightStartDate = moment(new Date(oversightStartDate)).format('MMMM YYYY');
-	oversightEndDate = moment(new Date(oversightEndDate)).format('MMMM YYYY');
+	oversightOver = moment(new Date(oversightOver)).format('MMMM YYYY');
+	oversightUnder = moment(new Date(oversightUnder)).format('MMMM YYYY');
 	res.render('admin/award', {
 		title: "STF Admin",
 		awardDate: awardDate,
 		budgetMonth: awardDetails.BudgetMonth,
-		oversightStartDate: oversightStartDate,
-		oversightEndDate: oversightEndDate,
+		oversightOver: oversightOver,
+		oversightUnder: oversightUnder,
 	});
 });
 
