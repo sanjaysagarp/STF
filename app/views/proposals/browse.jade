@@ -37,7 +37,8 @@ block content
 			if proposals.length != 0
 				thead
 					tr
-						th ID 
+						th Year
+						th Number
 						th Title
 						th Status
 						th Category
@@ -49,27 +50,28 @@ block content
 				tbody
 					- each proposal in proposals
 						tr
-							td #{proposal.id}
+							td #{proposal.Year}
+							td #{proposal.Number}
 							if proposal.Status == 0
 								td: a(href='/proposals/update/#{proposal.id}') #{proposal.ProposalTitle} 
 								td #{proposal.FastTrack ? "[FT] ": ""}#{proposal.UAC ? "[UAC] ": ""}Unsubmitted
 							if proposal.Status == 1
-								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle} 
+								td: a(href='/proposals/#{proposal.Year}/#{proposal.Number}') #{proposal.ProposalTitle} 
 								td #{proposal.FastTrack ? "[FT] ": ""}#{proposal.UAC ? "[UAC] ": ""}Submitted
 							if proposal.Status == 2
-								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle}
+								td: a(href='/proposals/#{proposal.Year}/#{proposal.Number}') #{proposal.ProposalTitle}
 								td #{proposal.FastTrack ? "[FT] ": ""}#{proposal.UAC ? "[UAC] ": ""}In Voting
 							if proposal.Status == 3
-								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle}
+								td: a(href='/proposals/#{proposal.Year}/#{proposal.Number}') #{proposal.ProposalTitle}
 								td #{proposal.FastTrack ? "[FT] ": ""}#{proposal.UAC ? "[UAC] ": ""}Awaiting Decision
 							if proposal.Status == 4
-								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle}
+								td: a(href='/proposals/#{proposal.Year}/#{proposal.Number}') #{proposal.ProposalTitle}
 								td #{proposal.FastTrack ? "[FT] ": ""}#{proposal.UAC ? "[UAC] ": ""}Funded
 							if proposal.Status == 5
-								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle}
+								td: a(href='/proposals/#{proposal.Year}/#{proposal.Number}') #{proposal.ProposalTitle}
 								td #{proposal.FastTrack ? "[FT] ": ""}#{proposal.UAC ? "[UAC] ": ""}Partially Funded
 							if proposal.Status == 6
-								td: a(href='/proposals/#{proposal.id}') #{proposal.ProposalTitle}
+								td: a(href='/proposals/#{proposal.Year}/#{proposal.Number}') #{proposal.ProposalTitle}
 								td #{proposal.FastTrack ? "[FT] ": ""}#{proposal.UAC ? "[UAC] ": ""}Not Funded
 							if proposal.Status == 7
 								td #{proposal.ProposalTitle}

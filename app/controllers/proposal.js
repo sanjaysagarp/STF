@@ -561,6 +561,199 @@ router.get('/proposals/:id', function(req, res) {
 	});
 });
 
+//id can also be 13-1 for past revisions, so you're gonna have to splice and parse the string
+router.get('/proposals/:year/:number', function(req, res) {
+	db.Proposal.find({
+		where: {
+			Number: req.params.number,
+			Year: req.params.year
+		}
+	}).then(function(proposal) {
+		//if there is no proposal found, we need to check the legacy proposals
+		if(!proposal) {
+			var num = req.params.number.split('-');
+			//revision value is not given, so we get revision 1 by default
+			if(num.length < 2) {
+				num[1] = 1;
+			}
+			db.Legacy_Proposal.find({
+				where : {
+					Year: req.params.year,
+					Number: num[0],
+					Revision: num[1],
+				}
+			})
+			.then(function(legProposal) {
+				//proposal found, need to get legacy items
+				db.Legacy_Item.findAll({
+					where: {
+						ProposalId: legProposal.id
+					}
+				})
+				.then(function(items) {
+					//gets all items associated with proposal
+					//TODO - need to correctly orient items (funded, supplemental, original)
+					var SupplementalItems = [];
+					var OriginalItems = [];
+					var FundedItems = [];
+					for(item in items) {
+						//supplementals acted as partials
+						if(items[item].Supplemental == 1) {
+							SupplementalItems.push(items[item]);
+						} else {
+							OriginalItems.push(items[item]);
+						}
+						
+						//get funded items in its own array
+						if(items[item].Approved == 1 && items[item].Removed == 0) {
+							FundedItems.push(items[item]);
+						}
+					}
+					
+					var cr = new Date(legProposal.SubmittedDate);
+					var months = ["January", "February", "March", "April", "May", "June", "July", 
+								"August", "September", "October", "November", "December"];
+					var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
+					
+					//Reorient legacy data to fit current website dynamics
+					var status = 0;
+					var decision = "";
+					if(legProposal.Decision == "Rejected") {
+						decision = "Not Funded";
+						status = 6;
+					} else if (legProposal.Decision == "Partially Funded") {
+						decision = "Partially Funded";
+						status = 5;
+					} else if (legProposal.Decision == "Fully Funded") {
+						decision = "Funded";
+						status = 4
+					}
+					
+					var funded = !(legProposal.Decision != "Rejected");
+					//render the proposal_legacy page
+					res.render('proposals/view_legacy', {
+						title: legProposal.Title,
+						proposal: legProposal,
+						supplementalItems: SupplementalItems,
+						fundedItems: FundedItems,
+						originalItems: OriginalItems,
+						submitted: day,
+						items: OriginalItems,
+						funded: funded,
+						status: "<div class='text-center status-wrap status-" + status + 
+			"'><p><b>" + decision + "</b></p></div>"
+					});
+				});
+				
+			});
+			
+			
+		} else {
+			//Proposal was found and we can display the information correctly
+			db.Item.findAll({
+			where: {
+				ProposalId: proposal.id
+			}
+			}).then(function(items){
+				db.Endorsement.findAll({
+					where: {
+						ProposalID: proposal.id
+					}
+				}).then(function(endorsements) {
+					db.Partial.findAll({
+						where: {
+							ProposalId: proposal.id
+						}
+					}).then(function(partials) {
+
+						//assign user ids to the partials they made
+						var userPartialIds = [];
+						for (partial in partials) {
+							userPartialIds.push(partials[partial].AuthorId);
+						}
+						//Implement supplemental after partials
+						db.Supplemental.findAll({
+							where : {
+								ProposalId: proposal.id
+							}
+						}).then(function(supplementals) {
+							//need to get users of supplementals (creators)
+							var userSupplementalIds = [];
+							for (supplemental in supplementals) {
+								userSupplementalIds.push(supplementals[supplemental].AuthorId);
+							}
+							db.User.findAll({
+								where : {
+									id: userSupplementalIds
+								}
+							}).then(function(usersSupplementalRaw) {
+								// re-orient data (supplementals)
+								var usersSupplemental = {};
+								for(userSupplementalRaw in usersSupplementalRaw) {
+									usersSupplemental[usersSupplementalRaw[userSupplementalRaw].id] = usersSupplementalRaw[userSupplementalRaw];
+								}
+								db.User.findAll({
+									where: {
+										id: userPartialIds
+									}
+								}).then(function(usersPartialRaw) {
+									db.Award.find({
+										where: {
+											ProposalId: proposal.id
+										}
+									}).then(function(award) {
+										//re-orient data
+										db.Rejection.find({
+											where: {
+												ProposalId: proposal.id
+											}
+										}).then(function(rejection) {
+											var usersPartial = {};
+											for (userPartialRaw in usersPartialRaw) {
+												usersPartial[usersPartialRaw[userPartialRaw].id] = usersPartialRaw[userPartialRaw];
+											}
+
+											//create written date
+											var cr = new Date(proposal.createdAt);
+											var months = ["January", "February", "March", "April", "May", "June", "July", 
+														"August", "September", "October", "November", "December"];
+											var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
+											var editor = false;
+											var loggedIn = false;
+											if (req.user) {
+												editor = h.approvedEditor(res, req.user, proposal, false);
+												loggedIn = true;
+											}
+
+											res.render('proposals/view', {
+												title: proposal.ProposalTitle,
+												proposal: proposal,
+												partials: partials,
+												supplementals: supplementals,
+												usersPartial: usersPartial,
+												usersSupplemental: usersSupplemental,
+												created: day,
+												items: items,
+												loggedIn: loggedIn,
+												endorsements: endorsements,
+												categories: categories,
+												editor: editor,
+												award: award,
+												status: h.proposalStatus(proposal.Status),
+												rejection: rejection
+											});
+										});
+									});
+								});
+							});
+						});
+					});
+				});
+			});
+		}
+		
+	});
+});
 
 //get an endorsement for the proposal by the id specified
 router.get('/proposals/endorsements/:id', shib.ensureAuth('/login'), function(req, res) {

@@ -1,0 +1,220 @@
+extends ../head
+
+append js
+	script(src='/js/proposalsview_legacy.js')
+
+append css
+	link(rel='stylesheet', href='/css/proposalview.css')
+
+block content
+	.container
+		h2.title= proposal.Title
+		if proposal.Category
+			p.subtitle In #{proposal.Category}
+		else
+			p.subtitle In Unknown Category
+
+		.row
+			.col-sm-12.col-md-4
+				h3 Basic Info
+				table.basic
+					tbody
+						tr
+							th Proposal Number
+							td= proposal.Number
+						tr
+							th Created
+							td= submitted
+						tr
+							th Department
+							td= proposal.Department
+						tr
+							th Status
+							td !{status}
+						tr
+							th Metrics
+							td=proposal.Metrics
+						if funded
+							tr
+								th Letter
+								td: a(href='/proposals/award/#{proposal.Year}/#{proposal.Number}') View Letter
+						if rejection
+							tr
+								th Letter
+								td: a(href='/proposals/rejection/#{proposal.Year}/#{proposal.Number}') View Letter
+
+			.col-sm-12.col-md-8
+				h3 Contact Info
+				.row.contacts.rowsContact
+					.col-xs-12.col-sm-6.col-md-6.colsContact
+						table
+							tbody
+								th.contactType Primary
+								tr
+									th Name
+									td= proposal.ContactName
+								tr
+									th Title
+									td= proposal.ContactTitle
+								tr
+									th Phone
+									td= proposal.ContactPhone
+								tr
+									th Email
+									td= proposal.ContactEmail
+								tr
+									th Mailbox
+									td= proposal.ContactMail
+					.col-xs-12.col-sm-6.col-md-6.colsContact
+						table
+							tbody
+								th.contactType Budget
+								tr
+									th Name
+									td= proposal.BudgetName
+								tr
+									th Title
+									td= proposal.BudgetTitle
+								tr
+									th Phone
+									td= proposal.BudgetPhone
+								tr
+									th Email
+									td= proposal.BudgetEmail
+								tr
+									th Mailbox
+									td= proposal.BudgetMail
+		.row
+			.col-sm-12.col-md-8.col-md-offset-4
+				.row.contacts.rowsContact
+					.col-xs-12.col-sm-6.col-md-6.colsContact
+						table
+							tbody
+								th.contactType Dean
+								tr
+									th Name
+									td= proposal.DeanName
+								tr
+									th Title
+									td= proposal.DeanTitle
+								tr
+									th Phone
+									td= proposal.DeanPhone
+								tr
+									th Email
+									td= proposal.DeanEmail
+								tr
+									th Mailbox
+									td= proposal.DeanMail
+					.col-xs-12.col-sm-6.col-md-6.colsContact
+						table
+							tbody
+								th.contactType Student
+								tr
+									th Name
+									td= proposal.ConcurrenceName
+								tr
+									th Title
+									td= proposal.ConcurrenceTitle
+								tr
+									th Phone
+									td= proposal.ConcurrencePhone
+								tr
+									th Email
+									td= proposal.StudentEmail
+								tr
+									th Mailbox
+									td= proposal.StudentMail
+		h3 Abstract
+		p= proposal.Abstract
+		h3 Background
+		p= proposal.Background
+		h3 Benefits
+		p= proposal.Benefits
+		h3 Access Restriction
+		p= proposal.Access
+		h3 Resources
+		p= proposal.Resources
+		h3 Timeline
+		p= proposal.Timeline
+		h3 Departmental Endorsements
+		p= proposal.DepartmentalEndorsement
+		h3 Student Endorsements
+		p= proposal.StudentEndorsement
+
+		h3 Items
+
+		if supplementalItems
+			br
+			| Supplementals
+			select#supplemental.form-control
+				option(id='0' value='') Original Items
+				if funded
+					option(id='1' value='') Supplemental
+					option(id='2' value='' selected) Funded Items
+		-var total = 0;
+		table.0.items(class='original #{if funded ? "funded" : "" )}')
+			tr.item-head
+				th Item
+				th Group
+				th Unit Price
+				th Quantity
+				th Subtotal
+			
+			if funded
+				each fundedItem in fundedItems
+					+item(fundedItem)
+				+total()
+			else
+				each originalItem in originalItems
+					+item(originalItem)
+				+total()
+		
+		
+		input(id='proposalId' type='hidden' value='#{proposal.id}' )
+		table.items.hidden(class='supplemental')
+			tr.item-head
+				th Item
+				th Group
+				th Unit Price
+				th Quantity
+				th Subtotal
+
+			each supplementalItem in supplementalItems	
+				+item(supplementalItem)
+			+total()
+
+
+mixin item(item)
+	tr.item-info.info-first-line
+		td: h4= item.Title
+		td= item.Type
+		td= "$" + item.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+
+		td= item.Quantity
+		td= "$" + (Math.round(item.Price * item.Quantity * 100) / 100).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+	tr.item-info
+		td(colspan='5')
+			span Description: 
+			| #{item.Description}
+	tr.item-info.info-last-line
+		td(colspan='5')
+			span Justification: 
+			| #{item.Justification}
+
+	-total+= (Math.round(item.Price * item.Quantity * 100) / 100);
+
+mixin total() 
+	tr.item-head
+		td: h3 Summary
+		td 
+		td 
+		td 
+		td Total
+	tr.item-head
+		td
+		td
+		td
+		td
+		td= '$' + total.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+	-total = 0;

@@ -1,6 +1,8 @@
 module.exports = function(sequelize, DataTypes) {
 
 	var Proposal = sequelize.define('Proposal', {
+		Number: 'SMALLINT',
+		Year: 'SMALLINT',
 		ProposalTitle: DataTypes.STRING,
 		Category: DataTypes.STRING,
 		Department: DataTypes.STRING,

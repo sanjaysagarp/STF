@@ -2,10 +2,10 @@ module.exports = function(sequelize, DataTypes) {
 
 	var Supplemental = sequelize.define('Supplemental', {
 		ProposalId: 'MEDIUMINT',
-		Author: 'VARCHAR(20)',
-		Title: 'VARCHAR(40)',
-		Abstract: 'TEXT',
-		Status: 'TINYINT(4)'
+		Author: DataTypes.STRING,
+		Title: DataTypes.STRING,
+		Abstract: DataTypes.TEXT,
+		Status: 'TINYINT'
 	});
 
 	return Supplemental;

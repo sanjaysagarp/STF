@@ -1,17 +1,18 @@
 //controller for award letters
-//need to grab: Proposal Title and Id, Date of award letter creation, reportType (0 for quarterly, 1 for anually, 2 for both?), total funded amount
+//need to grab: Proposal Title and Id, Date of award letter creation, reportType (0 for quarterly, 1 for anually, 2 for both), total funded amount
 var express = require('express');
 var	router = express.Router();
 var shib = require('passport-uwshib');
 var db = require('../models');
 var h = require('../helper');
-var moment = require('moment'); //momentjs handles date format well -- need to npm install that
+var moment = require('moment');
 var awardDetails = require('../../config/awarddetails');
 
 module.exports = function(app) {
 	app.use('/', router);
 };
 
+//finds award letter if exists and renders page
 router.get('/proposals/award/:id', function(req, res) {
 	//get whether the proposal is computer lab or not
 	//get primaryuser
@@ -59,6 +60,7 @@ router.get('/proposals/award/:id', function(req, res) {
 	});
 });
 
+//finds rejection letter if exists and renders page
 router.get('/proposals/rejection/:id', function(req, res) {
 	db.Proposal.find({
 		where: {
@@ -90,6 +92,7 @@ router.get('/proposals/rejection/:id', function(req, res) {
 	
 });
 
+//Creates a rejection letter
 router.post('/admin/rejection', shib.ensureAuth('/login'), function(req, res) {
 	db.Proposal.find({
 		where: {
