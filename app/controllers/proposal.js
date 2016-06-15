@@ -344,10 +344,17 @@ router.get('/proposals/browse', function(req, res) {
 			Status: [1, 2, 3, 4, 5, 6]
 		}
 	}).then(function(proposals) {
-		res.render('proposals/browse',{
-			proposals: proposals,
-			title: "Browse all Proposals",
-			categories: categories
+		db.Legacy_Proposal.findAll({
+			where: {
+				Decision: ["Rejected","Fully Funded","Partially Funded"]
+			}
+		}).then(function(legProposals) {
+			proposals.push.apply(proposals, legProposals);
+			res.render('proposals/browse',{
+				proposals: proposals,
+				title: "Browse all Proposals",
+				categories: categories
+				});
 		});
 	});
 });
@@ -629,7 +636,7 @@ router.get('/proposals/:year/:number', function(req, res) {
 						status = 4
 					}
 					
-					var funded = !(legProposal.Decision != "Rejected");
+					var funded = !(legProposal.Decision == "Rejected");
 					//render the proposal_legacy page
 					res.render('proposals/view_legacy', {
 						title: legProposal.Title,

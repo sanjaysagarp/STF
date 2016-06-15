@@ -51,7 +51,10 @@ block content
 					- each proposal in proposals
 						tr
 							td #{proposal.Year}
-							td #{proposal.Number}
+							if proposal.Revision
+								td #{proposal.Number}-#{proposal.Revision}
+							else
+								td #{proposal.Number}
 							if proposal.Status == 0
 								td: a(href='/proposals/update/#{proposal.id}') #{proposal.ProposalTitle} 
 								td #{proposal.FastTrack ? "[FT] ": ""}#{proposal.UAC ? "[UAC] ": ""}Unsubmitted
@@ -79,9 +82,21 @@ block content
 							if proposal.Status == 8
 								td #{proposal.ProposalTitle}
 								td #{proposal.FastTrack ? "[FT] ": ""}#{proposal.UAC ? "[UAC] ": ""}Cancelled by Admin
+							if proposal.Decision == "Fully Funded"
+								td: a(href='/proposals/#{proposal.Year}/#{proposal.Number}-#{proposal.Revision}') #{proposal.Title} 
+								td Funded
+							if proposal.Decision == "Partially Funded"
+								td: a(href='/proposals/#{proposal.Year}/#{proposal.Number}-#{proposal.Revision}') #{proposal.Title}
+								td Partially Funded
+							if proposal.Decision == "Rejected"
+								td: a(href='/proposals/#{proposal.Year}/#{proposal.Number}-#{proposal.Revision}') #{proposal.Title}
+								td Not Funded
 
 
-							td: a(href='/proposals/category/#{proposal.Category}') #{categories[proposal.Category].name}
+							if proposal.Category
+								td: a(href='/proposals/category/#{proposal.Category}') #{categories[proposal.Category].name}
+							else
+								td N/A
 							td: a(href='/proposals/department/#{proposal.Department}') #{proposal.Department}
 							
 							if myProposals
