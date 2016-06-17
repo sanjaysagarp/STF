@@ -1,7 +1,7 @@
 extends ../head
 
 append js
-	script(src='/js/proposalsview_legacy.js')
+	script(src='/js/proposalview_legacy.js')
 
 append css
 	link(rel='stylesheet', href='/css/proposalview.css')
@@ -141,19 +141,47 @@ block content
 		p= proposal.DepartmentalEndorsement
 		h3 Student Endorsements
 		p= proposal.StudentEndorsement
-
+		
+		input(id='proposalId' type='hidden' value='#{proposal.id}' )
 		h3 Items
-
+		
 		if supplementalItems
 			br
 			| Supplementals
 			select#supplemental.form-control
-				option(id='0' value='') Original Items
+				option(id='original-items' value='') Original Items
 				if funded
-					option(id='1' value='') Supplemental
-					option(id='2' value='' selected) Funded Items
+					if supplementalItems.length > 0 
+						option(id='supplemental-items' value='') Supplemental
+					option(id='funded-items' value='' selected) Funded Items
 		-var total = 0;
-		table.0.items(class='original #{if funded ? "funded" : "" )}')
+		
+		if funded
+			table.items(class='funded-items funded')
+				tr.item-head
+					th Item
+					th Group
+					th Unit Price
+					th Quantity
+					th Subtotal
+
+					each fundedItem in fundedItems
+						+item(fundedItem)
+					+total()
+		if supplementalItems.length == 0 
+			table.items.hidden(class='supplemental-items')
+				tr.item-head
+					th Item
+					th Group
+					th Unit Price
+					th Quantity
+					th Subtotal
+
+				each supplementalItem in supplementalItems	
+					+item(supplementalItem)
+				+total()
+			
+		table.0.items(class='original-items')
 			tr.item-head
 				th Item
 				th Group
@@ -161,28 +189,13 @@ block content
 				th Quantity
 				th Subtotal
 			
-			if funded
-				each fundedItem in fundedItems
-					+item(fundedItem)
-				+total()
-			else
 				each originalItem in originalItems
 					+item(originalItem)
 				+total()
+	
 		
 		
-		input(id='proposalId' type='hidden' value='#{proposal.id}' )
-		table.items.hidden(class='supplemental')
-			tr.item-head
-				th Item
-				th Group
-				th Unit Price
-				th Quantity
-				th Subtotal
-
-			each supplementalItem in supplementalItems	
-				+item(supplementalItem)
-			+total()
+		
 
 
 mixin item(item)

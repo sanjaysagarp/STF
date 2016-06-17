@@ -612,7 +612,7 @@ router.get('/proposals/:year/:number', function(req, res) {
 						}
 						
 						//get funded items in its own array
-						if(items[item].Approved == 1 && items[item].Removed == 0) {
+						if(items[item].Approved == 1 && items[item].Removed != 1) {
 							FundedItems.push(items[item]);
 						}
 					}
@@ -635,6 +635,7 @@ router.get('/proposals/:year/:number', function(req, res) {
 						decision = "Funded";
 						status = 4
 					}
+					
 					
 					var funded = !(legProposal.Decision == "Rejected");
 					//render the proposal_legacy page
