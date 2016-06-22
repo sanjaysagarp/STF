@@ -82,19 +82,22 @@ block content
 							if proposal.Status == 8
 								td #{proposal.ProposalTitle}
 								td #{proposal.FastTrack ? "[FT] ": ""}#{proposal.UAC ? "[UAC] ": ""}Cancelled by Admin
-							if proposal.Decision == "Fully Funded"
+							if proposal.Decision == "Funded"
 								td: a(href='/proposals/#{proposal.Year}/#{proposal.Number}-#{proposal.Revision}') #{proposal.Title} 
 								td Funded
 							if proposal.Decision == "Partially Funded"
 								td: a(href='/proposals/#{proposal.Year}/#{proposal.Number}-#{proposal.Revision}') #{proposal.Title}
 								td Partially Funded
-							if proposal.Decision == "Rejected"
+							if proposal.Decision == "Not Funded"
 								td: a(href='/proposals/#{proposal.Year}/#{proposal.Number}-#{proposal.Revision}') #{proposal.Title}
 								td Not Funded
 
 
 							if proposal.Category
-								td: a(href='/proposals/category/#{proposal.Category}') #{categories[proposal.Category].name}
+								if categories[proposal.Category]
+									td: a(href='/proposals/category/#{proposal.Category}') #{categories[proposal.Category].name}
+								else
+									td: a(href='/proposals/category/#{proposal.Category}') #{proposal.Category}
 							else
 								td N/A
 							td: a(href='/proposals/department/#{proposal.Department}') #{proposal.Department}

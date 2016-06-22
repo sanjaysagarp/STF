@@ -11,7 +11,6 @@ window.addEventListener('load', function() {
 
 	function changeSupplementalItems() {
 		var supplemental = document.getElementById('supplemental').options[document.getElementById('supplemental').selectedIndex].id
-		console.log(supplemental);
 		var all = document.getElementsByClassName('items');
 		for (item in all) {
 			if (all[item].classList !== undefined) {

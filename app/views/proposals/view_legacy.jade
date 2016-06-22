@@ -31,9 +31,10 @@ block content
 						tr
 							th Status
 							td !{status}
-						tr
-							th Metrics
-							td=proposal.Metrics
+						if proposal.Metric
+							tr
+								th Metrics
+								td=proposal.Metrics
 						if funded
 							tr
 								th Letter
@@ -106,31 +107,36 @@ block content
 								tr
 									th Mailbox
 									td= proposal.DeanMail
-					.col-xs-12.col-sm-6.col-md-6.colsContact
-						table
-							tbody
-								th.contactType Student
-								tr
-									th Name
-									td= proposal.ConcurrenceName
-								tr
-									th Title
-									td= proposal.ConcurrenceTitle
-								tr
-									th Phone
-									td= proposal.ConcurrencePhone
-								tr
-									th Email
-									td= proposal.StudentEmail
-								tr
-									th Mailbox
-									td= proposal.StudentMail
+					if proposal.ConcurrenceName
+						.col-xs-12.col-sm-6.col-md-6.colsContact
+							table
+								tbody
+									th.contactType Student
+									tr
+										th Name
+										td= proposal.ConcurrenceName
+									tr
+										th Title
+										td= proposal.ConcurrenceTitle
+									tr
+										th Phone
+										td= proposal.ConcurrencePhone
+									tr
+										th Email
+										td= proposal.ConcurrenceEmail
+									tr
+										th Mailbox
+										td= proposal.ConcurrenceMail
 		h3 Abstract
 		p= proposal.Abstract
 		h3 Background
 		p= proposal.Background
 		h3 Benefits
 		p= proposal.Benefits
+		if proposal.CategoryJustification
+			h3 Category Justification
+			p= proposal.CategoryJustification
+		
 		h3 Access Restriction
 		p= proposal.Access
 		h3 Resources
@@ -147,11 +153,10 @@ block content
 		
 		if supplementalItems
 			br
-			| Supplementals
 			select#supplemental.form-control
 				option(id='original-items' value='') Original Items
 				if funded
-					if supplementalItems.length > 0 
+					if supplementalItems.length > 0
 						option(id='supplemental-items' value='') Supplemental
 					option(id='funded-items' value='' selected) Funded Items
 		-var total = 0;
@@ -168,7 +173,8 @@ block content
 					each fundedItem in fundedItems
 						+item(fundedItem)
 					+total()
-		if supplementalItems.length == 0 
+		
+		if supplementalItems.length > 0 
 			table.items.hidden(class='supplemental-items')
 				tr.item-head
 					th Item
@@ -180,7 +186,7 @@ block content
 				each supplementalItem in supplementalItems	
 					+item(supplementalItem)
 				+total()
-			
+		
 		table.0.items(class='original-items')
 			tr.item-head
 				th Item

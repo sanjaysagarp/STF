@@ -1,6 +1,7 @@
 module.exports = function(sequelize, DataTypes) {
 	
 	var Legacy_Proposal = sequelize.define('Legacy_Proposal', {
+		LegacyId: 'SMALLINT',
 		Year: 'SMALLINT',
 		Number: 'SMALLINT',
 		Revision: 'TINYINT',
@@ -9,6 +10,7 @@ module.exports = function(sequelize, DataTypes) {
 		Abstract: DataTypes.TEXT,
 		Department: DataTypes.STRING(60),
 		AccessType: DataTypes.STRING(40),
+		Category: DataTypes.STRING(250),
 		ContactName: DataTypes.STRING(40),
 		ContactMail: DataTypes.STRING(10),
 		ContactPhone: DataTypes.STRING(15),
@@ -33,6 +35,8 @@ module.exports = function(sequelize, DataTypes) {
 		Annual: DataTypes.CHAR(1),
 		AnnualDate: DataTypes.DATE,
 		Decision: DataTypes.STRING(40),
+		PartialId: DataTypes.INTEGER,
+		Metric: DataTypes.STRING(250),
 		Award: DataTypes.DECIMAL(14,2),
 		AwardText: DataTypes.TEXT,
 		Background: DataTypes.TEXT,
@@ -40,9 +44,18 @@ module.exports = function(sequelize, DataTypes) {
 		Access: DataTypes.TEXT,
 		Resources: DataTypes.TEXT,
 		Timeline: DataTypes.TEXT,
+		CategoryJustification: DataTypes.TEXT,
+		OriginalSupplementalId: DataTypes.INTEGER,
 		DepartmentalEndorsement: DataTypes.TEXT,
 		StudentEndorsement: DataTypes.TEXT,
-		AnnualReport: DataTypes.TEXT
+		AnnualReport: DataTypes.TEXT,
+		AnnualStarted: DataTypes.DATE,
+		AnnualInstalled: DataTypes.DATE,
+		AnnualCompleted: DataTypes.DATE,
+		AnnualAttachment: DataTypes.STRING(100),
+		AnnualContactName: DataTypes.STRING(250),
+		AnnualContactEmail: DataTypes.STRING(254),
+		AnnualContactPhone: DataTypes.STRING(250)
 	});
 
 	return Legacy_Proposal;

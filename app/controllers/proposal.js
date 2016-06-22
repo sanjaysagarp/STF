@@ -346,7 +346,7 @@ router.get('/proposals/browse', function(req, res) {
 	}).then(function(proposals) {
 		db.Legacy_Proposal.findAll({
 			where: {
-				Decision: ["Rejected","Fully Funded","Partially Funded"]
+				Decision: ["Rejected","Funded","Partially Funded"]
 			}
 		}).then(function(legProposals) {
 			proposals.push.apply(proposals, legProposals);
@@ -599,58 +599,119 @@ router.get('/proposals/:year/:number', function(req, res) {
 				})
 				.then(function(items) {
 					//gets all items associated with proposal
-					//TODO - need to correctly orient items (funded, supplemental, original)
-					var SupplementalItems = [];
-					var OriginalItems = [];
-					var FundedItems = [];
-					for(item in items) {
-						//supplementals acted as partials
-						if(items[item].Supplemental == 1) {
-							SupplementalItems.push(items[item]);
-						} else {
-							OriginalItems.push(items[item]);
+					//need to correctly orient items (funded, supplemental, original)
+					if(items.length > 0) {
+						var SupplementalItems = [];
+						var OriginalItems = [];
+						var FundedItems = [];
+						for(item in items) {
+							//supplementals acted as partials
+							if(items[item].Supplemental == 1) {
+								SupplementalItems.push(items[item]);
+							} else {
+								OriginalItems.push(items[item]);
+							}
+							
+							//get funded items in its own array
+							if(items[item].Approved == 1 && items[item].Removed != 1) {
+								FundedItems.push(items[item]);
+							}
 						}
 						
-						//get funded items in its own array
-						if(items[item].Approved == 1 && items[item].Removed != 1) {
-							FundedItems.push(items[item]);
+						var cr = new Date(legProposal.SubmittedDate);
+						var months = ["January", "February", "March", "April", "May", "June", "July", 
+									"August", "September", "October", "November", "December"];
+						var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
+						
+						//Reorient legacy data to fit current website dynamics
+						var status = 0;
+						if(legProposal.Decision == "Not Funded") {
+							status = 6;
+						} else if (legProposal.Decision == "Partially Funded") {
+							status = 5;
+						} else if (legProposal.Decision == "Funded") {
+							status = 4
 						}
+						
+						
+						var funded = !(legProposal.Decision == "Not Funded");
+						//render the proposal_legacy page
+						res.render('proposals/view_legacy', {
+							title: legProposal.Title,
+							proposal: legProposal,
+							supplementalItems: SupplementalItems,
+							fundedItems: FundedItems,
+							originalItems: OriginalItems,
+							submitted: day,
+							items: OriginalItems,
+							funded: funded,
+							status: "<div class='text-center status-wrap status-" + status + 
+				"'><p><b>" + legProposal.Decision + "</b></p></div>"
+						});
+					} else {
+						//item not found from proposalid, so it is a 2012+ proposal
+						//will only retrieve originalItems
+						db.Legacy_Item.findAll({
+							where: {
+								LegacyId: legProposal.LegacyId
+							}
+						})
+						.then(function(items2) {
+							var SupplementalItems = [];
+							var OriginalItems = [];
+							var FundedItems = [];
+							for(item in items2) {
+								//supplementals and partials are interchanagable for legacy view
+								if(items2[item].ObjectId == legProposal.OriginalSupplementalId) {
+									OriginalItems.push(items2[item]);
+								} else if (items2[item].SupplementalItemId != null){
+									SupplementalItems.push(items2[item]);
+								} else if (items2[item].PartialItemId != null) {
+									SupplementalItems.push(items2[item]);
+								} else {
+									if(items2[item].Approved == 1 && items2[item].Quantity != 0) {
+										FundedItems.push(items2[item]);
+									}
+								}
+								
+								if(items2[item].ObjectId == legProposal.PartialId) {
+									FundedItems.push(items2[item]);
+								}
+							}
+							var cr = new Date(legProposal.SubmittedDate);
+							var months = ["January", "February", "March", "April", "May", "June", "July", 
+										"August", "September", "October", "November", "December"];
+							var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
+							
+							//Reorient legacy data to fit current website dynamics
+							var status = 0;
+							if(legProposal.Decision == "Not Funded") {
+								status = 6;
+							} else if (legProposal.Decision == "Partially Funded") {
+								status = 5;
+							} else if (legProposal.Decision == "Funded") {
+								status = 4
+							}
+							
+							var funded = !(legProposal.Decision == "Not Funded");
+							if(legProposal.Decision == "Funded" && FundedItems.length < 1) {
+								FundedItems = OriginalItems;
+							}
+							//render the proposal_legacy page
+							res.render('proposals/view_legacy', {
+								title: legProposal.Title,
+								proposal: legProposal,
+								supplementalItems: SupplementalItems,
+								fundedItems: FundedItems,
+								originalItems: OriginalItems,
+								submitted: day,
+								items: OriginalItems,
+								funded: funded,
+								status: "<div class='text-center status-wrap status-" + status + 
+					"'><p><b>" + legProposal.Decision + "</b></p></div>"
+							});
+						});
 					}
-					
-					var cr = new Date(legProposal.SubmittedDate);
-					var months = ["January", "February", "March", "April", "May", "June", "July", 
-								"August", "September", "October", "November", "December"];
-					var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
-					
-					//Reorient legacy data to fit current website dynamics
-					var status = 0;
-					var decision = "";
-					if(legProposal.Decision == "Rejected") {
-						decision = "Not Funded";
-						status = 6;
-					} else if (legProposal.Decision == "Partially Funded") {
-						decision = "Partially Funded";
-						status = 5;
-					} else if (legProposal.Decision == "Fully Funded") {
-						decision = "Funded";
-						status = 4
-					}
-					
-					
-					var funded = !(legProposal.Decision == "Rejected");
-					//render the proposal_legacy page
-					res.render('proposals/view_legacy', {
-						title: legProposal.Title,
-						proposal: legProposal,
-						supplementalItems: SupplementalItems,
-						fundedItems: FundedItems,
-						originalItems: OriginalItems,
-						submitted: day,
-						items: OriginalItems,
-						funded: funded,
-						status: "<div class='text-center status-wrap status-" + status + 
-			"'><p><b>" + decision + "</b></p></div>"
-					});
 				});
 				
 			});
