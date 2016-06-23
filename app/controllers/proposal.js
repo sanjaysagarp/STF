@@ -283,56 +283,67 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 	var TechnologyResources = req.body["TechnologyResources"];
 	var FinancialResources = req.body["FinancialResources"];
 
-
-	db.Proposal.create({
-		ProposalTitle: ProposalTitle,
-		Category: Category,
-		Department: Department,
-		PrimaryRegId: PrimaryRegId,
-		PrimaryNetId: PrimaryNetId,
-		PrimaryName: PrimaryName,
-		PrimaryTitle: PrimaryTitle,
-		PrimaryPhone: PrimaryPhone,
-		PrimaryMail: PrimaryMail,
-		BudgetName: BudgetName,
-		BudgetTitle: BudgetTitle,
-		BudgetPhone: BudgetPhone,
-		BudgetNetId: BudgetNetId,
-		BudgetMail: BudgetMail,
-		DeanName: DeanName,
-		DeanTitle: DeanTitle,
-		DeanPhone: DeanPhone,
-		DeanNetId: DeanNetId,
-		DeanMail: DeanMail,
-		StudentName: StudentName,
-		StudentTitle: StudentTitle,
-		StudentPhone: StudentPhone,
-		StudentNetId: StudentNetId,
-		StudentMail: StudentMail,
-		AdditionalContactName1: AdditionalContactName1,
-		AdditionalContactNetId1: AdditionalContactNetId1,
-		AdditionalContactName2: AdditionalContactName2,
-		AdditionalContactNetId2: AdditionalContactNetId2,
-		AdditionalContactName3: AdditionalContactName3,
-		AdditionalContactNetId3: AdditionalContactNetId3,
-		Abstract: Abstract,
-		Background: Background,
-		ProposalFeedback: ProposalFeedback,
-		StudentsEstimated: StudentsEstimated,
-		EstimateJustification: EstimateJustification,
-		ResearchScholarship: ResearchScholarship,
-		EducationalExperience: EducationalExperience,
-		CareerEnhancement: CareerEnhancement,
-		AccessRestrictions: AccessRestrictions,
-		Hours: Hours,
-		Days: Days,
-		Outreach: Outreach,
-		ProposalTimeline: ProposalTimeline,
-		HumanResources: HumanResources,
-		TechnologyResources: TechnologyResources,
-		FinancialResources: FinancialResources
-	}).then(function(proposal) {
-		res.redirect('/proposals/update/' + proposal.id);
+	//need to find current number/year for proposal
+	
+	db.Admin.find({where: {id:1}})
+	.then(function(settings) {
+		db.Proposal.create({
+			Year: settings.CurrentYear,
+			Number: settings.CurrentNumber,
+			ProposalTitle: ProposalTitle,
+			Category: Category,
+			Department: Department,
+			PrimaryRegId: PrimaryRegId,
+			PrimaryNetId: PrimaryNetId,
+			PrimaryName: PrimaryName,
+			PrimaryTitle: PrimaryTitle,
+			PrimaryPhone: PrimaryPhone,
+			PrimaryMail: PrimaryMail,
+			BudgetName: BudgetName,
+			BudgetTitle: BudgetTitle,
+			BudgetPhone: BudgetPhone,
+			BudgetNetId: BudgetNetId,
+			BudgetMail: BudgetMail,
+			DeanName: DeanName,
+			DeanTitle: DeanTitle,
+			DeanPhone: DeanPhone,
+			DeanNetId: DeanNetId,
+			DeanMail: DeanMail,
+			StudentName: StudentName,
+			StudentTitle: StudentTitle,
+			StudentPhone: StudentPhone,
+			StudentNetId: StudentNetId,
+			StudentMail: StudentMail,
+			AdditionalContactName1: AdditionalContactName1,
+			AdditionalContactNetId1: AdditionalContactNetId1,
+			AdditionalContactName2: AdditionalContactName2,
+			AdditionalContactNetId2: AdditionalContactNetId2,
+			AdditionalContactName3: AdditionalContactName3,
+			AdditionalContactNetId3: AdditionalContactNetId3,
+			Abstract: Abstract,
+			Background: Background,
+			ProposalFeedback: ProposalFeedback,
+			StudentsEstimated: StudentsEstimated,
+			EstimateJustification: EstimateJustification,
+			ResearchScholarship: ResearchScholarship,
+			EducationalExperience: EducationalExperience,
+			CareerEnhancement: CareerEnhancement,
+			AccessRestrictions: AccessRestrictions,
+			Hours: Hours,
+			Days: Days,
+			Outreach: Outreach,
+			ProposalTimeline: ProposalTimeline,
+			HumanResources: HumanResources,
+			TechnologyResources: TechnologyResources,
+			FinancialResources: FinancialResources
+		})
+		.then(function(proposal) {
+			var newNumber = 1 + settings.CurrentNumber;
+			settings.increment('CurrentNumber',{by:1})
+			.then(function() {
+				res.redirect('/proposals/update/' + proposal.id);
+			});
+		});
 	});
 });
 
@@ -384,16 +395,26 @@ router.get('/proposals/category/:cat', function(req, res) {
 			Status: [1, 2, 3, 4, 5, 6]
 		}
 	}).then(function(proposals) {
-		if (categories[req.params.cat]) {
-			res.render('proposals/browse', {
-				proposals: proposals,
-				title: categories[proposals[0].Category].name + ": Proposals",
-				categories: categories
-			});
-		} else {
-			h.displayErrorPage(res, 'The category specified could not be found', 'Unknown Category')
-		}
-	})
+		db.Legacy_Proposal.findAll({
+			where: {
+				Category: categories[proposals[0].Category].name
+			}
+		})
+		.then(function(legProposals) {
+			legProposals.reverse();
+			proposals.push.apply(proposals, legProposals);
+			if (categories[req.params.cat]) {
+				res.render('proposals/browse', {
+					proposals: proposals,
+					title: categories[proposals[0].Category].name + ": Proposals",
+					categories: categories
+				});
+			} else {
+				h.displayErrorPage(res, 'The category specified could not be found', 'Unknown Category')
+			}
+		});
+		
+	});
 });
 
 router.get('/proposals/department/:cat', function(req, res) {

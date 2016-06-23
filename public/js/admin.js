@@ -185,7 +185,6 @@ $(document).ready(function(){
 							$("#notification").addClass("alert alert-success");
 							$("#notification").html("Proposal settings have been updated!");
 							$("#notification").fadeOut( 3000 );
-							window.location.href = '/proposals/update/' + $('[name="proposalId"]').val();
 						} else {
 							$("#notification").css("display", "block");
 							$("#notification").addClass("alert alert-danger");
