@@ -34,6 +34,22 @@ block content
 				label Fast Track option
 		button#updateSettingsButton Update
 		
+		h2 Reset Year/Ids
+		p Clicking this option WILL reset the ids and progress a year for the RFP process (eg. 2016-80 to 2017-1)
+		p
+			strong Current Year: #{settings.CurrentYear}
+		p
+			strong Current Number: #{settings.CurrentNumber}
+		form(method='post', action='/admin/resetYear')
+			p Are you sure? 
+			label 
+				input(type='radio', name='confirm', value="1")
+				| Yes 
+			label 
+				input(type='radio', name='confirm', value="0", checked='checked')
+				| No 
+				button#resetYearButton Submit
+		
 		h2 Add or Change Member
 		p Add or change the status of a committee member. Basic members can create metrics and vote. Admin members can do everything you can. Disabled members are unable to do anything. Changing your own account WILL work.
 		form(method='post', action='/admin/addChange')

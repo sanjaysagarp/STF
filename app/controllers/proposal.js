@@ -349,6 +349,7 @@ router.get('/proposals/browse', function(req, res) {
 				Decision: ["Rejected","Funded","Partially Funded"]
 			}
 		}).then(function(legProposals) {
+			legProposals.reverse();
 			proposals.push.apply(proposals, legProposals);
 			res.render('proposals/browse',{
 				proposals: proposals,
@@ -359,7 +360,7 @@ router.get('/proposals/browse', function(req, res) {
 	});
 });
 
-//scale out for proposal browse after this year -- Activate this after funnding cycle!
+//scale out for proposal browse after this year -- need to add compatability for legacy proposals
 //so proposal authors don't get confuzzled
 // router.get('/proposals/:year', function(req, res) {
 // 	db.Proposal.findAll({
@@ -402,16 +403,26 @@ router.get('/proposals/department/:cat', function(req, res) {
 			Status: [1, 2, 3, 4, 5, 6]
 		}
 	}).then(function(proposals) {
-		if (proposals.length != 0) {
-			res.render('proposals/browse', {
-				proposals: proposals,
-				title: proposals[0].Department + ": Proposals",
-				categories: categories
-			});
-		} else {
-			h.displayErrorPage(res, 'The department specified could not be found', 'Unknown Department')
-		}
-	})
+		//search through legacy proposals and add to list of proposals
+		db.Legacy_Proposal.findAll({
+			where: {
+				Department: req.params.cat
+			}
+		})
+		.then(function(legProposals) {
+			legProposals.reverse();
+			proposals.push.apply(proposals, legProposals);
+			if (proposals.length != 0) {
+				res.render('proposals/browse', {
+					proposals: proposals,
+					title: proposals[0].Department + ": Proposals",
+					categories: categories
+				});
+			} else {
+				h.displayErrorPage(res, 'The department specified could not be found', 'Unknown Department')
+			}
+		});
+	});
 });
 
 

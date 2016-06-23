@@ -205,4 +205,41 @@ $(document).ready(function(){
 				}
 		});
 	});
+	
+	$('#resetYearButton').on('click', function(e) {
+		e.preventDefault();
+		$.ajax({
+				method: 'POST',
+				url: "/admin/resetYear",
+				data: {
+					sure: $("input[type='radio'][name='confirm']:checked").val()
+				},
+				dataType: 'json',
+				success: function(data) {
+					if(data) {
+						if(data.message == "updated") {
+							$("#notification").css("display", "block");
+							$("#notification").addClass("alert alert-success");
+							$("#notification").html("Number has been reset to 1. Year has been set to next year");
+							$("#notification").fadeOut( 3000 );
+							window.location.href = '/admin';
+						} else {
+							$("#notification").css("display", "block");
+							$("#notification").addClass("alert alert-danger");
+							$("#notification").html("Please confirm the reset");
+							$("#notification").fadeOut( 3000 );
+						}
+					} else {
+						$("#notification").css("display", "block");
+						$("#notification").addClass("alert alert-danger");
+						$("#notification").html("Something went wrong");
+						$("#notification").fadeOut( 3000 );
+					}
+					
+				},
+				failure: function(err) {
+					console.log(err);
+				}
+		});
+	});
 });

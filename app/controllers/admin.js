@@ -174,6 +174,26 @@ router.post('/admin/userRemove', function(req, res) {
 	}
 });
 
+
+//updates the admin settings to progress a year and reset numbers for rfp
+router.post('/admin/resetYear', function(req, res) {
+	if (req.body.sure == "1") {
+		db.Admin.find({ where: {id: 1}})
+		.then(function(settings) {
+			var currentYear = settings.CurrentYear + 1;
+			settings.updateAttributes({
+				CurrentYear: currentYear,
+				CurrentNumber: 1
+			})
+			.then(function() {
+				res.send({message: "updated"});
+			});
+		});
+	} else {
+		res.send({message:"Confirm deletion"});
+	}
+});
+
 //update proposal settings (open/close submissions for rfp). Retrieves true and false data under parser
 //(submissions / fastrack)
 router.post('/admin/updateSettings', function(req, res) {
