@@ -1,0 +1,14 @@
+extends ../head
+
+block content
+	.container
+		h1 Award Letter for #{proposal.Title}
+		if proposal.Award != 0.00
+			p It is a pleasure to inform you that the Student Technology Fee Committee has approved your proposal #{proposal.Year}-#{proposal.Number}-#{proposal.Revision} for $#{proposal.Award}. By accepting STF funds, the proposal author and department agree to the requirements of this award letter, as well as stipulations under STF Compliance.
+		else
+			p It is a pleasure to inform you that the Student Technology Fee Committee has approved your proposal #{proposal.Year}-#{proposal.Number}-#{proposal.Revision}. By accepting STF funds, the proposal author and department agree to the requirements of this award letter, as well as stipulations under STF Compliance.
+		if proposal.AwardText
+			h2 Additional Notes
+			p= proposal.AwardText
+		p Any questions about your proposal can be directed to Program Coordinator at #[a(href='mailto:techfee@uw.edu') techfee@uw.edu].
+		

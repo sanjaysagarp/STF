@@ -24,6 +24,7 @@ router.get('/proposals/award/:id', function(req, res) {
 		}
 	})
 	.then(function(award) {
+		//if award is found, display as it is. If not, display legacy proposal information
 		db.Proposal.find({
 			where: {
 				id: req.params.id
@@ -32,7 +33,6 @@ router.get('/proposals/award/:id', function(req, res) {
 		.then(function(proposal) {
 			//format dates
 			if(award){
-				console.log("WTF " + award.BudgetDate );
 				var awardDate = moment.utc(award.AwardDate).format('MMMM Do YYYY');
 				var budgetMonth = moment.utc(award.BudgetDate).format('MMMM YYYY');
 				var oversightOver = moment.utc(award.OversightOver).format('MMMM YYYY');
@@ -57,6 +57,82 @@ router.get('/proposals/award/:id', function(req, res) {
 	.catch(function(err) {
 		console.log(err);
 		h.displayErrorPage(res, 'There is no award found for this proposal', 'Award not found!');
+	});
+});
+
+//finds award letter if exists and renders page
+router.get('/proposals/award/:year/:number', function(req, res) {
+	//get whether the proposal is computer lab or not
+	//get primaryuser
+	//need to create view for this and create schema for awards
+	//check if an award exists for this proposal
+	db.Proposal.find({
+		where: {
+			Number: req.params.number,
+			Year: req.params.year
+		}
+	})
+	.then(function(proposal) {
+		
+		if(proposal) {
+			db.Award.find({
+				where: {
+					ProposalId: proposal.id
+				}
+			})
+			.then(function(award) {
+				//if award is found, display as it is. If not, display legacy proposal information
+				if(award) {
+					db.Proposal.find({
+						where: {
+							id: req.params.id
+						}
+					})
+					.then(function(proposal) {
+						//format dates
+						var awardDate = moment.utc(award.AwardDate).format('MMMM Do YYYY');
+						var budgetMonth = moment.utc(award.BudgetDate).format('MMMM YYYY');
+						var oversightOver = moment.utc(award.OversightOver).format('MMMM YYYY');
+						var oversightUnder = moment.utc(award.OversightUnder).format('MMMM YYYY');
+						var total = award.FundedAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+						res.render('proposals/award', {
+							title: "Award Letter",
+							proposal: proposal,
+							award: award,
+							awardDate: awardDate,
+							budgetMonth: budgetMonth,
+							oversightOver: oversightOver,
+							oversightUnder: oversightUnder,
+							total: total
+						});
+					});
+				} else {
+					//Search for proposal on legacy
+					h.displayErrorPage(res, 'Award does not exist',
+						"Not Found");
+				}
+			});
+		} else {
+			var num = req.params.number.split('-');
+			//revision value is not given, so we get revision 1 by default
+			if(num.length < 2) {
+				num[1] = 1;
+			}
+			db.Legacy_Proposal.find({
+				where : {
+					Year: req.params.year,
+					Number: num[0],
+					Revision: num[1],
+				}
+			})
+			.then(function(legProposal) {
+				//need separate legacy_award view page to render
+				res.render('proposals/award_legacy', {
+					title: "Award Letter",
+					proposal: legProposal
+				});
+			});
+		}
 	});
 });
 

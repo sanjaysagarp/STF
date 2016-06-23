@@ -592,92 +592,33 @@ router.get('/proposals/:year/:number', function(req, res) {
 			})
 			.then(function(legProposal) {
 				//proposal found, need to get legacy items
-				db.Legacy_Item.findAll({
-					where: {
-						ProposalId: legProposal.id
-					}
-				})
-				.then(function(items) {
-					//gets all items associated with proposal
-					//need to correctly orient items (funded, supplemental, original)
-					if(items.length > 0) {
-						var SupplementalItems = [];
-						var OriginalItems = [];
-						var FundedItems = [];
-						for(item in items) {
-							//supplementals acted as partials
-							if(items[item].Supplemental == 1) {
-								SupplementalItems.push(items[item]);
-							} else {
-								OriginalItems.push(items[item]);
-							}
-							
-							//get funded items in its own array
-							if(items[item].Approved == 1 && items[item].Removed != 1) {
-								FundedItems.push(items[item]);
-							}
+				if(legProposal) {
+					db.Legacy_Item.findAll({
+						where: {
+							ProposalId: legProposal.id
 						}
-						
-						var cr = new Date(legProposal.SubmittedDate);
-						var months = ["January", "February", "March", "April", "May", "June", "July", 
-									"August", "September", "October", "November", "December"];
-						var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
-						
-						//Reorient legacy data to fit current website dynamics
-						var status = 0;
-						if(legProposal.Decision == "Not Funded") {
-							status = 6;
-						} else if (legProposal.Decision == "Partially Funded") {
-							status = 5;
-						} else if (legProposal.Decision == "Funded") {
-							status = 4
-						}
-						
-						
-						var funded = !(legProposal.Decision == "Not Funded");
-						//render the proposal_legacy page
-						res.render('proposals/view_legacy', {
-							title: legProposal.Title,
-							proposal: legProposal,
-							supplementalItems: SupplementalItems,
-							fundedItems: FundedItems,
-							originalItems: OriginalItems,
-							submitted: day,
-							items: OriginalItems,
-							funded: funded,
-							status: "<div class='text-center status-wrap status-" + status + 
-				"'><p><b>" + legProposal.Decision + "</b></p></div>"
-						});
-					} else {
-						//item not found from proposalid, so it is a 2012+ proposal
-						//will only retrieve originalItems
-						db.Legacy_Item.findAll({
-							where: {
-								LegacyId: legProposal.LegacyId
-							}
-						})
-						.then(function(items2) {
+					})
+					.then(function(items) {
+						//gets all items associated with proposal
+						//need to correctly orient items (funded, supplemental, original)
+						if(items.length > 0) {
 							var SupplementalItems = [];
 							var OriginalItems = [];
 							var FundedItems = [];
-							for(item in items2) {
-								//supplementals and partials are interchanagable for legacy view
-								if(items2[item].ObjectId == legProposal.OriginalSupplementalId) {
-									OriginalItems.push(items2[item]);
-								} else if (items2[item].SupplementalItemId != null){
-									SupplementalItems.push(items2[item]);
-								} else if (items2[item].PartialItemId != null) {
-									SupplementalItems.push(items2[item]);
+							for(item in items) {
+								//supplementals acted as partials
+								if(items[item].Supplemental == 1) {
+									SupplementalItems.push(items[item]);
 								} else {
-									if(items2[item].Approved == 1 && items2[item].Quantity != 0) {
-										FundedItems.push(items2[item]);
-									}
+									OriginalItems.push(items[item]);
 								}
 								
-								if(items2[item].ObjectId == legProposal.PartialId) {
-									FundedItems.push(items2[item]);
+								//get funded items in its own array
+								if(items[item].Approved == 1 && items[item].Removed != 1) {
+									FundedItems.push(items[item]);
 								}
 							}
+							
 							var cr = new Date(legProposal.SubmittedDate);
 							var months = ["January", "February", "March", "April", "May", "June", "July", 
 										"August", "September", "October", "November", "December"];
@@ -693,10 +634,8 @@ router.get('/proposals/:year/:number', function(req, res) {
 								status = 4
 							}
 							
+							
 							var funded = !(legProposal.Decision == "Not Funded");
-							if(legProposal.Decision == "Funded" && FundedItems.length < 1) {
-								FundedItems = OriginalItems;
-							}
 							//render the proposal_legacy page
 							res.render('proposals/view_legacy', {
 								title: legProposal.Title,
@@ -710,10 +649,76 @@ router.get('/proposals/:year/:number', function(req, res) {
 								status: "<div class='text-center status-wrap status-" + status + 
 					"'><p><b>" + legProposal.Decision + "</b></p></div>"
 							});
-						});
-					}
+						} else {
+							//item not found from proposalid, so it is a 2012+ proposal
+							//will only retrieve originalItems
+							db.Legacy_Item.findAll({
+								where: {
+									LegacyId: legProposal.LegacyId
+								}
+							})
+							.then(function(items2) {
+								//if items aren't found, display error page
+								var SupplementalItems = [];
+								var OriginalItems = [];
+								var FundedItems = [];
+								for(item in items2) {
+									//supplementals and partials are interchanagable for legacy view
+									if(items2[item].ObjectId == legProposal.OriginalSupplementalId) {
+										OriginalItems.push(items2[item]);
+									} else if (items2[item].SupplementalItemId != null){
+										SupplementalItems.push(items2[item]);
+									} else if (items2[item].PartialItemId != null) {
+										SupplementalItems.push(items2[item]);
+									} else {
+										if(items2[item].Approved == 1 && items2[item].Quantity != 0) {
+											FundedItems.push(items2[item]);
+										}
+									}
+									
+									if(items2[item].ObjectId == legProposal.PartialId) {
+										FundedItems.push(items2[item]);
+									}
+								}
+								var cr = new Date(legProposal.SubmittedDate);
+								var months = ["January", "February", "March", "April", "May", "June", "July", 
+											"August", "September", "October", "November", "December"];
+								var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
+								
+								//Reorient legacy data to fit current website dynamics
+								var status = 0;
+								if(legProposal.Decision == "Not Funded") {
+									status = 6;
+								} else if (legProposal.Decision == "Partially Funded") {
+									status = 5;
+								} else if (legProposal.Decision == "Funded") {
+									status = 4
+								}
+								
+								var funded = !(legProposal.Decision == "Not Funded");
+								if(legProposal.Decision == "Funded" && FundedItems.length < 1) {
+									FundedItems = OriginalItems;
+								}
+								//render the proposal_legacy page
+								res.render('proposals/view_legacy', {
+									title: legProposal.Title,
+									proposal: legProposal,
+									supplementalItems: SupplementalItems,
+									fundedItems: FundedItems,
+									originalItems: OriginalItems,
+									submitted: day,
+									items: OriginalItems,
+									funded: funded,
+									status: "<div class='text-center status-wrap status-" + status +
+						"'><p><b>" + legProposal.Decision + "</b></p></div>"
+								});
+								
+							});
+						}
 				});
-				
+				} else {
+					h.displayErrorPage(res, 'Proposal not found!', "Not Found");
+				}
 			});
 			
 			
