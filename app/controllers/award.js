@@ -33,10 +33,22 @@ router.get('/proposals/award/:id', function(req, res) {
 		.then(function(proposal) {
 			//format dates
 			if(award){
-				var awardDate = moment.utc(award.AwardDate).format('MMMM Do YYYY');
+				var awardDate = moment.utc(award.AwardDate).format('MMMM Do[,] YYYY');
 				var budgetMonth = moment.utc(award.BudgetDate).format('MMMM YYYY');
 				var oversightOver = moment.utc(award.OversightOver).format('MMMM YYYY');
 				var oversightUnder = moment.utc(award.OversightUnder).format('MMMM YYYY');
+				var quarterly = [];
+				var annual = [];
+				// 0 - quarterly, 1 - annual, 2 - both
+				if (award.ReportType == 0 || award.ReportType == 2) {
+					quarterly.push(moment.utc(award.QuarterlyDate1).format('MMMM D[,] YYYY'));
+					quarterly.push(moment.utc(award.QuarterlyDate2).format('MMMM D[,] YYYY'));
+					quarterly.push(moment.utc(award.QuarterlyDate3).format('MMMM D[,] YYYY'));
+				}
+				
+				if (award.ReportType == 1 || award.ReportType == 2) {
+					annual.push(moment.utc(award.AnnualDate).format('MMMM D[,] YYYY'));
+				}
 				var total = award.FundedAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 				res.render('proposals/award', {
 					title: "Award Letter",
@@ -46,6 +58,8 @@ router.get('/proposals/award/:id', function(req, res) {
 					budgetMonth: budgetMonth,
 					oversightOver: oversightOver,
 					oversightUnder: oversightUnder,
+					annual: annual,
+					quarterly: quarterly,
 					total: total
 				});
 			} else {
@@ -270,37 +284,95 @@ router.post('/admin/award', shib.ensureAuth('/login'), function(req, res) {
 							}
 							
 							if (total != 0.0) {
-								db.Award.create({
-									ProposalId: proposal.id,
-									ReportType: req.body.reportType,
-									FundedAmount: total,
-									AwardDate: moment().format(),
-									BudgetDate: moment().month(awardDetails.BudgetMonth).format('MMMM YYYY'),
-									OversightOver: moment().month(awardDetails.OversightOver).add(3, 'years').format('YYYY'),
-									OversightUnder: moment().month(awardDetails.OversightUnder).add(7, 'years').format('YYYY'),
-									Notes: req.body.awardNotes,
-									updatedAt: moment().format(),
-									createdAt: moment().format()
-								})
-								.then(function(Award) {
-									//need to create quarterly/annual report layout too!
-									// db.Report.create({
-									// 	AwardId: Award.id,
-									// 	Deadline: Award.oversightStartDate //need deadline?
-									// });
-									db.Proposal.update({
-										LetterStatus: 1
-									}, {
-										where: {
-											id: proposal.id
-										}
+								if(req.body.reportType == 0) {
+									// Quarterly Report
+									db.Award.create({
+										ProposalId: proposal.id,
+										ReportType: req.body.reportType,
+										FundedAmount: total,
+										AwardDate: moment().format(),
+										BudgetDate: moment().month(awardDetails.BudgetMonth).format('MMMM YYYY'),
+										OversightOver: moment().month(awardDetails.OversightOver).add(3, 'years').format('YYYY'),
+										OversightUnder: moment().month(awardDetails.OversightUnder).add(7, 'years').format('YYYY'),
+										QuarterlyDate1: moment.utc(moment().year() + awardDetails.QuarterlyDate1).format('MMMM D[,] YYYY'),
+										QuarterlyDate2: moment.utc(moment().year() + awardDetails.QuarterlyDate2).format('MMMM D[,] YYYY'),
+										QuarterlyDate3: moment.utc(moment().year() + awardDetails.QuarterlyDate3).format('MMMM D[,] YYYY'),
+										Notes: req.body.awardNotes,
+										updatedAt: moment().format(),
+										createdAt: moment().format()
 									})
-									.then(function(e) {
-										res.send({message: "Success"});
+									.then(function(Award) {
+										db.Proposal.update({
+											LetterStatus: 1
+										}, {
+											where: {
+												id: proposal.id
+											}
+										})
+										.then(function(e) {
+											res.send({message: "Success"});
+										});
 									});
-								});
-								
-								
+								} else if(req.body.reportType == 1) {
+									// Annually Report
+									db.Award.create({
+										ProposalId: proposal.id,
+										ReportType: req.body.reportType,
+										FundedAmount: total,
+										AwardDate: moment().format(),
+										BudgetDate: moment().month(awardDetails.BudgetMonth).format('MMMM YYYY'),
+										OversightOver: moment().month(awardDetails.OversightOver).add(3, 'years').format('YYYY'),
+										OversightUnder: moment().month(awardDetails.OversightUnder).add(7, 'years').format('YYYY'),
+										AnnualDate: moment.utc(moment().year() + awardDetails.AnnualDate).add(1, 'years').format('MMMM D[,] YYYY'),
+										Notes: req.body.awardNotes,
+										updatedAt: moment().format(),
+										createdAt: moment().format()
+									})
+									.then(function(Award) {
+										db.Proposal.update({
+											LetterStatus: 1
+										}, {
+											where: {
+												id: proposal.id
+											}
+										})
+										.then(function(e) {
+											res.send({message: "Success"});
+										});
+									});
+								} else {
+									// Quarterly/Annual Report
+									db.Award.create({
+										ProposalId: proposal.id,
+										ReportType: req.body.reportType,
+										FundedAmount: total,
+										AwardDate: moment().format(),
+										BudgetDate: moment().month(awardDetails.BudgetMonth).format('MMMM YYYY'),
+										OversightOver: moment().month(awardDetails.OversightOver).add(3, 'years').format('YYYY'),
+										OversightUnder: moment().month(awardDetails.OversightUnder).add(7, 'years').format('YYYY'),
+										QuarterlyDate1: moment.utc(moment().year() + awardDetails.QuarterlyDate1).format('MMMM D[,] YYYY'),
+										QuarterlyDate2: moment.utc(moment().year() + awardDetails.QuarterlyDate2).format('MMMM D[,] YYYY'),
+										QuarterlyDate3: moment.utc(moment().year() + awardDetails.QuarterlyDate3).format('MMMM D[,] YYYY'),
+										AnnualDate: moment.utc(moment().year() + awardDetails.AnnualDate).add(1, 'years').format('MMMM D[,] YYYY'),
+										Notes: req.body.awardNotes,
+										updatedAt: moment().format(),
+										createdAt: moment().format()
+									})
+									.then(function(Award) {
+										db.Proposal.update({
+											LetterStatus: 1
+										}, {
+											where: {
+												id: proposal.id
+											}
+										})
+										.then(function(e) {
+											res.send({message: "Success"});
+										});
+									});
+								}
+							} else {
+								res.send({message: "Proposal status is invalid"});
 							}
 						})
 						.catch(function(err) {

@@ -1,0 +1,48 @@
+extends ../head
+
+append js
+	script(src='/js/vendor/toastr.js')
+	script(src='/js/proposals.js')
+
+append css
+	link(rel='stylesheet' href='/css/toastr.css')
+	link(rel='stylesheet' href='/css/proposalcreate.css')
+
+block content
+	.container
+		h2 New Report
+		
+		.row.setup-content
+			.col-xs-12
+				.col-md-12.well
+					.form-horizontal(data-toggle='formcache', name='reportForm')
+						fieldset
+							legend
+							.form-group
+								label.col-md-4.control-label(for="timeline") Timeline Progress
+								.col-md-8
+									textarea#timeline.form-control(name="timeline") #(report.Timeline)
+									#timeline.span.help-block Describe the general progress of the project, including where the project is progressing as expected, where it is not, whether the project is still on track to complete expected results.
+							.form-group
+								label.col-md-4.control-label(for="modification") Modifications
+								.col-md-8
+									textarea#modification.form-control(name="modification") #(report.Modification)
+									#modification.span.help-block With the benefit of current experience, are there any modifications to the proposal you would like to discuss with the Committee
+							.form-group
+								label.col-md-4.control-label(for="risks") Risks
+								.col-md-8
+									textarea#risks.form-control(name="risks") #(report.Risks)
+									#risks.span.help-block Are there risks or concerns that may affect your ability to serve the students? If so, indicate how your organization is addressing those risks or how STF can ensure project success.
+							.form-group
+								label.col-md-4.control-label(for="studentUse") Student Use
+								.col-md-8
+									textarea#studentUse.form-control(name="studentUse") #(report.StudentUse)
+									#studentUse.span.help-block How have students involved in the proposal benefited, regardless if the project has been successful implemented yet.
+							.form-group
+								label.col-md-4.control-label(for="studentUse") Student Use
+								.col-md-8
+									textarea#budgetUse.form-control(name="budgetUse") #(report.BudgetUse)
+									#budgetUse.span.help-block Can the current budget complete the project as proposed?  Are there potential for overages or under-spending? Have you continued using the award budget to make purchases as stipulated in your award letter?
+									
+									
+									// NEED TO IMPLEMENT CONTACTS AND SAVE

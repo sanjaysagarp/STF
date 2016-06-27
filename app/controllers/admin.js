@@ -48,12 +48,20 @@ router.get('/admin/award', function(req, res) {
 	awardDate = moment(awardDate).format('MMMM Do YYYY');
 	oversightOver = moment(new Date(oversightOver)).format('MMMM YYYY');
 	oversightUnder = moment(new Date(oversightUnder)).format('MMMM YYYY');
+	var quarterly = [];
+	var annual = []
+	quarterly.push(moment.utc(moment().year() + awardDetails.QuarterlyDate1).format('MMMM D[,] YYYY'));
+	quarterly.push(moment.utc(moment().year() + awardDetails.QuarterlyDate2).add(1, 'years').format('MMMM D[,] YYYY'));
+	quarterly.push(moment.utc(moment().year() + awardDetails.QuarterlyDate3).add(1, 'years').format('MMMM D[,] YYYY'));
+	annual.push(moment.utc(moment().year() + awardDetails.AnnualDate).add(1, 'years').format('MMMM D[,] YYYY'));
 	res.render('admin/award', {
 		title: "STF Admin",
 		awardDate: awardDate,
-		budgetMonth: awardDetails.BudgetMonth,
+		budgetMonth: budgetMonth,
 		oversightOver: oversightOver,
 		oversightUnder: oversightUnder,
+		quarterly: quarterly,
+		annual: annual
 	});
 });
 

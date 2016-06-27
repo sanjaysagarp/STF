@@ -35,14 +35,12 @@ block content
 						h3 Reporting Requirements
 						p STF will require reports for this proposal. Reporting documents can be found on your proposal page. Reports are due on the following dates:
 						ul
+						each val, index in quarterly
 							li
-								i Quarterly 1 – September 10th 
+								i= 'Quarterly ' + (index + 1) + ' - ' + val
+						if annual.length > 0
 							li
-								i Quarterly 2 – January 10th
-							li
-								i Quarterly 3 – April 10th
-							li
-								i Annual – August 31st
+								i= 'Annual - ' + annual[0]
 						h3 Budgets and Use of Funds
 						p STF will create a unique budget number for this proposal upon the request of your budget coordinator in early #[strong #{budgetMonth}]. Funds must be spent from this account only on items indicated in your proposal and all purchases must be made using this unique budget number. Budgets must be ready to close by May 10th of the following year.
 						
