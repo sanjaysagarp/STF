@@ -42,6 +42,13 @@ block content
 							tr
 								th Letter
 								td: a(href='/proposals/award/#{proposal.id}') View Letter
+							//- NEED TO ADD REPORT VIEWING/CREATING
+
+							if award.ReportType == 0 || 2
+
+							if award.ReportType == 1 || 2
+
+
 						if rejection
 							tr
 								th Letter

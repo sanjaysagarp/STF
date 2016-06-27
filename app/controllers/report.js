@@ -12,7 +12,7 @@ module.exports = function(app) {
 };
 
 //Creates a report based on proposalid and annual report (to find out if quarterly/annually was assigned)
-router.post('/reports/create/:proposalid', shib.ensureAuth('/login'), function(req, res) {
+router.get('/reports/create/:proposalid', shib.ensureAuth('/login'), function(req, res) {
 	db.Award.find({
 		where: {
 			ProposalId: req.params.proposalid
@@ -26,7 +26,8 @@ router.post('/reports/create/:proposalid', shib.ensureAuth('/login'), function(r
 		})
 		.then(function(proposal) {
 			db.Report.create({
-				AwardId: award.id
+				AwardId: award.id,
+				ProposalId: req.params.proposalid
 			})
 			.then(function(report) {
 				res.redirect('/reports/update/' + report.id);

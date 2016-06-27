@@ -2,6 +2,7 @@ module.exports = function(sequelize, DataTypes) {
 
 	var Report = sequelize.define('Report', {
 		AwardId: 'MEDIUMINT',
+		ProposalId: 'INT',
 		Status: 'TINYINT',
 		TimelineProgress: DataTypes.TEXT,
 		Modification: DataTypes.TEXT,
