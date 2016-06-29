@@ -2,7 +2,7 @@ extends ../head
 
 append js
 	script(src='/js/vendor/toastr.js')
-	script(src='/js/proposals.js')
+	script(src='/js/reports.js')
 
 append css
 	link(rel='stylesheet' href='/css/toastr.css')
@@ -10,39 +10,156 @@ append css
 
 block content
 	.container
-		h2 New Report
-		
+		if report.Type == 0
+			h2 New Quarterly Report for #{proposal.ProposalTitle}
+		if report.Type == 1
+			h2 New Annual Report for #{proposal.ProposalTitle}
 		.row.setup-content
-			.col-xs-12
-				.col-md-12.well
-					.form-horizontal(data-toggle='formcache', name='reportForm')
-						fieldset
-							legend
-							.form-group
-								label.col-md-4.control-label(for="timeline") Timeline Progress
-								.col-md-8
-									textarea#timeline.form-control(name="timeline") #(report.Timeline)
-									#timeline.span.help-block Describe the general progress of the project, including where the project is progressing as expected, where it is not, whether the project is still on track to complete expected results.
-							.form-group
-								label.col-md-4.control-label(for="modification") Modifications
-								.col-md-8
-									textarea#modification.form-control(name="modification") #(report.Modification)
-									#modification.span.help-block With the benefit of current experience, are there any modifications to the proposal you would like to discuss with the Committee
-							.form-group
-								label.col-md-4.control-label(for="risks") Risks
-								.col-md-8
-									textarea#risks.form-control(name="risks") #(report.Risks)
-									#risks.span.help-block Are there risks or concerns that may affect your ability to serve the students? If so, indicate how your organization is addressing those risks or how STF can ensure project success.
-							.form-group
-								label.col-md-4.control-label(for="studentUse") Student Use
-								.col-md-8
-									textarea#studentUse.form-control(name="studentUse") #(report.StudentUse)
-									#studentUse.span.help-block How have students involved in the proposal benefited, regardless if the project has been successful implemented yet.
-							.form-group
-								label.col-md-4.control-label(for="studentUse") Student Use
-								.col-md-8
-									textarea#budgetUse.form-control(name="budgetUse") #(report.BudgetUse)
-									#budgetUse.span.help-block Can the current budget complete the project as proposed?  Are there potential for overages or under-spending? Have you continued using the award budget to make purchases as stipulated in your award letter?
-									
-									
-									// NEED TO IMPLEMENT CONTACTS AND SAVE
+			form.form-horizontal#updateReport(enctype="multipart/form-data", method='post', action='/reports/update/#{report.id}')
+				.col-xs-12
+					.col-md-12.well
+						.form-horizontal
+							fieldset
+								legend
+								.form-group
+									.col-md-8.col-md-offset-4
+										h3 Reporting Information
+										span.help-block This report is to provide the students with a written record of how student money has been utilized. This report provides the opportunity to give us a candid assessment about how the project is progressing, where there are challenges, and where proposal modifications seem necessary. This is also a chance to update any administrative changes for proposal contacts.
+								if report.Type == 0
+									.form-group
+										label.col-md-4.control-label Timeline Progress
+										.col-md-8
+											textarea#timeline.form-control(name="timeline", type="text") #{report.Timeline}
+											.span.help-block Describe the general progress of the project, including where the project is progressing as expected, where it is not, whether the project is still on track to complete expected results.
+									.form-group
+										label.col-md-4.control-label Modifications
+										.col-md-8
+											textarea#modification.form-control(name="modification", type="text") #{report.Modification}
+											.span.help-block With the benefit of current experience, are there any modifications to the proposal you would like to discuss with the Committee
+									.form-group
+										label.col-md-4.control-label Risks
+										.col-md-8
+											textarea#risks.form-control(name="risks", type="text") #{report.Risks}
+											.span.help-block Are there risks or concerns that may affect your ability to serve the students? If so, indicate how your organization is addressing those risks or how STF can ensure project success.
+									.form-group
+										label.col-md-4.control-label Student Use
+										.col-md-8
+											textarea#studentUse.form-control(name="studentUse", type="text") #{report.StudentUse}
+											.span.help-block How have students involved in the proposal benefited, regardless if the project has been successful implemented yet.
+									.form-group
+										label.col-md-4.control-label Budget Use
+										.col-md-8
+											textarea#budgetUse.form-control(name="budgetUse", type="text") #{report.BudgetUse}
+											.span.help-block Can the current budget complete the project as proposed?  Are there potential for overages or under-spending? Have you continued using the award budget to make purchases as stipulated in your award letter?
+								if report.Type == 1
+									.form-group
+										label.col-md-4.control-label Financial
+										.col-md-8
+											textarea#financial.form-control(name="financial", type="text") #{report.Financial}
+											.span.help-block Describe any discrepancies that may have arisen from purchases that were initially proposed and final purchases.
+									.form-group
+										label.col-md-4.control-label Upload Receipt
+										.col-md-4
+											input#receipt.file(type="file", accept=".pdf")
+											.span.help-block Please attach a single PDF of receipt purchases and invoices related to this proposal
+									.form-group
+										label.col-md-4.control-label Outreach
+										.col-md-8
+											textarea#outreach.form-control(name="outreach", type="text") #{report.Outreach}
+											.span.help-block Describe current outreach plans and develop other ways to reach students and inform them of the resources that are available.
+									.form-group
+										label.col-md-4.control-label Impact
+										.col-md-8
+											textarea#impact.form-control(name="impact", type="text") #{report.Impact}
+											.span.help-block What outcomes will result from this funding? How will this improve student’s learning opportunities?
+									.form-group
+										label.col-md-4.control-labelSustainability
+										.col-md-8
+											textarea#studentUse.form-control(name="sustainability", type="text") #{report.Sustainability}
+											.span.help-block What are post-grant plans for this project? Will there be any changes to improve outreach or changes in the initial spirit of the proposal?
+									.form-group
+										.col-md-8.col-md-offset-4
+											h3 Contacts
+											span.help-block If any contacts have changed for the proposal, please correct the information below.
+											
+									.form-group
+										.col-md-8.col-md-offset-4
+											h4 Primary Contact
+									.form-group
+										label.col-md-4.control-label(for='PrimaryName') Name
+										.col-md-4
+											input#textinputName.form-control.input-md(name='PrimaryName', type='text', placeholder='name', value="#{proposal.PrimaryName}")
+									.form-group
+										label.col-md-4.control-label(for='primary-title') Title
+										.col-md-4
+											input#primary-title.form-control.input-md(name='primary-title', type='text', placeholder='title', value="#{proposal.PrimaryTitle}" )
+											span.help-block If Applicable
+									.form-group
+										label.col-md-4.control-label(for='primary-netId') NetID
+										.col-md-4
+											input#primary-email.form-control.input-md(name='primary-netId', type='text', placeholder='xyzabc', value="#{proposal.PrimaryNetId}")
+											span.help-block Exclude '@uw.edu'. Enter only NetID
+									.form-group
+										label.col-md-4.control-label(for='primary-phone') Phone
+										.col-md-4
+											input#primary-phone.form-control.input-md(name='primary-phone', type='text', placeholder='999-999-9999', value="#{proposal.PrimaryPhone}")
+											span.help-block Due to the public nature of the UW, your phone will be shared freely
+									.form-group
+										label.col-md-4.control-label(for='primary-mail') Mail
+										.col-md-4
+											input#primary-mail.form-control.input-md(name='primary-mail', type='text', placeholder='abc', value="#{proposal.PrimaryMail}")
+											span.help-block If Applicable
+									.form-group
+										.col-md-8.col-md-offset-4
+											h4 Budget
+									.form-group
+										label.col-md-4.control-label(for='budget-name') Name
+										.col-md-4
+											input#budget-name.form-control.input-md(name='budget-name', type='text', placeholder='name', value="#{proposal.BudgetName}")
+									.form-group
+										label.col-md-4.control-label(for='budget-title') Title
+										.col-md-4
+											input#budget-title.form-control.input-md(name='budget-title', type='text', placeholder='title', value="#{proposal.BudgetTitle}" )
+									.form-group
+										label.col-md-4.control-label(for='budget-netId') NetID
+										.col-md-4
+											input#budget-email.form-control.input-md(name='budget-netId', type='text', placeholder='xyzabc', value="#{proposal.BudgetNetId}")
+											span.help-block Exclude '@uw.edu'. Enter only NetID
+									.form-group
+										label.col-md-4.control-label(for='budget-phone') Phone
+										.col-md-4
+											input#budget-phone.form-control.input-md(name='budget-phone', type='text', placeholder='999-999-9999', value="#{proposal.BudgetPhone}")
+									.form-group
+										label.col-md-4.control-label(for='budget-mail') Mail
+										.col-md-4
+											input#budget-mail.form-control.input-md(name='budget-mail', type='text', placeholder='abc', value="#{proposal.BudgetMail}")
+									.form-group
+										.col-md-8.col-md-offset-4
+											h4 Dean/Departmental-Head
+									.form-group
+										label.col-md-4.control-label(for='ddh-name') Name
+										.col-md-4
+											input#ddh-name.form-control.input-md(name='ddh-name', type='text', placeholder='name', value="#{proposal.DeanName}")
+									.form-group
+										label.col-md-4.control-label(for='ddh-title') Title
+										.col-md-4
+											input#ddh-title.form-control.input-md(name='ddh-title', type='text', placeholder='title', value="#{proposal.DeanTitle}")
+									.form-group
+										label.col-md-4.control-label(for='ddh-netId') NetID
+										.col-md-4
+											input#ddh-email.form-control.input-md(name='ddh-netId', type='text', placeholder='xyzabc', value="#{proposal.DeanNetId}")
+											span.help-block Exclude '@uw.edu'. Enter only the NetID
+									.form-group
+										label.col-md-4.control-label(for='ddh-phone') Phone
+										.col-md-4
+											input#ddh-phone.form-control.input-md(name='ddh-phone', type='text', placeholder='999-999-9999' value="#{proposal.DeanPhone}")
+									.form-group
+										label.col-md-4.control-label(for='ddh-mail') Mailbox
+										.col-md-4
+											input#ddh-mail.form-control.input-md(name='ddh-mail', type='text', placeholder='abc', value="#{proposal.DeanMail}")
+									.form-group
+										label.col-md-4.control-label(for='save')
+										br
+										.col-md-4
+										.col-md-4
+											button.btn.btn-default.form-button(name='save', type='submit', value='submit') Save

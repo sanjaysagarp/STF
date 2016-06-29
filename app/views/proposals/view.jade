@@ -38,15 +38,6 @@ block content
 								td: | View Metrics
 							else
 								td: a(href='/metrics/#{proposal.id}') View Metrics
-						if award
-							tr
-								th Letter
-								td: a(href='/proposals/award/#{proposal.id}') View Letter
-							//- NEED TO ADD REPORT VIEWING/CREATING
-
-							if award.ReportType == 0 || 2
-
-							if award.ReportType == 1 || 2
 
 
 						if rejection
@@ -96,27 +87,76 @@ block content
 									th Mailbox
 									td= proposal.BudgetMail
 		.row
-			.col-sm-12.col-md-8.col-md-offset-4
-				.row.contacts.rowsContact
-					.col-xs-12.col-sm-6.col-md-6.colsContact
-						table
+			if award
+				.col-sm-12.col-md-4
+						h3 Reports
+						table.basic
 							tbody
-								th.contactType Dean
 								tr
-									th Name
-									td= proposal.DeanName
-								tr
-									th Title
-									td= proposal.DeanTitle
-								tr
-									th Phone
-									td= proposal.DeanPhone
-								tr
-									th NetID
-									td= proposal.DeanNetId
-								tr
-									th Mailbox
-									td= proposal.DeanMail
+									th Letter
+									td: a(href='/proposals/award/#{proposal.id}') View
+								// only for reporter eyes... for now
+								if reporter && (proposal.Status == 4 || proposal.Status == 5)
+									if reports.length > 0
+										tr
+											th Reports
+											each report, index in reports
+												if report.Status == 0
+													td: a(href='/reports/update/#{report.id}') Edit Report (#{index + 1})
+												else
+													td: a(href='/reports/#{report.id}') View Report (#{index + 1})
+									if (award.ReportType == 0 || award.ReportType == 2)&& reports.length < 3
+										tr
+											th Quarterly Report
+											td: a(href='/reports/create/quarterly/#{proposal.id}') Create
+									
+									if (award.ReportType == 1 || award.ReportType == 2) && reports.length < 4
+										tr
+											th Annual Report
+											td: a(href='/reports/create/annual/#{proposal.id}') Create
+				.col-sm-12.col-md-8
+					.row.contacts.rowsContact
+						.col-xs-12.col-sm-6.col-md-6.colsContact
+							table
+								tbody
+									th.contactType Dean
+									tr
+										th Name
+										td= proposal.DeanName
+									tr
+										th Title
+										td= proposal.DeanTitle
+									tr
+										th Phone
+										td= proposal.DeanPhone
+									tr
+										th NetID
+										td= proposal.DeanNetId
+									tr
+										th Mailbox
+										td= proposal.DeanMail
+			else
+				.col-sm-12.col-md-8.col-md-offset-4
+					.row.contacts.rowsContact
+						.col-xs-12.col-sm-6.col-md-6.colsContact
+							table
+								tbody
+									th.contactType Dean
+									tr
+										th Name
+										td= proposal.DeanName
+									tr
+										th Title
+										td= proposal.DeanTitle
+									tr
+										th Phone
+										td= proposal.DeanPhone
+									tr
+										th NetID
+										td= proposal.DeanNetId
+									tr
+										th Mailbox
+										td= proposal.DeanMail
 					.col-xs-12.col-sm-6.col-md-6.colsContact
 						table
 							tbody
@@ -211,7 +251,7 @@ block content
 					else
 						option(id='#{supplemental.id}' value='') #{supplemental.Author + ': ' + supplemental.Title}
 
-		input(id='proposalId' type='hidden' value='#{proposal.id}' )
+		input(id='proposalId' type='hidden' value='#{proposal.id}')
 		
 		a(href='/supplementals/' id='supplementalLink' style="display:none;") View Supplemental
 		

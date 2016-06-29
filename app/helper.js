@@ -46,6 +46,40 @@ module.exports = {
 			}
 		}
 	},
+	
+	approvedReporter: function(res, u, pId, redir) {
+		
+		if (pId.id === undefined) {
+			return db.Proposal.find({where: {id: pId} }).then(function(p) {
+				testUser(res, u, p, redir)
+			})
+		}
+
+		return testUser(res, u, pId, redir);
+				
+		// checks if user is associated with proposal (Primary, Budget, Dean, Additional...)
+		function testUser(res, u, p, redir) {
+			if (redir === null) {
+				redir = true;
+			} if (res.locals.isAdmin || (
+				(u.regId == p.PrimaryRegId) ||
+				(u.netId.toLowerCase() == p.PrimaryNetId) ||
+				(u.netId.toLowerCase() == p.BudgetNetId) ||
+				(u.netId.toLowerCase() == p.DeanNetId) || 
+				(u.netId.toLowerCase() == p.StudentNetId) ||
+				(u.netId.toLowerCase() == p.AdditionalContactNetId1) ||
+				(u.netId.toLowerCase() == p.AdditionalContactNetId2) ||
+				(u.netId.toLowerCase() == p.AdditionalContactNetId3)
+				) && (p.Status == 4 || p.Status == 5))	{ 
+				return true;
+			} else {
+				if (redir) {
+					module.exports.displayErrorPage(res, 'You are not an Approved reporter of this Proposal', 'Access Denied');
+				}
+				return false;
+			}
+		}
+	},
 
 	activeCommitteeMember: function(res, uRegId, redir) {
 

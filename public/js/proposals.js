@@ -57,7 +57,7 @@ $(document).ready(function() {
 				$("#totalScore").val(average)
 		})
 
-		//only used during the create page -- NEEDS A WAY FOR ADMIN TO DISABLE/ENABLE
+		//only used during the create page
 		$('#title').keypress(function(e) {
 			if(false) {
 				if ($(this).val().length < 10) {

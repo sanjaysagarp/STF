@@ -3,6 +3,7 @@ module.exports = function(sequelize, DataTypes) {
 	var Report = sequelize.define('Report', {
 		AwardId: 'MEDIUMINT',
 		ProposalId: 'INT',
+		Type: 'TINYINT',
 		Status: 'TINYINT',
 		TimelineProgress: DataTypes.TEXT,
 		Modification: DataTypes.TEXT,
@@ -21,3 +22,7 @@ module.exports = function(sequelize, DataTypes) {
 // Status:
 // 0 = unsubmitted
 // 1 = submitted
+
+// Type:
+// 0 = Quarterly
+// 1 = Annually

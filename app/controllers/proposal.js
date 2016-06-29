@@ -834,9 +834,11 @@ router.get('/proposals/:year/:number', function(req, res) {
 															"August", "September", "October", "November", "December"];
 												var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
 												var editor = false;
+												var reporter = false;
 												var loggedIn = false;
 												if (req.user) {
 													editor = h.approvedEditor(res, req.user, proposal, false);
+													reporter = h.approvedReporter(res, req.user, proposal, false);
 													loggedIn = true;
 												}
 
@@ -853,6 +855,7 @@ router.get('/proposals/:year/:number', function(req, res) {
 													endorsements: endorsements,
 													categories: categories,
 													editor: editor,
+													reporter: reporter,
 													award: award,
 													status: h.proposalStatus(proposal.Status),
 													rejection: rejection,

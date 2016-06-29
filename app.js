@@ -11,6 +11,7 @@ var passport = require('passport'); //user authentication
 var shib = require('passport-uwshib'); //for shiubboleth authentication
 var session = require('express-session'); //for user sessions
 var fs = require('fs'); //to read files
+var multer = require('multer'); //to upload files
 var socket = require('socket.io'); //for back and forth communication
 var config = require('./config/config'); //configuration file 
 var db = require('./app/models'); //database connections
@@ -43,6 +44,17 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(compress());
 app.use(express.static(config.root + '/public'));
+app.use(multer({ dest: './uploads/',
+	rename: function (fieldname, filename) {
+		return filename+"_"+Date.now();
+	},
+	onFileUploadStart: function (file) {
+		console.log(file.originalname + ' is starting ...')
+	},
+	onFileUploadComplete: function (file) {
+		console.log(file.fieldname + ' uploaded to  ' + file.path)
+	}
+}));
 
 app.use(cookieParser(config.cookieSecret));
 app.use(session({
