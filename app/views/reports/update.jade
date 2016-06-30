@@ -15,7 +15,8 @@ block content
 		if report.Type == 1
 			h2 New Annual Report for #{proposal.ProposalTitle}
 		.row.setup-content
-			form.form-horizontal#updateReport(enctype="multipart/form-data", method='post', action='/reports/update/#{report.id}')
+			input#ReportId(name='ReportId', type='hidden', value='#{report.id}')
+			form.form-horizontal#updateReport(enctype="multipart/form-data")
 				.col-xs-12
 					.col-md-12.well
 						.form-horizontal
@@ -59,9 +60,11 @@ block content
 											.span.help-block Describe any discrepancies that may have arisen from purchases that were initially proposed and final purchases.
 									.form-group
 										label.col-md-4.control-label Upload Receipt
-										.col-md-4
-											input#receipt.file(type="file", accept=".pdf")
+										.col-md-8
+											input#receipt.file(type="file", accept=".pdf", name="receipt")
 											.span.help-block Please attach a single PDF of receipt purchases and invoices related to this proposal
+											if report.ReceiptPath
+												p: a(href="/#{report.ReceiptPath}", target="_blank") Uploaded Receipt
 									.form-group
 										label.col-md-4.control-label Outreach
 										.col-md-8
@@ -73,93 +76,73 @@ block content
 											textarea#impact.form-control(name="impact", type="text") #{report.Impact}
 											.span.help-block What outcomes will result from this funding? How will this improve student’s learning opportunities?
 									.form-group
-										label.col-md-4.control-labelSustainability
+										label.col-md-4.control-label Sustainability
 										.col-md-8
 											textarea#studentUse.form-control(name="sustainability", type="text") #{report.Sustainability}
 											.span.help-block What are post-grant plans for this project? Will there be any changes to improve outreach or changes in the initial spirit of the proposal?
-									.form-group
-										.col-md-8.col-md-offset-4
-											h3 Contacts
-											span.help-block If any contacts have changed for the proposal, please correct the information below.
-											
-									.form-group
-										.col-md-8.col-md-offset-4
-											h4 Primary Contact
-									.form-group
-										label.col-md-4.control-label(for='PrimaryName') Name
-										.col-md-4
-											input#textinputName.form-control.input-md(name='PrimaryName', type='text', placeholder='name', value="#{proposal.PrimaryName}")
-									.form-group
-										label.col-md-4.control-label(for='primary-title') Title
-										.col-md-4
-											input#primary-title.form-control.input-md(name='primary-title', type='text', placeholder='title', value="#{proposal.PrimaryTitle}" )
-											span.help-block If Applicable
-									.form-group
-										label.col-md-4.control-label(for='primary-netId') NetID
-										.col-md-4
-											input#primary-email.form-control.input-md(name='primary-netId', type='text', placeholder='xyzabc', value="#{proposal.PrimaryNetId}")
-											span.help-block Exclude '@uw.edu'. Enter only NetID
-									.form-group
-										label.col-md-4.control-label(for='primary-phone') Phone
-										.col-md-4
-											input#primary-phone.form-control.input-md(name='primary-phone', type='text', placeholder='999-999-9999', value="#{proposal.PrimaryPhone}")
-											span.help-block Due to the public nature of the UW, your phone will be shared freely
-									.form-group
-										label.col-md-4.control-label(for='primary-mail') Mail
-										.col-md-4
-											input#primary-mail.form-control.input-md(name='primary-mail', type='text', placeholder='abc', value="#{proposal.PrimaryMail}")
-											span.help-block If Applicable
-									.form-group
-										.col-md-8.col-md-offset-4
-											h4 Budget
-									.form-group
-										label.col-md-4.control-label(for='budget-name') Name
-										.col-md-4
-											input#budget-name.form-control.input-md(name='budget-name', type='text', placeholder='name', value="#{proposal.BudgetName}")
-									.form-group
-										label.col-md-4.control-label(for='budget-title') Title
-										.col-md-4
-											input#budget-title.form-control.input-md(name='budget-title', type='text', placeholder='title', value="#{proposal.BudgetTitle}" )
-									.form-group
-										label.col-md-4.control-label(for='budget-netId') NetID
-										.col-md-4
-											input#budget-email.form-control.input-md(name='budget-netId', type='text', placeholder='xyzabc', value="#{proposal.BudgetNetId}")
-											span.help-block Exclude '@uw.edu'. Enter only NetID
-									.form-group
-										label.col-md-4.control-label(for='budget-phone') Phone
-										.col-md-4
-											input#budget-phone.form-control.input-md(name='budget-phone', type='text', placeholder='999-999-9999', value="#{proposal.BudgetPhone}")
-									.form-group
-										label.col-md-4.control-label(for='budget-mail') Mail
-										.col-md-4
-											input#budget-mail.form-control.input-md(name='budget-mail', type='text', placeholder='abc', value="#{proposal.BudgetMail}")
-									.form-group
-										.col-md-8.col-md-offset-4
-											h4 Dean/Departmental-Head
-									.form-group
-										label.col-md-4.control-label(for='ddh-name') Name
-										.col-md-4
-											input#ddh-name.form-control.input-md(name='ddh-name', type='text', placeholder='name', value="#{proposal.DeanName}")
-									.form-group
-										label.col-md-4.control-label(for='ddh-title') Title
-										.col-md-4
-											input#ddh-title.form-control.input-md(name='ddh-title', type='text', placeholder='title', value="#{proposal.DeanTitle}")
-									.form-group
-										label.col-md-4.control-label(for='ddh-netId') NetID
-										.col-md-4
-											input#ddh-email.form-control.input-md(name='ddh-netId', type='text', placeholder='xyzabc', value="#{proposal.DeanNetId}")
-											span.help-block Exclude '@uw.edu'. Enter only the NetID
-									.form-group
-										label.col-md-4.control-label(for='ddh-phone') Phone
-										.col-md-4
-											input#ddh-phone.form-control.input-md(name='ddh-phone', type='text', placeholder='999-999-9999' value="#{proposal.DeanPhone}")
-									.form-group
-										label.col-md-4.control-label(for='ddh-mail') Mailbox
-										.col-md-4
-											input#ddh-mail.form-control.input-md(name='ddh-mail', type='text', placeholder='abc', value="#{proposal.DeanMail}")
-									.form-group
-										label.col-md-4.control-label(for='save')
-										br
-										.col-md-4
-										.col-md-4
-											button.btn.btn-default.form-button(name='save', type='submit', value='submit') Save
+								.form-group
+									.col-md-8.col-md-offset-4
+										h3 Contacts
+										span.help-block If any contacts have changed for the proposal, please correct the information below. This will update your proposal upon submission.
+								.form-group
+									.col-md-8.col-md-offset-4
+										h4 Primary Contact
+								.form-group
+									label.col-md-4.control-label(for='primary-name') Name
+									.col-md-4
+										input#textinputName.form-control.input-md(name='primary-name', type='text', placeholder='name', value="#{proposal.PrimaryName}")
+								.form-group
+									label.col-md-4.control-label(for='primary-title') Title
+									.col-md-4
+										input#primary-title.form-control.input-md(name='primary-title', type='text', placeholder='title', value="#{proposal.PrimaryTitle}" )
+										span.help-block If Applicable
+								.form-group
+									label.col-md-4.control-label(for='primary-netId') NetID
+									.col-md-4
+										input#primary-email.form-control.input-md(name='primary-netId', type='text', placeholder='xyzabc', value="#{proposal.PrimaryNetId}")
+										span.help-block Exclude '@uw.edu'. Enter only NetID
+								.form-group
+									label.col-md-4.control-label(for='primary-phone') Phone
+									.col-md-4
+										input#primary-phone.form-control.input-md(name='primary-phone', type='text', placeholder='999-999-9999', value="#{proposal.PrimaryPhone}")
+										span.help-block Due to the public nature of the UW, your phone will be shared freely
+								.form-group
+									label.col-md-4.control-label(for='primary-mail') Mail
+									.col-md-4
+										input#primary-mail.form-control.input-md(name='primary-mail', type='text', placeholder='abc', value="#{proposal.PrimaryMail}")
+										span.help-block If Applicable
+								.form-group
+									.col-md-8.col-md-offset-4
+										h4 Budget
+								.form-group
+									label.col-md-4.control-label(for='budget-name') Name
+									.col-md-4
+										input#budget-name.form-control.input-md(name='budget-name', type='text', placeholder='name', value="#{proposal.BudgetName}")
+								.form-group
+									label.col-md-4.control-label(for='budget-title') Title
+									.col-md-4
+										input#budget-title.form-control.input-md(name='budget-title', type='text', placeholder='title', value="#{proposal.BudgetTitle}" )
+								.form-group
+									label.col-md-4.control-label(for='budget-netId') NetID
+									.col-md-4
+										input#budget-email.form-control.input-md(name='budget-netId', type='text', placeholder='xyzabc', value="#{proposal.BudgetNetId}")
+										span.help-block Exclude '@uw.edu'. Enter only NetID
+								.form-group
+									label.col-md-4.control-label(for='budget-phone') Phone
+									.col-md-4
+										input#budget-phone.form-control.input-md(name='budget-phone', type='text', placeholder='999-999-9999', value="#{proposal.BudgetPhone}")
+								.form-group
+									label.col-md-4.control-label(for='budget-mail') Mail
+									.col-md-4
+										input#budget-mail.form-control.input-md(name='budget-mail', type='text', placeholder='abc', value="#{proposal.BudgetMail}")
+								.form-group
+									label.col-md-4.control-label(for='save')
+									br
+									.col-md-4
+									.col-md-4
+										button#saveButton.btn.btn-default.form-button(name='save', type='submit', value='submit') Save
+										button.btn#submitButton(name='submit') Submit
+								.form-group
+									.col-md-4
+									.col-md-4
+										a(href='/reports/#{report.id}', target="_blank") View Draft

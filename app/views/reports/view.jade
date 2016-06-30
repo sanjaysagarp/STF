@@ -1,0 +1,36 @@
+extends ../head
+
+append css
+	link(rel='stylesheet', href='/css/proposalview.css')
+	
+block content
+	.container
+		if report.Type == 0
+			h2.title Quarterly Report for #{proposal.ProposalTitle}
+		if report.Type == 1
+			h2.title Annual Report for #{proposal.ProposalTitle}
+		if report.Status == 0
+			p.draft-alert This is a draft report, and has not been submitted yet. Information is subject to change.
+			if reporter
+				p: a(href='/reports/update/#{report.id}') Return to Update Page
+		if report.Type == 0
+			h3 Timeline Progress
+			p= report.Timeline
+			h3 Modifications
+			p= report.Modification
+			h3 Risks
+			p= report.Risks
+			h3 Student Use
+			p= report.StudentUse
+			h3 Budget Use
+			p= report.BudgetUse
+		if report.Type == 1
+			h3 Financial
+			p= report.Financial
+			p: a(href="/#{report.ReceiptPath}", target="_blank") View Receipt
+			h3 Outreach
+			p= report.Outreach
+			h3 Impact
+			p= report.Impact
+			h3 Sustainability
+			p= report.Sustainability

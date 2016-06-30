@@ -1,6 +1,7 @@
 var promise = require('bluebird')
 var express = require('express');
 var multer = require('multer');
+var fs = require('fs');
 var	router = express.Router();
 var	db = require('../models');
 var shib = require('passport-uwshib');
@@ -15,14 +16,14 @@ module.exports = function(app) {
 //create storage location for receipts
 var storage = multer.diskStorage({
 	destination: function (req, file, callback) {
-		callback(null, '../uploads/receipts/');
+		callback(null, './uploads/receipts/');
 	},
 	limits: { fileSize: 1 * 1024 * 1024}, //32 mb limit <-- should fix it
 	onFileUploadStart: function(file, req, res) {
 		console.log(file.fieldname + ' fileupload is starting...');
 	},
 	filename: function (req, file, callback) {
-		callback(null, file.fieldname + '-' + Date.now());
+		callback(null, file.fieldname + '-' + Date.now()+".pdf");
 	}
 });
 var upload = multer({ storage: storage}).single('receipt');
@@ -140,7 +141,7 @@ router.get('/reports/update/:reportid', shib.ensureAuth('/login'), function(req,
 	});
 });
 
-//saves report data - DOES NOT INCLUDE UPDATING CONTACTS
+//saves report data - DOES NOT INCLUDE UPDATING CONTACTS / RECEIPTS
 router.post('/reports/update/:reportid', shib.ensureAuth('/login'), function(req, res) {
 	db.Report.find({
 		where: {
@@ -164,10 +165,13 @@ router.post('/reports/update/:reportid', shib.ensureAuth('/login'), function(req
 					upload(req, res, function (err) {
 						if (err) {
 							console.log(err);
-						} else {
-							console.log("Upload Success");
 						}
-						console.log(req);
+						console.log("Upload Success");
+						//console.log(req);
+						var path = report.ReceiptPath;
+						if(req.file) {
+							path = req.file.path;
+						}
 						var form = {
 							TimelineProgress: req.body.timeline,
 							Modification: req.body.modification,
@@ -177,7 +181,8 @@ router.post('/reports/update/:reportid', shib.ensureAuth('/login'), function(req
 							Financial: req.body.financial,
 							Outreach: req.body.outreach,
 							Impact: req.body.impact,
-							Sustainability: req.body.sustainability
+							Sustainability: req.body.sustainability,
+							ReceiptPath: path
 						};
 						db.Report.update(form, {
 							where: {
@@ -187,6 +192,90 @@ router.post('/reports/update/:reportid', shib.ensureAuth('/login'), function(req
 						.then(function(e) {
 							//res.redirect('/reports/update/' + report.id);
 							res.send({message: "Success"});
+						});
+					});
+				} else {
+					res.send({message:"Failure"});
+				}
+			});
+		});
+	});
+});
+
+//submits report -- TODO redirect and update status
+router.post('/reports/submit/:reportid', shib.ensureAuth('/login'), function(req, res) {
+	db.Report.find({
+		where: {
+			id: req.params.reportid
+		}
+	})
+	.then(function(report) {
+		db.Award.find({
+			where: {
+				id: report.AwardId
+			}
+		})
+		.then(function(award) {
+			db.Proposal.find({
+				where: {
+					id: award.ProposalId
+				}
+			})
+			.then(function(proposal) {
+				if (h.approvedReporter(res, req.user, proposal, false)) {
+					upload(req, res, function (err) {
+						if (err) {
+							console.log(err);
+						}
+						console.log("Upload Success");
+						//console.log(req);
+						var path = report.ReceiptPath;
+						if(req.file) {
+							path = req.file.path;
+						}
+						//console.log(req);
+						var form = {
+							Status: 1,
+							TimelineProgress: req.body.timeline,
+							Modification: req.body.modification,
+							Risks: req.body.risks,
+							StudentUse: req.body.studentUse,
+							BudgetUse: req.body.budgetUse,
+							Financial: req.body.financial,
+							Outreach: req.body.outreach,
+							Impact: req.body.impact,
+							Sustainability: req.body.sustainability,
+							ReceiptPath: path
+						};
+						db.Report.update(form, {
+							where: {
+								id: req.params.reportid
+							}
+						})
+						.then(function(e) {
+							//need to update proposal
+							//res.redirect('/reports/' + report.id);
+							var proposalContacts = {
+								PrimaryName: req.body['primary-name'],
+								PrimaryTitle: req.body['primary-title'],
+								PrimaryNetId: req.body['primary-netId'],
+								PrimaryPhone: req.body['primary-phone'],
+								PrimaryMail: req.body['primary-mail'],
+								BudgetName: req.body['budget-name'],
+								BudgetTitle: req.body['budget-title'],
+								BudgetNetId: req.body['budget-netId'],
+								BudgetPhone: req.body['budget-phone'],
+								BudgetMail: req.body['budget-mail']
+							}
+							
+							db.Proposal.update(proposalContacts, {
+								where: {
+									id: report.ProposalId
+								}
+							})
+							.then(function(ev) {
+								res.send({message:"Success"});
+							});
 						});
 					});
 				} else {
@@ -207,7 +296,7 @@ router.get('/reports/:reportid', shib.ensureAuth('/login'), function(req, res) {
 	.then(function(report) {
 		db.Award.find({
 			where: {
-				AwardId: report.AwardId
+				id: report.AwardId
 			}
 		})
 		.then(function(award) {
@@ -217,12 +306,24 @@ router.get('/reports/:reportid', shib.ensureAuth('/login'), function(req, res) {
 				}
 			})
 			.then(function(proposal) {
+				var reporter = false;
+				reporter = h.approvedReporter(res, req.user, proposal, false);
 				res.render('reports/view',{
 					title: "Report for " + proposal.ProposalTitle,
 					report: report,
-					award: award
+					proposal: proposal,
+					award: award,
+					reporter: reporter
 				});
 			});
 		});
+	});
+});
+
+//allows user to view receipts or any uploads under the path STF/uploads -- must be pdfs
+router.get('/uploads*', function(req, res) {
+	fs.readFile(__dirname.substr(0,4) + req.originalUrl, function (err,data){
+		res.contentType("application/pdf");
+		res.send(data);
 	});
 });
