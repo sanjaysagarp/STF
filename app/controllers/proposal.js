@@ -389,9 +389,38 @@ router.get('/proposals/browse', function(req, res) {
 // });
 
 router.get('/proposals/category/:cat', function(req, res) {
+	var cat = req.params.cat;
+	switch(cat) {
+		case "Computer Labs":
+			cat = "L";
+			break;
+		case "Remote Computing":
+			cat = "R";
+			break;
+		case "Machinery and Research":
+			cat = "M";
+			break;
+		case "Collaborative":
+			cat = "G";
+			break;
+		case "Portable":
+			cat = "P";
+			break;
+		case "Frontier":
+			cat = "F";
+			break;
+		case "Software":
+			cat = "S";
+			break;
+		case "Software Development":
+			cat = "D";
+			break;
+		default:
+			break;
+	}
 	db.Proposal.findAll({
 		where: {
-			Category: req.params.cat,
+			Category: cat,
 			Status: [1, 2, 3, 4, 5, 6]
 		}
 	}).then(function(proposals) {
@@ -403,7 +432,7 @@ router.get('/proposals/category/:cat', function(req, res) {
 		.then(function(legProposals) {
 			legProposals.reverse();
 			proposals.push.apply(proposals, legProposals);
-			if (categories[req.params.cat]) {
+			if (categories[cat]) {
 				res.render('proposals/browse', {
 					proposals: proposals,
 					title: categories[proposals[0].Category].name + ": Proposals",

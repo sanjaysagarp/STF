@@ -1,6 +1,6 @@
 var http = require('http'); //for rerouting during netid logins
 var https = require('https'); //for rerouting during netid logins
-var express = require('express'); //the xpress app framework
+var express = require('express'); //the express app framework
 var glob = require('glob'); //allows for globbing files by names
 var favicon = require('serve-favicon'); //literally oinly serves favicons
 var logger = require('morgan'); //logs things to files 
@@ -28,7 +28,6 @@ var httpsPort = process.env.HTTPSPORT || 443;
 var pubCert = fs.readFileSync(config.root + 'security/server-cert.pem', 'utf-8');
 var privKey = fs.readFileSync(config.root + 'security/server-pvk.pem', 'utf-8');
 
-
 app.set('views', config.root + 'app/views');
 app.set('view engine', 'jade');
 
@@ -44,17 +43,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(compress());
 app.use(express.static(config.root + '/public'));
-app.use(multer({ dest: './uploads/',
-	rename: function (fieldname, filename) {
-		return filename+"_"+Date.now();
-	},
-	onFileUploadStart: function (file) {
-		console.log(file.originalname + ' is starting ...')
-	},
-	onFileUploadComplete: function (file) {
-		console.log(file.fieldname + ' uploaded to  ' + file.path)
-	}
-}));
 
 app.use(cookieParser(config.cookieSecret));
 app.use(session({
@@ -182,6 +170,7 @@ controllers.forEach(function assignController(controller) {
 	require(controller)(app);
 });
 
+//app.use( require('express-subdomain-handler')({ baseUrl: 'uwstf.org', prefix: 'subdomain', logger: true }) );
 
 app.use(function fileNotFound(req, res, next) {
 	var err = new Error('Not Found');
