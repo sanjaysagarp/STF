@@ -89,12 +89,12 @@ block content
 		.row
 			if award
 				.col-sm-12.col-md-4
-						h3 Reports
-						table.basic
-							tbody
-								tr
-									th Letter
-									td: a(href='/proposals/award/#{proposal.id}') View
+					h3 Reports
+					table.basic
+						tbody
+							tr
+								th Letter
+								td: a(href='/proposals/award/#{proposal.id}') View
 								// only for reporter eyes... for now
 								if reporter && (proposal.Status == 4 || proposal.Status == 5)
 									if reports.length > 0
@@ -157,25 +157,25 @@ block content
 									tr
 										th Mailbox
 										td= proposal.DeanMail
-					.col-xs-12.col-sm-6.col-md-6.colsContact
-						table
-							tbody
-								th.contactType Student
-								tr
-									th Name
-									td= proposal.StudentName
-								tr
-									th Title
-									td= proposal.StudentTitle
-								tr
-									th Phone
-									td= proposal.StudentPhone
-								tr
-									th NetID
-									td= proposal.StudentNetId
-								tr
-									th Mailbox
-									td= proposal.StudentMail
+						.col-xs-12.col-sm-6.col-md-6.colsContact
+							table
+								tbody
+									th.contactType Student
+									tr
+										th Name
+										td= proposal.StudentName
+									tr
+										th Title
+										td= proposal.StudentTitle
+									tr
+										th Phone
+										td= proposal.StudentPhone
+									tr
+										th NetID
+										td= proposal.StudentNetId
+									tr
+										th Mailbox
+										td= proposal.StudentMail
 		h3 Abstract
 		p= proposal.Abstract
 		h3 Background

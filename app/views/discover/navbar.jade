@@ -1,0 +1,32 @@
+//- partial for the head and navbar of documents (besides raw html)
+
+//- for the purple banner and uw logo
+header#top.main-header.navbar.navbar-static-top.bs-docs-nav(role='banner')
+	.container
+		.navbar-header
+			button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='.bs-navbar-collapse')
+				span.sr-only Toggle navigation
+				span.icon-bar
+				span.icon-bar
+				span.icon-bar
+			a.navbar-brand(href='http://uw.edu')
+				img(src='/img/w.svg', alt='', style='height: 75px;')
+				img.hidden-xs(src='/img/uw.svg', alt='', style='height: 20px;')
+				// Navigation
+				//container insures correct placement for IE
+//- for the STF logo, white bar, and navigation
+nav.navbar.navbar-default.sub-nav
+	.container
+		.navbar-header
+			button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+				span.sr-only Toggle navigation
+				span.icon-bar
+				span.icon-bar
+				span.icon-bar
+			a.navbar-brand.navbar-stf(href='/'): img(src='/img/logo.png')
+		.navbar-collapse.collapse
+			ul.nav.navbar-nav
+				li: a(href='https://uwstf.org') Committee
+				li: a(href='/find') Find
+				li: a(href='/map') Map
+				li: a(href='/funds') Funds
