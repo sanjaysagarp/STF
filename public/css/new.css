@@ -33,6 +33,20 @@
 	color: #FFFFFF;
 }
 
+.jumbotron a {
+	font-size: 21px;
+}
+
+.card {
+	background-color: #FAFAFA;
+	-webkit-box-shadow: 5px 5px 0px 3px rgba(220,217,220,1);
+	-moz-box-shadow: 5px 5px 0px 3px rgba(220,217,220,1);
+	box-shadow: 5px 5px 0px 3px rgba(220,217,220,1);
+	padding: 20px;
+	overflow: auto;
+	height: 100%;
+}
+
 .navbar-stf {
 	padding: 8px;
 }
