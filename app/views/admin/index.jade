@@ -34,6 +34,8 @@ block content
 				label Fast Track option
 		button#updateSettingsButton Update
 		
+		div#submissionNotification
+
 		h2 Reset Year/Ids
 		p Clicking this option WILL reset the ids and progress a year for the RFP process (eg. 2016-80 to 2017-1)
 		p
@@ -50,6 +52,22 @@ block content
 				| No 
 				button#resetYearButton Submit
 		
+		div#resetNotification
+
+		h2 Change Quarter
+		p Add or change the status of a committee member. Basic members can create metrics and vote. Admin members can do everything you can. Disabled members are unable to do anything. Changing your own account WILL work.
+		p
+			strong Current Quarter: #{settings.CurrentQuarter}
+		form(method='post', action='/admin/changeQuarter')
+			select(name='quarter') 
+				option(value='Summer') Summer
+				option(value='Autumn') Autumn
+				option(value='Winter') Winter
+				option(value='Spring') Spring
+			button#changeQuarterButton Submit
+		
+		div#quarterNotification
+
 		h2 Add or Change Member
 		p Add or change the status of a committee member. Basic members can create metrics and vote. Admin members can do everything you can. Disabled members are unable to do anything. Changing your own account WILL work.
 		form(method='post', action='/admin/addChange')
@@ -59,6 +77,8 @@ block content
 				option(value='0') Disabled
 				option(value='2') Admin
 			button#addChangeButton Submit
+
+		div#memberNotification
 
 		h2 Change a proposal status
 		p Manually change a proposal status if necessary.
@@ -71,6 +91,8 @@ block content
 				option(value='8') Cancelled
 			button#proposalChangeButton Submit
 			
+		div#proposalNotification
+
 		h2 Remove Member
 		p Remove a member from the committee. All metrics and voting data from the member will be expunged. You cannot undo this action. If you're looking to stop a member from completing actions, but still keep their data, use the above disable option
 		form(method='post', action='/admin/userRemove')

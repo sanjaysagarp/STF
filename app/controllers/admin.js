@@ -105,6 +105,19 @@ router.post('/admin/addChange', function(req, res) {
 	}
 });
 
+//Change quarter for proposal submission
+router.post('/admin/changeQuarter', function(req, res) {
+	db.Admin.find({ where: {id: 1}})
+	.then(function(settings) {
+		settings.updateAttributes({
+			CurrentQuarter: req.body.quarter
+		})
+		.then(function() {
+			res.send({message: "Quarter has been updated to " + req.body.quarter });
+		});
+	})
+});
+
 //Change status of proposal
 router.post('/admin/proposalChange', function(req, res) {
 	if (req.body.proposalChangeId) {

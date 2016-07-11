@@ -13,26 +13,55 @@ $(document).ready(function(){
 				success: function(data) {
 					if(data) {
 						if(data.message == "NetID permissions updated") {
-							$("#notification").css("display", "block");
-							$("#notification").addClass("alert alert-success");
-							$("#notification").html($('[name="netIdAddChange"]').val() + " permissions has been changed!");
-							$("#notification").fadeOut( 3000 );
+							$("#memberNotification").css("display", "block");
+							$("#memberNotification").addClass("alert alert-success");
+							$("#memberNotification").html($('[name="netIdAddChange"]').val() + " permissions has been changed!");
+							$("#memberNotification").fadeOut( 3000 );
 						} else if (data.message == "NetID added and permissions updated") {
-							$("#notification").css("display", "block");
-							$("#notification").addClass("alert alert-success");
-							$("#notification").html($('[name="netIdAddChange"]').val() + " has been added with current permissions");
-							$("#notification").fadeOut( 3000 );
+							$("#memberNotification").css("display", "block");
+							$("#memberNotification").addClass("alert alert-success");
+							$("#memberNotification").html($('[name="netIdAddChange"]').val() + " has been added with current permissions");
+							$("#memberNotification").fadeOut( 3000 );
 						} else if (data.message == "Enter a valid NetID") {
-							$("#notification").css("display", "block");
-							$("#notification").addClass("alert alert-danger");
-							$("#notification").html("Please fill out the NetID box");
-							$("#notification").fadeOut( 3000 );
+							$("#memberNotification").css("display", "block");
+							$("#memberNotification").addClass("alert alert-danger");
+							$("#memberNotification").html("Please fill out the NetID box");
+							$("#memberNotification").fadeOut( 3000 );
 						}
 					} else {
-						$("#notification").css("display", "block");
-						$("#notification").addClass("alert alert-danger");
-						$("#notification").html("Something went wrong");
-						$("#notification").fadeOut( 3000 );
+						$("#memberNotification").css("display", "block");
+						$("#memberNotification").addClass("alert alert-danger");
+						$("#memberNotification").html("Something went wrong");
+						$("#memberNotification").fadeOut( 3000 );
+					}
+					
+				},
+				failure: function(err) {
+					console.log(err);
+				}
+		});
+	});
+
+	$('#changeQuarterButton').on('click', function(e) {
+		e.preventDefault();
+		$.ajax({
+				method: 'POST',
+				url: "/admin/changeQuarter",
+				data: {
+					quarter: $('[name="quarter"]').val()
+				},
+				dataType: 'json',
+				success: function(data) {
+					if(data) {
+						$("#quarterNotification").css("display", "block");
+						$("#quarterNotification").addClass("alert alert-success");
+						$("#quarterNotification").html(data.message);
+						$("#quarterNotification").fadeOut( 3000 );
+					} else {
+						$("#quarterNotification").css("display", "block");
+						$("#quarterNotification").addClass("alert alert-danger");
+						$("#quarterNotification").html("Something went wrong");
+						$("#quarterNotification").fadeOut( 3000 );
 					}
 					
 				},
@@ -55,26 +84,26 @@ $(document).ready(function(){
 				success: function(data) {
 					if(data) {
 						if(data.message == "Proposal does not exist!") {
-							$("#notification").css("display", "block");
-							$("#notification").addClass("alert alert-danger");
-							$("#notification").html(data.message);
-							$("#notification").fadeOut( 3000 );
+							$("#proposalNotification").css("display", "block");
+							$("#proposalNotification").addClass("alert alert-danger");
+							$("#proposalNotification").html(data.message);
+							$("#proposalNotification").fadeOut( 3000 );
 						} else if (data.message == "Enter a valid ProposalID") {
-							$("#notification").css("display", "block");
-							$("#notification").addClass("alert alert-danger");
-							$("#notification").html(data.message);
-							$("#notification").fadeOut( 3000 );
+							$("#proposalNotification").css("display", "block");
+							$("#proposalNotification").addClass("alert alert-danger");
+							$("#proposalNotification").html(data.message);
+							$("#proposalNotification").fadeOut( 3000 );
 						} else {
-							$("#notification").css("display", "block");
-							$("#notification").addClass("alert alert-success");
-							$("#notification").html(data.message);
-							$("#notification").fadeOut( 3000 );
+							$("#proposalNotification").css("display", "block");
+							$("#proposalNotification").addClass("alert alert-success");
+							$("#proposalNotification").html(data.message);
+							$("#proposalNotification").fadeOut( 3000 );
 						}
 					} else {
-						$("#notification").css("display", "block");
-						$("#notification").addClass("alert alert-danger");
-						$("#notification").html("Something went wrong");
-						$("#notification").fadeOut( 3000 );
+						$("#proposalNotification").css("display", "block");
+						$("#proposalNotification").addClass("alert alert-danger");
+						$("#proposalNotification").html("Something went wrong");
+						$("#proposalNotification").fadeOut( 3000 );
 					}
 					
 				},
@@ -181,21 +210,21 @@ $(document).ready(function(){
 				success: function(data) {
 					if(data) {
 						if(data.message == "updated") {
-							$("#notification").css("display", "block");
-							$("#notification").addClass("alert alert-success");
-							$("#notification").html("Proposal settings have been updated!");
-							$("#notification").fadeOut( 3000 );
+							$("#submissionNotification").css("display", "block");
+							$("#submissionNotification").addClass("alert alert-success");
+							$("#submissionNotification").html("Proposal settings have been updated!");
+							$("#submissionNotification").fadeOut( 3000 );
 						} else {
-							$("#notification").css("display", "block");
-							$("#notification").addClass("alert alert-danger");
-							$("#notification").html("Somethings went wrong, try again.");
-							$("#notification").fadeOut( 3000 );
+							$("#submissionNotification").css("display", "block");
+							$("#submissionNotification").addClass("alert alert-danger");
+							$("#submissionNotification").html("Somethings went wrong, try again.");
+							$("#submissionNotification").fadeOut( 3000 );
 						}
 					} else {
-						$("#notification").css("display", "block");
-						$("#notification").addClass("alert alert-danger");
-						$("#notification").html("Something went wrong");
-						$("#notification").fadeOut( 3000 );
+						$("#submissionNotification").css("display", "block");
+						$("#submissionNotification").addClass("alert alert-danger");
+						$("#submissionNotification").html("Something went wrong");
+						$("#submissionNotification").fadeOut( 3000 );
 					}
 					
 				},
@@ -217,22 +246,22 @@ $(document).ready(function(){
 				success: function(data) {
 					if(data) {
 						if(data.message == "updated") {
-							$("#notification").css("display", "block");
-							$("#notification").addClass("alert alert-success");
-							$("#notification").html("Number has been reset to 1. Year has been set to next year");
-							$("#notification").fadeOut( 3000 );
+							$("#resetNotification").css("display", "block");
+							$("#resetNotification").addClass("alert alert-success");
+							$("#resetNotification").html("Number has been reset to 1. Year has been set to next year");
+							$("#resetNotification").fadeOut( 3000 );
 							window.location.href = '/admin';
 						} else {
-							$("#notification").css("display", "block");
-							$("#notification").addClass("alert alert-danger");
-							$("#notification").html("Please confirm the reset");
-							$("#notification").fadeOut( 3000 );
+							$("#resetNotification").css("display", "block");
+							$("#resetNotification").addClass("alert alert-danger");
+							$("#resetNotification").html("Please confirm the reset");
+							$("#resetNotification").fadeOut( 3000 );
 						}
 					} else {
-						$("#notification").css("display", "block");
-						$("#notification").addClass("alert alert-danger");
-						$("#notification").html("Something went wrong");
-						$("#notification").fadeOut( 3000 );
+						$("#resetNotification").css("display", "block");
+						$("#resetNotification").addClass("alert alert-danger");
+						$("#resetNotification").html("Something went wrong");
+						$("#resetNotification").fadeOut( 3000 );
 					}
 					
 				},

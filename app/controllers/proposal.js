@@ -291,6 +291,7 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 			Year: settings.CurrentYear,
 			Number: settings.CurrentNumber,
 			ProposalTitle: ProposalTitle,
+			Quarter: settings.CurrentQuarter,
 			Category: Category,
 			Department: Department,
 			PrimaryRegId: PrimaryRegId,

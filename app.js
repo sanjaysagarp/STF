@@ -170,8 +170,6 @@ controllers.forEach(function assignController(controller) {
 	require(controller)(app);
 });
 
-//app.use( require('express-subdomain-handler')({ baseUrl: 'uwstf.org', prefix: 'subdomain', logger: true }) );
-
 app.use(function fileNotFound(req, res, next) {
 	var err = new Error('Not Found');
 	err.status = 404;
