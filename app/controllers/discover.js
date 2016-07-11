@@ -10,6 +10,12 @@ module.exports = function(app) {
 
 router.get('/subdomain/discover', function(req, res){
 	res.render('discover/index', {
-			title: "Hiya"
-		});
+		title: "Discover STF"
+	});
+});
+
+router.get('/subdomain/discover/find', function(req, res){
+	res.render('discover/find/find', {
+		title: "Find a resource"
+	});
 });
