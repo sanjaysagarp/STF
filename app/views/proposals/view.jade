@@ -258,7 +258,7 @@ block content
 		
 		a(href='/supplementals/' id='supplementalLink' style="display:none;") View Supplemental
 		
-		if editor || isAdmin
+		if reporter || isAdmin
 			a(href='/supplementals/new/#{proposal.id}') Create Supplemental
 
 		-var total = 0;

@@ -631,35 +631,49 @@ router.get('/proposals/:id', function(req, res) {
 										for (userPartialRaw in usersPartialRaw) {
 											usersPartial[usersPartialRaw[userPartialRaw].id] = usersPartialRaw[userPartialRaw];
 										}
+										db.Report.findAll({
+											where: {
+												ProposalId: proposal.id
+											}
+										}).then(function(rawReports) {
+											var reports = [];
+											for(rawReport in rawReports) {
+												reports.push(rawReports[rawReport]);
+											}
+											//create written date
+											var cr = new Date(proposal.createdAt);
+											var months = ["January", "February", "March", "April", "May", "June", "July", 
+														"August", "September", "October", "November", "December"];
+											var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
+											var editor = false;
+											var reporter = false;
+											var loggedIn = false;
+											if (req.user) {
+												editor = h.approvedEditor(res, req.user, proposal, false);
+												reporter = h.approvedReporter(res, req.user, proposal, false);
+												loggedIn = true;
+											}
 
-										//create written date
-										var cr = new Date(proposal.createdAt);
-										var months = ["January", "February", "March", "April", "May", "June", "July", 
-													"August", "September", "October", "November", "December"];
-										var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
-										var editor = false;
-										var loggedIn = false;
-										if (req.user) {
-											editor = h.approvedEditor(res, req.user, proposal, false);
-											loggedIn = true;
-										}
-
-										res.render('proposals/view', {
-											title: proposal.ProposalTitle,
-											proposal: proposal,
-											partials: partials,
-											supplementals: supplementals,
-											usersPartial: usersPartial,
-											usersSupplemental: usersSupplemental,
-											created: day,
-											items: items,
-											loggedIn: loggedIn,
-											endorsements: endorsements,
-											categories: categories,
-											editor: editor,
-											award: award,
-											status: h.proposalStatus(proposal.Status),
-											rejection: rejection
+											res.render('proposals/view', {
+												title: proposal.ProposalTitle,
+												proposal: proposal,
+												partials: partials,
+												supplementals: supplementals,
+												usersPartial: usersPartial,
+												usersSupplemental: usersSupplemental,
+												created: day,
+												items: items,
+												loggedIn: loggedIn,
+												endorsements: endorsements,
+												categories: categories,
+												editor: editor,
+												reporter: reporter,
+												award: award,
+												status: h.proposalStatus(proposal.Status),
+												rejection: rejection,
+												reports: reports
+											});
+										
 										});
 									});
 								});
