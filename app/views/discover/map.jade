@@ -1,8 +1,11 @@
 extends head
 
 append js
-	script(async defer src="https://maps.googleapis.com/maps/api/js?key=#{mapKey}&callback=initMap")
+	script(async defer src="https://maps.googleapis.com/maps/api/js?key=#{mapKey}")
 	script(src='/js/map.js')
+
+append css
+	script(src='/css/map.css')
 
 block content
 	.map-wrapper

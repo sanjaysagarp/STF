@@ -78,7 +78,8 @@ $(document).ready(function(){
 				url: "/admin/proposalChange",
 				data: {
 					proposalStatus: $('[name="proposalStatus"]').val(),
-					proposalChangeId: $('[name="proposalChangeId"]').val()
+					proposalChangeYear: $('[name="proposalChangeYear"]').val(),
+					proposalChangeNumber: $('[name="proposalChangeNumber"]').val()
 				},
 				dataType: 'json',
 				success: function(data) {
@@ -91,7 +92,7 @@ $(document).ready(function(){
 						} else if (data.message == "Enter a valid ProposalID") {
 							$("#proposalNotification").css("display", "block");
 							$("#proposalNotification").addClass("alert alert-danger");
-							$("#proposalNotification").html(data.message);
+							$("#proposalNotification").html("Enter a valid proposal year and number");
 							$("#proposalNotification").fadeOut( 3000 );
 						} else {
 							$("#proposalNotification").css("display", "block");
@@ -161,7 +162,8 @@ $(document).ready(function(){
 				method: 'GET',
 				url: "/admin/editProposal",
 				data: {
-					proposalId: $('[name="proposalId"]').val()
+					proposalEditYear: $('[name="proposalEditYear"]').val(),
+					proposalEditNumber: $('[name="proposalEditNumber"]').val()
 				},
 				dataType: 'json',
 				success: function(data) {
@@ -171,16 +173,16 @@ $(document).ready(function(){
 							$("#notification").addClass("alert alert-success");
 							$("#notification").html("redirecting...");
 							$("#notification").fadeOut( 3000 );
-							window.location.href = '/proposals/update/' + $('[name="proposalId"]').val();
+							window.location.href = '/proposals/update/' + $('[name="proposalEditYear"]').val() + '/' + $('[name="proposalEditNumber"]').val();
 						} else if (data.message == "proposal number invalid") {
 							$("#notification").css("display", "block");
 							$("#notification").addClass("alert alert-warning");
-							$("#notification").html("Proposal " + $('[name="proposalId"]').val() + " not found!");
+							$("#notification").html("Proposal " + $('[name="proposalEditYear"]').val() + '-' + $('[name="proposalEditNumber"]').val() + " not found!");
 							$("#notification").fadeOut( 3000 );
 						} else if (data.message == "empty box") {
 							$("#notification").css("display", "block");
 							$("#notification").addClass("alert alert-warning");
-							$("#notification").html("Please enter a ProposalID");
+							$("#notification").html("Please enter a proposal year and number");
 							$("#notification").fadeOut( 3000 );
 						}
 					} else {

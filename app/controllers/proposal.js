@@ -519,6 +519,48 @@ router.get('/proposals/update/:id', shib.ensureAuth('/login'), function(req, res
 	});
 });
 
+//renders update page by proposal year and number
+router.get('/proposals/update/:year/:number', shib.ensureAuth('/login'), function(req, res) {
+	db.Proposal.find({
+		where: {
+			Year: req.params.year,
+			Number: req.params.number
+		}
+	}).then(function(proposal) {
+
+		if (h.approvedEditor(res, req.user, proposal, false)) {
+
+			db.Item.findAll({
+				where: {
+					ProposalId: proposal.id,
+					PartialId: null
+				}
+			}).then(function(item){
+				getDepartments(function(departments) {
+					db.Admin.find({where: {id:1}})
+					.then(function(settings) {
+						res.render('proposals/update', {
+							title: 'Update Proposal ' + proposal.ProposalTitle,
+							proposal: proposal,
+							items: item,
+							categories: categories,
+							departments: departments,
+							settings: settings
+						});
+					});
+				});
+			});
+		} else {
+			if (proposal.Status == 1) {
+				h.displayErrorPage(res, 'This proposal has been submitted and cannot be updated',
+					"Access denied");
+			} else {
+				h.displayErrorPage(res, 'You do not have permission to edit that proposal',
+					'Access denied');
+			}
+		}
+	});
+});
 
 //Show the 'submitted' proposal view page
 router.get('/proposals/:id', function(req, res) {

@@ -1,7 +1,7 @@
 var express = require('express');
 var	router = express.Router();
 var fs = require('fs');
-var gmConfig = require('../config/google'); //google key
+var gmConfig = require('../../config/google'); //google key
 router.use( require('express-subdomain-handler')({ baseUrl: 'uwstf.org', prefix: 'subdomain', logger: true }) ); //uses subdomain of 'discover'
 
 module.exports = function(app) {

@@ -83,7 +83,8 @@ block content
 		h2 Change a proposal status
 		p Manually change a proposal status if necessary.
 		form(method='post', action='/admin/proposalChange')
-			input(type='text', name='proposalChangeId', placeholder='ProposalID', size='14')
+			input(type='text', name='proposalChangeYear', placeholder='Year', size='12')
+			input(type='text', name='proposalChangeNumber', placeholder='Number', size='12')
 			select(name='proposalStatus') 
 				option(value='0') Working Proposal (not submitted)
 				option(value='1') Submitted Proposal
@@ -109,6 +110,7 @@ block content
 		h2 Edit a Proposal
 		p You have super-special access to edit any proposal, even ones that have been submitted. Enter a proposal number to jump to its edit page
 		form(method='get', action='/admin/editProposal')
-			input(type='number', name='proposalId')
+			input(type='text', name='proposalEditYear', placeholder='Year', size='12')
+			input(type='text', name='proposalEditNumber', placeholder='Number', size='12')
 			button#editProposalButton Submit
 		div#notification

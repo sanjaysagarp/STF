@@ -25,7 +25,10 @@ block content
 							td= proposal.id
 						tr
 							th Created
-							td= created
+							if proposal.Quarter
+								td #{created}, #{proposal.Quarter}
+							else
+								td= created
 						tr
 							th Department
 							td= proposal.Department

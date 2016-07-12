@@ -120,8 +120,11 @@ router.post('/admin/changeQuarter', function(req, res) {
 
 //Change status of proposal
 router.post('/admin/proposalChange', function(req, res) {
-	if (req.body.proposalChangeId) {
-		db.Proposal.find({ where: { id: req.body.proposalChangeId} })
+	if (req.body.proposalChangeYear && req.body.proposalChangeNumber) {
+		db.Proposal.find({ where: { 
+			Number: req.body.proposalChangeNumber,
+			Year: req.body.proposalChangeYear
+		} })
 		.then(function(proposal) {
 			
 			if (proposal) { //A proposal exists - update status
@@ -145,7 +148,7 @@ router.post('/admin/proposalChange', function(req, res) {
 							status = "\"Cancelled\""
 							break;
 					}
-					res.send({message: "Proposal " + req.body.proposalChangeId + " status has been updated to " + status });
+					res.send({message: "Proposal " + req.body.proposalChangeYear + '-' + req.body.proposalChangeNumber + " status has been updated to " + status });
 				});
 
 			} else {
@@ -250,8 +253,13 @@ router.post('/admin/updateSettings', function(req, res) {
 
 //Renders a proposal edit page for admins
 router.get('/admin/editProposal', function(req, res) {
-	if(req.query.proposalId && req.query.proposalId > 0) {
-		db.Proposal.find({where: {id: req.query.proposalId}})
+	if(req.query.proposalEditNumber && req.query.proposalEditYear) {
+		db.Proposal.find({
+			where: {
+				Number: req.query.proposalEditNumber,
+				Year: req.query.proposalEditYear
+			}
+		})
 		.then(function(proposal) {
 			if(proposal) {
 				res.send({message:"redirect"});
