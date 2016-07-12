@@ -26,7 +26,7 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 			
 			var editor = false;
 			if (req.user) {
-				editor = h.approvedEditor(res, req.user, proposal, false);
+				editor = h.approvedReporter(res, req.user, proposal, false);
 			}
 			//find all items associated with supplemental
 			db.Item.findAll({
