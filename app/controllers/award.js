@@ -186,14 +186,15 @@ router.get('/proposals/rejection/:id', function(req, res) {
 router.post('/admin/rejection', shib.ensureAuth('/login'), function(req, res) {
 	db.Proposal.find({
 		where: {
-			id: req.body.rejectionProposalId
+			Number: req.body.rejectionProposalNumber,
+			Year: req.body.rejectionProposalYear
 		}
 	})
 	.then(function(proposal) {
 		//console.log(proposal);
 		db.Award.find({
 			where: {
-				ProposalId: req.body.rejectionProposalId
+				ProposalId: proposal.id
 			}
 		}).then(function(award) {
 			// this proposal has already been awarded
@@ -202,7 +203,7 @@ router.post('/admin/rejection', shib.ensureAuth('/login'), function(req, res) {
 			} else {
 				db.Rejection.find({
 					where: {
-						ProposalId: req.body.rejectionProposalId
+						ProposalId: proposal.id
 					}
 				})
 				.then(function(r) {
@@ -237,19 +238,20 @@ router.post('/admin/rejection', shib.ensureAuth('/login'), function(req, res) {
 router.post('/admin/award', shib.ensureAuth('/login'), function(req, res) {
 	db.Proposal.find({
 		where: {
-			id: req.body.awardProposalId
+			Number: req.body.awardProposalNumber,
+			Year: req.body.awardProposalYear
 		}
 	}).then(function(proposal) {
 		db.Award.find({
 			where: {
-				ProposalId: req.body.awardProposalId
+				ProposalId: proposal.id
 			}
 		})
 		.then(function(award) {
 			//If award already exists
 			db.Rejection.find({
 				where: {
-					ProposalId: req.body.awardProposalId
+					ProposalId: proposal.id
 				}
 			})
 			.then(function(rejection) {
@@ -261,7 +263,7 @@ router.post('/admin/award', shib.ensureAuth('/login'), function(req, res) {
 					} else {
 						db.Item.findAll({
 							where: {
-								ProposalId: req.body.awardProposalId
+								ProposalId: proposal.id
 							}
 						})
 						.then(function(items) {

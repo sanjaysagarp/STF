@@ -342,7 +342,7 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 			var newNumber = 1 + settings.CurrentNumber;
 			settings.increment('CurrentNumber',{by:1})
 			.then(function() {
-				res.redirect('/proposals/update/' + proposal.id);
+				res.redirect('/proposals/update/' + proposal.Year + "/" + proposal.Number);
 			});
 		});
 	});

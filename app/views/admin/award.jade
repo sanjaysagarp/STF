@@ -24,7 +24,8 @@ block content
 					.form-group.col-md-12
 						h2 Create an Award Letter
 						p Enter the funded proposal and additional information to create an award letter
-						input(type='text', name='awardProposalId', placeholder='ProposalID', size='10')
+						input(type='text', name='awardProposalYear', placeholder='Year', size='10')
+						input(type='text', name='awardProposalNumber', placeholder='Number', size='10')
 						select(name='reportType') 
 							option(value='0') Quarterly
 							option(value='1') Anually
@@ -61,7 +62,8 @@ block content
 					.form-group.col-md-12
 						h2 Create a Rejection Letter
 						p Enter the not funded proposal and additional information to create a rejection letter
-						input(type='text', name='rejectionProposalId', placeholder='ProposalID', size='10')
+						input(type='text', name='rejectionProposalYear', placeholder='Year', size='10')
+						input(type='text', name='rejectionProposalNumber', placeholder='Number', size='10')
 					.form-group.col-md-12
 						h2 Template:
 						hr

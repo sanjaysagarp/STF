@@ -6,7 +6,8 @@ $(document).ready(function(){
 				method: 'POST',
 				url: "/admin/award",
 				data: {
-					awardProposalId: $('[name="awardProposalId"]').val(),
+					awardProposalNumber: $('[name="awardProposalNumber"]').val(),
+					awardProposalYear: $('[name="awardProposalNumber"]').val(),
 					reportType: $('[name="reportType"]').val(),
 					awardNotes: $('[name="awardNotes"]').val()
 				},
@@ -54,7 +55,8 @@ $(document).ready(function(){
 				method: 'POST',
 				url: "/admin/rejection",
 				data: {
-					rejectionProposalId: $('[name="rejectionProposalId"]').val(),
+					rejectionProposalNumber: $('[name="rejectionProposalNumber"]').val(),
+					rejectionProposalYear: $('[name="rejectionProposalYear"]').val(),
 					rejectionNotes: $('[name="rejectionNotes"]').val()
 				},
 				dataType: 'json',
