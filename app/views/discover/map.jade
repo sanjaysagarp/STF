@@ -1,7 +1,7 @@
 extends head
 
 append js
-	script(async defer src="https://maps.googleapis.com/maps/api/js?key=#{mapKey}")
+	script(async defer src="https://maps.googleapis.com/maps/api/js?key=#{mapKey}&libraries=places")
 	script(src='/js/map.js')
 
 append css
@@ -9,5 +9,7 @@ append css
 
 block content
 	.container-fluid
-		.popout
+		.navigator
+			.container
+				h2 Hiya!
 		.map_canvas

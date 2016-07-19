@@ -13,6 +13,23 @@
 	padding: 0;
 }
 
+@media (min-width: 768px) {
+	.navigator {
+		z-index: 9;
+		width: 725px;
+		height: 816px;
+		background-color: #fff;
+		position: absolute;
+		top: 50%;
+		margin-top: -410px;
+		right: -340px;
+		padding: 0;
+		-webkit-box-shadow: 0px 0px 0px 3px rgba(220,217,220,1);
+		-moz-box-shadow: 0px 0px 0px 3px rgba(220,217,220,1);
+		box-shadow: 0px 0px 0px 3px rgba(220,217,220,1);
+	}
+}
+
 /* Small devices (tablets, 768px and up) */
 @media (min-height: 768px) { 
 	.map_canvas {
