@@ -17,10 +17,10 @@
 	.navigator {
 		z-index: 9;
 		width: 725px;
-		height: 816px;
+		height: 50%;
 		background-color: #fff;
 		position: absolute;
-		top: 50%;
+		top: 65%;
 		margin-top: -410px;
 		right: -340px;
 		padding: 0;

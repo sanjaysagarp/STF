@@ -7,7 +7,7 @@ $(document).ready(function(){
 				url: "/admin/award",
 				data: {
 					awardProposalNumber: $('[name="awardProposalNumber"]').val(),
-					awardProposalYear: $('[name="awardProposalNumber"]').val(),
+					awardProposalYear: $('[name="awardProposalYear"]').val(),
 					reportType: $('[name="reportType"]').val(),
 					awardNotes: $('[name="awardNotes"]').val()
 				},
@@ -17,22 +17,27 @@ $(document).ready(function(){
 						if(data.message == "Success") {
 							$("#notification").css("display", "block");
 							$("#notification").addClass("alert alert-success");
-							$("#notification").html("Award letter successfully created for " + $('[name="awardProposalId"]').val() + "!");
+							$("#notification").html("Award letter successfully created for " +$('[name="awardProposalYear"]').val() + '-' + $('[name="awardProposalNumber"]').val() + "!");
 							$("#notification").fadeOut( 3000 );
 						} else if (data.message == "Proposal status is invalid") {
 							$("#notification").css("display", "block");
 							$("#notification").addClass("alert alert-danger");
-							$("#notification").html("Proposal " + $('[name="awardProposalId"]').val() + " has not been submitted / voted on");
+							$("#notification").html("Proposal " + $('[name="awardProposalYear"]').val() + '-' + $('[name="awardProposalNumber"]').val() + " has not been submitted / voted on");
 							$("#notification").fadeOut( 3000 );
 						} else if (data.message == "Duplicate") {
 							$("#notification").css("display", "block");
 							$("#notification").addClass("alert alert-danger");
-							$("#notification").html("Proposal " + $('[name="awardProposalId"]').val() + " already has an award letter!");
+							$("#notification").html("Proposal " + $('[name="awardProposalYear"]').val() + '-' + $('[name="awardProposalNumber"]').val() + " already has an award letter!");
 							$("#notification").fadeOut( 3000 );
 						} else if (data.message == "Rejection exists") {
 							$("#notification").css("display", "block");
 							$("#notification").addClass("alert alert-danger");
-							$("#notification").html("Proposal " + $('[name="awardProposalId"]').val() + " already has a rejection letter!");
+							$("#notification").html("Proposal " + $('[name="awardProposalYear"]').val() + '-' + $('[name="awardProposalNumber"]').val() + " already has a rejection letter!");
+							$("#notification").fadeOut( 3000 );
+						} else if (data.message == "Proposal not found") {
+							$("#notification").css("display", "block");
+							$("#notification").addClass("alert alert-danger");
+							$("#notification").html("Proposal not found");
 							$("#notification").fadeOut( 3000 );
 						}
 					} else {

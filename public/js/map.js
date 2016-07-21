@@ -27,7 +27,7 @@ window.addEventListener('load', function() {
 			}
 		}
 	}
-	//need location of departments? -- are we gonna specify which proposals come from which departments
+	//need location of departments or proposals? -- are we gonna specify which proposals come from which departments
 	//currently using nearby radius for location.
 	// HUB: 47.655464, -122.305131
 	
