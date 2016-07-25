@@ -92,7 +92,7 @@ router.get('/contact', function serveContact(req, res) {
 			title : 'Proposal Officer',
 			name : 'Alec Meade',
 			email : 'STFAgent@uw.edu'
-		}];
+		}]
 	});
 });
 
