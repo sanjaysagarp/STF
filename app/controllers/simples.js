@@ -81,14 +81,18 @@ router.get('/contact', function serveContact(req, res) {
 			name : 'Bryce Knolton',
 			email : 'STFChair@uw.edu'
 		}, {	
-			title : 'Program Coordinator',
-			name : 'Alton Lu',
+			title : 'Operations and Finance Manager',
+			name : 'Rajiv Raina',
 			email : 'TechFee@uw.edu'
 		}, {
 			title : 'Web Developer',
 			name : 'Sanjay Sagar',
 			email : 'STFCWeb@uw.edu'
-		}]
+		}, {
+			title : 'Proposal Officer',
+			name : 'Alec Meade',
+			email : 'STFAgent@uw.edu'
+		}];
 	});
 });
 
