@@ -33,8 +33,9 @@ nav.navbar.navbar-default.sub-nav
 						li: a(href='/proposals/create') Create New
 						li: a(href='/proposals/browse') Browse All
 						li: a(href='/proposals/myproposals') My Proposals
-						li(role='seperator' class='divider')
-						li: a(href='/metrics') Metrics
+						if isAdmin || isCommitteeMember
+							li(role='seperator' class='divider')
+							li: a(href='/metrics') Metrics
 				li.dropdown
 					a.dropdown-toggle(href='#', data-toggle='dropdown') Documents
 						span.caret

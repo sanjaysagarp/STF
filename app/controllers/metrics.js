@@ -22,7 +22,15 @@ router.get('/voting', function(req, res) {
 router.get('/vote', function(req, res) {
 	res.redirect('/metrics/voting');
 })
+router.all('/metrics*', shib.ensureAuth('/login'), function(req, res, next) {
+	if(res.locals.isAdmin || res.locals.isCommitteeMember) {
+		next();
+	} else {
+		h.displayErrorPage(res, 'Only committee members have access to metrics',
+					"Access denied");
+	}
 
+});
 
 //displays the base metrics homepage
 router.get('/metrics', function(req, res) { //todo unspaghetti this
