@@ -25,7 +25,7 @@ router.get('/items/new/supplemental/:supplemental/:proposal', function(req, res)
 
 //makes a new blank item that belongs to a partial or proposal
 function itemMakerSupplemental(req, res) {
-	if (h.approvedEditor(res, req.user, req.params.proposal)) {
+	if (h.approvedReporter(res, req.user, req.params.proposal)) {
 		db.Item.create({
 			ProposalId: req.params.proposal,
 			SupplementalId: req.params.supplemental
@@ -37,37 +37,42 @@ function itemMakerSupplemental(req, res) {
 
 //makes a new blank item that belongs to a partial or proposal
 function itemMaker(req, res) {
-	if (h.approvedEditor(res, req.user, req.params.proposal)) {
+	if (h.approvedEditor(res, req.user, req.params.proposal) ||  h.approvedReporter(res, req.user, req.params.proposal)) {
 		db.Item.create({
 			ProposalId: req.params.proposal,
 			PartialId: (req.params.partial ? req.params.partial : null)
 		}).then(function(item) {
 			res.redirect('/item/' + item.id)
 		});
+	} else {
+		displayErrorPage(res, 'You are not able to create an item', 'Access Denied');
 	}
 }
 
 
 //Make a new item from posted data. 
 router.post('/items/new', function(req, res) {
-	if (h.approvedEditor(res, req.user, req.body['ProposalId'])) {
+	if (h.approvedEditor(res, req.user, req.body['ProposalId']) ||  h.approvedReporter(res, req.user, req.body['ProposalId'])) {
 		db.Item.create(req.body).then(function(item) {
 			res.json({
 				message: "Success", 
 				item: item
 			});
 		});
+	} else {
+		displayErrorPage(res, 'You are not able to create an item', 'Access Denied');
 	}
 });
 
 
 //deletes an item by its id
 router.get('/item/delete/:id', function(req, res) {
-	db.Item.find({ where: {id: req.params.id} }).then(function(item) {
+	db.Item.find({ where: {id: req.params.id} })
+	.then(function(item) {
 		var partial = item.PartialId;
 		var supplemental = item.SupplementalId;
 		db.Proposal.find({ where: {id: item.ProposalId} }).then(function(proposal) {
-			if (res.locals.isAdmin || h.approvedEditor(res, req.user, proposal)) {
+			if (res.locals.isAdmin || h.approvedEditor(res, req.user, proposal) ||  h.approvedReporter(res, req.user, proposal)) {
 				item.destroy().then(function() {
 					if (partial != null) {
 						res.redirect('/partial/' + partial + '/0')
@@ -79,6 +84,8 @@ router.get('/item/delete/:id', function(req, res) {
 						res.redirect('/proposals/update/' + proposal.id + '#step-7');
 					}
 				});
+			} else {
+				displayErrorPage(res, 'You are not an Approved reporter of this Proposal', 'Access Denied');
 			}
 		});
 	});
@@ -107,7 +114,7 @@ router.get('/item/:id', function(req,res) {
 						id: item.ProposalId
 					}
 				}).then(function(proposal) {
-					if (h.approvedEditor(res, req.user, proposal)) {
+					if (h.approvedEditor(res, req.user, proposal) ||  h.approvedReporter(res, req.user, proposal)) {
 						res.render('items/proposalview',{
 							title: item.ItemName,
 							item: item,
@@ -137,7 +144,7 @@ router.post('/item/:id', function(req, res) {
 			res.send(404);
 		}
 
-		if (h.approvedEditor(res, req.user, item.ProposalId)) {
+		if (h.approvedEditor(res, req.user, item.ProposalId) ||  h.approvedReporter(res, req.user, item.ProposalId)) {
 			db.Item.update(req.body, {
 				where: {
 					id: req.params.id
