@@ -54,10 +54,10 @@ block content
 							label.col-md-4.control-label(for='saveItem')
 							.col-md-4
 								if proposal.Status == 0
-									a(href='/proposals/update/#{proposal.id}#step-7')
+									a(href='/proposals/update/#{proposal.Year}/#{proposal.Number}#step-7')
 										button#return.btn.btn-default(name='return', type='button') Return to Edit
 								else
-									a(href='/proposals/#{proposal.id}')
+									a(href='/proposals/#{proposal.Year}/#{proposal.Number}')
 										button#return.btn.btn-default(name='return', type='button') Return to Proposal
 								|  
 								a(href='/item/delete/#{item.id}')

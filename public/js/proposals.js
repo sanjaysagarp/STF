@@ -104,9 +104,11 @@ $(document).ready(function() {
 		$('.sign-btn').on('click', function(e) {
 			var elem = this;
 			var proposal = window.location.href;
-			proposal = proposal.substring(proposal.lastIndexOf('/') + 1, proposal.indexOf('#'));
+			//proposal = proposal.substring(proposal.lastIndexOf('/') + 1, proposal.indexOf('#'));
+			number = proposal.substring(proposal.lastIndexOf('/') + 1, proposal.indexOf('#'));
+			year = proposal.substring(proposal.indexOf('update') + 7, proposal.lastIndexOf('/'));
 			$.ajax({
-				data: {id: proposal},
+				data: {number: number, year: year},
 				method: 'POST',
 				url: '/proposal/sign',
 				success: function(data) {

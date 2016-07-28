@@ -14,7 +14,7 @@ block content
 		if proposal.Status == 0
 			p.draft-alert This is a draft proposal, and has not been submitted yet. Information is subject to change.
 			if editor
-				p: a(href='/proposals/update/#{proposal.id}') Return to Update Page
+				p: a(href='/proposals/update/#{proposal.Year}/#{proposal.Number}') Return to Update Page
 		.row
 			.col-sm-12.col-md-4
 				h3 Basic Info
@@ -22,11 +22,11 @@ block content
 					tbody
 						tr
 							th Proposal ID
-							td= proposal.id
+							td  #{proposal.Year}-#{proposal.Number}
 						tr
 							th Created
 							if proposal.Quarter
-								td #{created}, #{proposal.Quarter}
+								td #{created} (#{proposal.Quarter})
 							else
 								td= created
 						tr
@@ -36,11 +36,12 @@ block content
 							th Status
 							td !{status}
 						tr
-							th Metrics
-							if proposal.Status == 0
-								td: | View Metrics
-							else
-								td: a(href='/metrics/#{proposal.id}') View Metrics
+							if isAdmin || isCommitteeMember
+								th Metrics
+								if proposal.Status == 0
+									td: | View Metrics
+								else
+									td: a(href='/metrics/#{proposal.Year}/#{proposal.Number}') View Metrics
 
 
 						if rejection
@@ -205,6 +206,9 @@ block content
 		p= proposal.TechnologyResources
 		h3 Financial Resources
 		p= proposal.FinancialResources
+		if proposal.Protection
+			h3 Equipment Protection
+			p= proposal.Protection
 		if proposal.proposalFeedback && (isCommitteeMember || isAdmin) 
 			h3 STF Feedback
 			p= proposal.proposalFeedback

@@ -281,19 +281,31 @@ function renderVotingFullOrPartial(fullPage, req, res) {
 	});
 }
 
-
-//Get a proposals metrics data, and display its metrics page
+//redirect route
 router.get('/metrics/:id', function(req, res) {
 	db.Proposal.find({
-		where: {
+		where : {
 			id: req.params.id
+		}
+	})
+	.then(function(proposal) {
+		res.redirect('/metrics/' + proposal.Year + "/" + proposal.Number);
+	});
+});
+
+//Get a proposals metrics data, and display its metrics page
+router.get('/metrics/:year/:number', function(req, res) {
+	db.Proposal.find({
+		where: {
+			Year: req.params.year,
+			Number: req.params.number
 		}
 	}).then(function(proposal) {
 
 		if (proposal) { //check for existing proposal
 			db.Metrics.findAll({
 				where: {
-					ProposalId: req.params.id
+					ProposalId: proposal.id
 				}
 			}).then(function(metrics) {
 				db.User.findAll().then(function(users) {
@@ -368,10 +380,12 @@ router.get('/metrics/:id', function(req, res) {
 
 
 //displays the create new metrics page
-router.get('/metrics/:id/create', shib.ensureAuth('/login'), function(req, res, next) {
+router.get('/create/metrics/:year/:number', shib.ensureAuth('/login'), function(req, res, next) {
+	console.log("blas");
 	db.Proposal.find({
 		where: {
-			id: req.params.id
+			Year: req.params.year,
+			Number: req.params.number
 		}
 	}).then(function(proposal) {
 		db.User.find({
@@ -383,7 +397,7 @@ router.get('/metrics/:id/create', shib.ensureAuth('/login'), function(req, res, 
 				db.Metrics.find({
 					where: {
 						AuthorId: user.id,
-						ProposalId: req.params.id
+						ProposalId: proposal.id
 					}
 				}).then(function(metric) {
 					res.render('metrics/create', {
@@ -400,53 +414,65 @@ router.get('/metrics/:id/create', shib.ensureAuth('/login'), function(req, res, 
 	});
 });
 
-
 //create or save metrics data from a metrics submit
-router.post('/metrics/:id/create', shib.ensureAuth('/login'), function(req, res) {
+router.post('/create/metrics/:year/:number', shib.ensureAuth('/login'), function(req, res) {
 	
 	//get and check user
-	db.User.find({
+	db.Proposal.find({
+		where : {
+			Year: req.params.year,
+			Number: req.params.number
+		}
+	})
+	.then(function(proposal) {
+		db.User.find({
 		where: {
 			RegId: req.user.regId
 		}
-	}).then(function(user){
-		if (h.activeCommitteeMember(res, user)) {
+		})
+		.then(function(user){
+			if (h.activeCommitteeMember(res, user)) {
 
-			//get their metrics
-			db.Metrics.find({
-				where: {
-					AuthorId: user.id,
-					ProposalId: req.params.id
-				}
-			}).then(function(metrics) {
-				
-				//assign data
-				var metric = {};
-				for (name in req.body) {
-					metric[name] = req.body[name];
-				}
-				
-				metric.ProposalId = req.params.id,
-				metric.AuthorId =  user.id,
-
-				//create metrics if none, update if exists
-				((metrics != null) 
-					? db.Metrics.update(
-						metric, {
-							where: {id: metrics.id}
-						}
-					)
-					: db.Metrics.create(
-						metric
-					)
-				).then(function() {
-					if (req.body["Next"]) { //redirect if redirect
-						res.redirect('/metrics/' + req.body["Next"] + '/create');
-					} else {
-						res.redirect('/metrics/' + req.params.id);
+				//get their metrics
+				db.Metrics.find({
+					where: {
+						AuthorId: user.id,
+						ProposalId: proposal.id
 					}
+				}).then(function(metrics) {
+					
+					//assign data
+					var metric = {};
+					for (name in req.body) {
+						metric[name] = req.body[name];
+					}
+					
+					metric.ProposalId = proposal.id,
+					metric.AuthorId =  user.id,
+
+					//create metrics if none, update if exists
+					((metrics != null) 
+						? db.Metrics.update(
+							metric, {
+								where: {id: metrics.id}
+							}
+						)
+						: db.Metrics.create(
+							metric
+						)
+					).then(function() {
+						db.Admin.find({where: {id: 1}})
+						.then(function(settings) {
+							if (req.body["Next"]) { //redirect if redirect
+								res.redirect('/create/metrics/' + settings.CurrentYear + "/" + req.body["Next"]);
+							} else {
+								res.redirect('/metrics/' + settings.CurrentYear + "/" + proposal.Number);
+							}
+						});
+						
+					});
 				});
-			});
-		}
+			}
+		});
 	});
 });

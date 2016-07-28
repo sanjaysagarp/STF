@@ -48,7 +48,7 @@ block content
 							p.list-group-item-text Submit your Proposal
 		div
 			form.form-horizontal#updateProposal(data-toggle='formcache', name='proposalForm',
-				method='post', action='/proposals/#{proposal.id}')
+				method='post', action='/proposals/#{proposal.Year}/#{proposal.Number}')
 				#step-1.setup-content
 					.col-xs-12
 						.col-md-12.well
@@ -79,18 +79,6 @@ block content
 													if val != proposal.Department
 														option(value='#{val}') #{val}
 											p: a#newDepartment(href='') Enter a Different Department
-
-									.form-group
-										label.col-md-4.control-label(for='fastTrack') Fast Track
-
-										.col-md-4#fastTrackWrap
-											if proposal.FastTrack
-												input#fastTrack(name='fastTrack' type='checkbox' checked)
-											else if settings.FastTrack == 0
-												input#fastTrack(name='fastTrack' type='checkbox' disabled)
-											else
-												input#fastTrack(name='fastTrack' type='checkbox')
-											span.help-block Fast track proposals receive expedited funding if approved. Only proposals that demonstrate a need for fast track will be considered.
 
 									.form-group
 										label.col-md-4.control-label(for='UAC') UAC
@@ -274,7 +262,7 @@ block content
 												if proposal.AdditionalContactName3
 													input#stu-name.form-control.input-md(name='con3-name', type='text', placeholder='name', value="#{proposal.AdditionalContactName3}")
 												else
-													input#stu-name.form-control.input-md(name='con3-name', type='text', placeholder='name', value="name")
+													input#stu-name.form-control.input-md(name='con3-name', type='text', placeholder='name', value="")
 										.form-group
 											label.col-md-4.control-label(for='con3-netId') NetID
 											.col-md-4
@@ -317,7 +305,7 @@ block content
 										.form-group
 											label.col-md-4.control-label(for='Background') Background
 											.col-md-8
-												textarea#background.form-control(name='Background') #{proposal.Background}
+												textarea#background.form-control(name='Background', maxlength="2000") #{proposal.Background}
 												#background.span.help-block Please situate the proposal in the context of past requests and student need
 										.form-group
 											label.col-md-4.control-label(for='proposalFeedback') Feedback 
@@ -332,20 +320,20 @@ block content
 										.form-group
 											label.col-md-4.control-label(for='EstimateJustification') Justification of Estimated Student Usage
 											.col-md-8
-												textarea#estimateJustification.form-control(name='EstimateJustification') #{proposal.EstimateJustification}
+												textarea#estimateJustification.form-control(name='EstimateJustification', maxlength="2000") #{proposal.EstimateJustification}
 												span.help-block What evidence implies the estimate above is accurate?
 										.form-group
 											label.col-md-4.control-label(for='ResearchScholarship') Research and Scholarship
 											.col-md-8
-												textarea#researchScholarship.form-control(name='ResearchScholarship') #{proposal.ResearchScholarship}
+												textarea#researchScholarship.form-control(name='ResearchScholarship', maxlength="2000") #{proposal.ResearchScholarship}
 												span.help-block What research and scholarship benefits will students receive from interacting with this technology?
 										.form-group
 											label.col-md-4.control-label(for='EducationalExperience') Educational Experience
 											.col-md-8
-												textarea#educationalExperience.form-control(name='EducationalExperience') #{proposal.EducationalExperience}
+												textarea#educationalExperience.form-control(name='EducationalExperience', maxlength="2000") #{proposal.EducationalExperience}
 												span.help-block How does the project enhance students’ academic experience?
 										.form-group
-											label.col-md-4.control-label(for='CareerEnhancement') Career Enhancement
+											label.col-md-4.control-label(for='CareerEnhancement', maxlength="2000") Career Enhancement
 											.col-md-8
 												textarea#careerEnhancement.form-control(name='CareerEnhancement') #{proposal.CareerEnhancement}
 												span.help-block What career enhancing skills will students gain from working with this technology?
@@ -364,7 +352,7 @@ block content
 										.form-group
 											label.col-md-4.control-label(for='AccessRestrictions') Access Restrictions (if any)
 											.col-md-8
-												textarea#accessRestrictions.form-control(name='AccessRestrictions') #{proposal.AccessRestrictions}
+												textarea#accessRestrictions.form-control(name='AccessRestrictions', maxlength="2000") #{proposal.AccessRestrictions}
 												span.help-block What restrictions, if any, will be in place to ensure resource safety but allow for broad usage?
 										.form-group
 											label.col-md-4.control-label(for='Hours') Hours of Availability
@@ -379,7 +367,7 @@ block content
 										.form-group
 											label.col-md-4.control-label(for='Outreach') Outreach Strategy
 											.col-md-8
-												textarea#outreach.form-control(name='Outreach') #{proposal.Outreach}
+												textarea#outreach.form-control(name='Outreach', maxlength="2000") #{proposal.Outreach}
 												span.help-block What is your planned outreach strategy to inform students about this resource and its location?
 										.form-group
 											label.col-md-4.control-label(for='save')
@@ -396,23 +384,28 @@ block content
 										.form-group
 											label.col-md-4.control-label(for='ProposalTimeline') Proposal Timeline
 											.col-md-8
-												textarea#timeline.form-control(name='ProposalTimeline') #{proposal.ProposalTimeline}
+												textarea#timeline.form-control(name='ProposalTimeline', maxlength="2000") #{proposal.ProposalTimeline}
 												span.help-block When will items be purchased, when will students have access, etc
 										.form-group
 											label.col-md-4.control-label(for='HumanResources') Human Resources
 											.col-md-8
-												textarea#humanResources.form-control(name='HumanResources') #{proposal.HumanResources}
+												textarea#humanResources.form-control(name='HumanResources', maxlength="2000") #{proposal.HumanResources}
 												span.help-block What human resources will be provided by the college, department, or program to help ensure project success?
 										.form-group
 											label.col-md-4.control-label(for='TechnologyResources') Technology Resources
 											.col-md-8
-												textarea#technologyResources.form-control(name='TechnologyResources') #{proposal.TechnologyResources}
+												textarea#technologyResources.form-control(name='TechnologyResources', maxlength="2000") #{proposal.TechnologyResources}
 												span.help-block What technology resources will be provided by the college, department, or program to help ensure project success?
 										.form-group
 											label.col-md-4.control-label(for='FinancialResources') Financial Resources
 											.col-md-8
-												textarea#financialResources.form-control(name='FinancialResources') #{proposal.FinancialResources}
+												textarea#financialResources.form-control(name='FinancialResources', maxlength="2000") #{proposal.FinancialResources}
 												span.help-block What financial resources will be provided by the college, department, program, or any other entity that will help ensure project success?
+										.form-group
+											label.col-md-4.control-label(for='Protection') Equipment Protection
+											.col-md-8
+												textarea#protection.form-control(name='Protection', type='text', value="#{proposal.Protection}") #{proposal.Protection}
+												span.help-block Will your department provide protections of any sort for the equipment: warranties, insurance, in-house maintenance, or the department will not be pursuing such a plan
 										.form-group
 											label.col-md-4.control-label(for='save')
 											.col-md-4
@@ -477,7 +470,7 @@ block content
 
 		div
 			form.form-horizontal(data-toggle='formcache', name='proposalForm',
-				method='get', action='/proposal/submit/#{proposal.id}')
+				method='get', action='/proposal/submit/#{proposal.Year}/#{proposal.Number}')
 				#step-8.row.setup-content
 					.col-xs-12
 						.col-md-12
@@ -528,7 +521,7 @@ block content
 									p Once all signatures have been collected, the Submit button will be available. Upon submitting your proposal, you will be unable to alter it. You will still be able to change specific items in case of price changes or slight quantity adjustments.
 									.row
 										.col-xs-4.col-xs-offset-8.col-md-2.col-md-offset-10
-											a(href='/proposal/submit/#{proposal.id}')
+											a(href='/proposal/submit/#{proposal.Year}/#{proposal.Number}')
 												button#submitProposal(type='button' class='#{proposal.BudgetSignature == 1 && proposal.PrimarySignature == 1 && proposal.DeanSignature == 1 ? "" : "disabled"}').btn.form-button Submit Proposal
 
 

@@ -9,9 +9,9 @@ append js
 block content
 	.container
 		h2 Metrics for #{proposal.ProposalTitle}
-		a(href='/proposals/#{proposal.id}') View Proposal
+		a(href='/proposals/#{proposal.Year}/#{proposal.Number}') View Proposal
 		|  / 
-		a(href='/metrics/#{proposal.id}/create') Write or Update Metrics
+		a(href='/create/metrics/#{proposal.Year}/#{proposal.Number}') Write or Update Metrics
 
 
 		if metrics.length == 0

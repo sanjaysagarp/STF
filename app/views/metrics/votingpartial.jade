@@ -6,14 +6,14 @@ if data
 			if proposal.VotingDisplay == 1 || proposal.Status == 2
 				.row
 					.col-xs-12.col-md-8
-						h3 ID# #{proposal.id}: #{proposal.ProposalTitle}
+						h3 ID# #{proposal.Year}-#{proposal.Number}: #{proposal.ProposalTitle}
 					.col-xs-12.col-md-4
 						!{proposal.StatusHtml}
 						
 
 				if proposal.VotingDisplay == 1
 					p.
-						<a href='/proposals/#{proposal.Year}/#{proposal.Number}'> View Proposal </a> / <a href='/metrics/#{proposal.id}'> View Metrics </a>
+						<a href='/proposals/#{proposal.Year}/#{proposal.Number}'> View Proposal </a> / <a href='/metrics/#{proposal.Year}/#{proposal.Number}'> View Metrics </a>
 					
 					p #{proposal.ends ? (proposal.ends + (proposal.ends == 1 ? ' Endorsement' : ' Endorsements')) : 'No Endorsements for this Proposal'} 
 
