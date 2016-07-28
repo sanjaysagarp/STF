@@ -318,7 +318,7 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 
 //create a new supplemental with duplicated items
 router.get('/supplementals/new/:id', function(req, res) {
-	if (res.locals.isAdmin || res.locals.isCommitteeMember || h.approvedEditor(res, res.user, db.Proposal.find({where:{id: req.params.id}}))) {
+	if (res.locals.isAdmin || res.locals.isCommitteeMember || h.approvedReporter(res, res.user, db.Proposal.find({where:{id: req.params.id}}))) {
 
 		//get all funded items from the original proposal
 		db.Item.findAll({

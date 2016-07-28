@@ -1,4 +1,4 @@
-h2 Open Proposals
+h2 Open Proposals (#{settings.CurrentQuarter} #{settings.CurrentYear})
 p The following proposals are open for discussion or voting. Once you vote on a proposal, you will NOT be able to change your vote.
 if data
 	each proposal in data
@@ -13,9 +13,7 @@ if data
 
 				if proposal.VotingDisplay == 1
 					p.
-						<a href='/proposals/#{proposal.id}'> View Proposal </a>
-						 / 
-						<a href='/metrics/#{proposal.id}'> View Metrics </a>
+						<a href='/proposals/#{proposal.Year}/#{proposal.Number}'> View Proposal </a> / <a href='/metrics/#{proposal.id}'> View Metrics </a>
 					
 					p #{proposal.ends ? (proposal.ends + (proposal.ends == 1 ? ' Endorsement' : ' Endorsements')) : 'No Endorsements for this Proposal'} 
 

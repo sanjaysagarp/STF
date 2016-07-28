@@ -131,146 +131,152 @@ function renderVotingFullOrPartial(fullPage, req, res) {
 
 			var data = {};
 
-			//find all proposals that are open to voting or discussion
-			db.Proposal.findAll({
-				where: {
-					$or: {
-						Status: 2,
-						VotingDisplay: 1
-					}
-				}
-			}).then(function(proposals) {
-
-				//reorder and append to data the proposals by their ids
-				var proposalNums = [];
-				for (proposal in proposals) {
-					data[proposals[proposal].id] = proposals[proposal].dataValues;
-					proposalNums.push(proposals[proposal].id);
-					data[proposals[proposal].id].StatusHtml = h.proposalStatus(proposals[proposal].Status)
-				}
-
-				//find all partials of the proposals we found
-				db.Partial.findAll({
+			//find all proposals that are open to voting or discussion (specific to year and quarter)
+			db.Admin.find({where:{id:1}})
+			.then(function(settings) {
+				db.Proposal.findAll({
 					where: {
-						ProposalId: proposalNums
+						Year: settings.CurrentYear,
+						Quarter: settings.CurrentQuarter,
+						$or: {
+							Status: 2,
+							VotingDisplay: 1
+						}
 					}
-				}).then(function(partials) {
+				}).then(function(proposals) {
 
-					//put the partials under the 'partials' object of each 
-					//proposal
-					for (partial in partials) {
-						if (data[partials[partial].ProposalId].partials === undefined) {
-							data[partials[partial].ProposalId].partials = {};
-						}	
-						data[partials[partial].ProposalId].partials[partials[partial].id] = partials[partial].dataValues;
+					//reorder and append to data the proposals by their ids
+					var proposalNums = [];
+					for (proposal in proposals) {
+						data[proposals[proposal].id] = proposals[proposal].dataValues;
+						proposalNums.push(proposals[proposal].id);
+						data[proposals[proposal].id].StatusHtml = h.proposalStatus(proposals[proposal].Status)
 					}
 
-					//get all items for each proposal
-					db.Item.findAll({
+					//find all partials of the proposals we found
+					db.Partial.findAll({
 						where: {
 							ProposalId: proposalNums
 						}
-					}).then(function(items) {
+					}).then(function(partials) {
 
-						//attach items to proposal base or partial
-						for (item in items) {
-							if (items[item].PartialId) { //assign to partial
-								if (data[items[item].ProposalId].partials[items[item].PartialId].items === undefined) {
-									data[items[item].ProposalId].partials[items[item].PartialId].items = {};
-								}
-								data[items[item].ProposalId].partials[items[item].PartialId].items[items[item].id] = items[item].dataValues;
-							} else { //assign to root
-								if (data[items[item].ProposalId].items === undefined) {
-									data[items[item].ProposalId].items = {};
-								}
-								data[items[item].ProposalId].items[items[item].id] = items[item].dataValues;
-							}
+						//put the partials under the 'partials' object of each 
+						//proposal
+						for (partial in partials) {
+							if (data[partials[partial].ProposalId].partials === undefined) {
+								data[partials[partial].ProposalId].partials = {};
+							}	
+							data[partials[partial].ProposalId].partials[partials[partial].id] = partials[partial].dataValues;
 						}
 
-						//get all the metrics data
-						db.Metrics.findAll({
+						//get all items for each proposal
+						db.Item.findAll({
 							where: {
 								ProposalId: proposalNums
 							}
-						}).then(function(metrics) {
+						}).then(function(items) {
 
-							//attach the metrics data to the proposal
-							var avgScores = [];
-							var totalAvg = [];
-							for (metric in metrics) {
-								if (data[metrics[metric].ProposalId].metrics === undefined) {
-									data[metrics[metric].ProposalId].metrics = {};
-								}
-								data[metrics[metric].ProposalId].metrics[metrics[metric].id] = metrics[metric].dataValues;
-								var authorId = metrics[metric].dataValues.AuthorId;
-								var proposalId = metrics[metric].dataValues.ProposalId;
-								
-								var total = 0;
-								var i = 0;
-								
-								//Assigns average metric score to each member
-								for (index in metrics[metric].dataValues) {
-									//console.log(index);
-									if(i>2 && i<13) {
-										total += metrics[metric].dataValues[index];
+							//attach items to proposal base or partial
+							for (item in items) {
+								if (items[item].PartialId) { //assign to partial
+									if (data[items[item].ProposalId].partials[items[item].PartialId].items === undefined) {
+										data[items[item].ProposalId].partials[items[item].PartialId].items = {};
 									}
-									i++;
+									data[items[item].ProposalId].partials[items[item].PartialId].items[items[item].id] = items[item].dataValues;
+								} else { //assign to root
+									if (data[items[item].ProposalId].items === undefined) {
+										data[items[item].ProposalId].items = {};
+									}
+									data[items[item].ProposalId].items[items[item].id] = items[item].dataValues;
 								}
-								avgScores[authorId] = (total / 10).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); //10 is # of metrics
-								
 							}
-							//Gets the total average for metrics of a proposal
-							
-							//get all the votes by the user
-							db.Vote.findAll({
+
+							//get all the metrics data
+							db.Metrics.findAll({
 								where: {
-									VoterId: user.id
+									ProposalId: proposalNums
 								}
-							}).then(function(votes) {
+							}).then(function(metrics) {
 
-								//mark which proposals the user has voted on
-								var alreadySubmitted = [];
-								for (vote in votes) {
-									alreadySubmitted.push(votes[vote].ProposalId);
+								//attach the metrics data to the proposal
+								var avgScores = [];
+								var totalAvg = [];
+								for (metric in metrics) {
+									if (data[metrics[metric].ProposalId].metrics === undefined) {
+										data[metrics[metric].ProposalId].metrics = {};
+									}
+									data[metrics[metric].ProposalId].metrics[metrics[metric].id] = metrics[metric].dataValues;
+									var authorId = metrics[metric].dataValues.AuthorId;
+									var proposalId = metrics[metric].dataValues.ProposalId;
+									
+									var total = 0;
+									var i = 0;
+									
+									//Assigns average metric score to each member
+									for (index in metrics[metric].dataValues) {
+										//console.log(index);
+										if(i>2 && i<13) {
+											total += metrics[metric].dataValues[index];
+										}
+										i++;
+									}
+									avgScores[authorId] = (total / 10).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); //10 is # of metrics
+									
 								}
-
-								//get all relevant endorsements
-								db.Endorsement.findAll({
+								//Gets the total average for metrics of a proposal
+								
+								//get all the votes by the user
+								db.Vote.findAll({
 									where: {
-										ProposalId: proposalNums
+										VoterId: user.id
 									}
-								}).then(function(ends) {
+								}).then(function(votes) {
 
-									//attach number of endorsements to each proposal
-									for (end in ends) {
-										if (data[ends[end].ProposalId].ends === undefined) {
-											data[ends[end].ProposalId].ends = 0;
-										}
-										data[ends[end].ProposalId].ends++;
+									//mark which proposals the user has voted on
+									var alreadySubmitted = [];
+									for (vote in votes) {
+										alreadySubmitted.push(votes[vote].ProposalId);
 									}
 
-									//we did it! make the page!
-									db.User.findAll().then(function(users) {
-										var userData = {};
-										for (userN in users) {
-											userData[users[userN].id] = users[userN];
+									//get all relevant endorsements
+									db.Endorsement.findAll({
+										where: {
+											ProposalId: proposalNums
 										}
-										//console.log(totalAvg);
-										res.render((fullPage ? 'metrics/voting' : 'metrics/votingpartial'), {
-											title: 'STF Voting',
-											user: user,
-											users: userData,
-											data: data,
-											avgScores: avgScores,
-											voted: alreadySubmitted
-										}); 
+									}).then(function(ends) {
+
+										//attach number of endorsements to each proposal
+										for (end in ends) {
+											if (data[ends[end].ProposalId].ends === undefined) {
+												data[ends[end].ProposalId].ends = 0;
+											}
+											data[ends[end].ProposalId].ends++;
+										}
+
+										//we did it! make the page!
+										db.User.findAll().then(function(users) {
+											var userData = {};
+											for (userN in users) {
+												userData[users[userN].id] = users[userN];
+											}
+											//console.log(totalAvg);
+											res.render((fullPage ? 'metrics/voting' : 'metrics/votingpartial'), {
+												title: 'STF Voting',
+												user: user,
+												users: userData,
+												data: data,
+												avgScores: avgScores,
+												voted: alreadySubmitted,
+												settings: settings
+											}); 
+										});
 									});
 								});
-							})
-						})
-					})
-				})
-			})
+							});
+						});
+					});
+				});
+			});
 		}
 	});
 }
