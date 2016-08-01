@@ -33,5 +33,5 @@ block content
 						each proposal in proposals
 							tr
 								td: b= proposal.id
-								td: a(href='/proposals/#{proposal.id}')= proposal.ProposalTitle
-								td: a(href='/metrics/#{proposal.id}')= scores[proposal.id].toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+								td: a(href='/proposals/#{proposal.Year}/#{proposal.Number}')= proposal.ProposalTitle
+								td: a(href='/metrics/#{proposal.Year}/#{proposal.Number}')= scores[proposal.id].toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")

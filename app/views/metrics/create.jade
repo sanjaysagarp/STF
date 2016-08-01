@@ -5,11 +5,11 @@ append css
 
 block content
 	.container
-		form(method='post' name='metricForm' action='/metrics/#{proposal.id}/create')
+		form(method='post' name='metricForm' action='/create/metrics/#{proposal.Year}/#{proposal.Number}')
 			h2 Metrics for #{proposal.ProposalTitle}
-			a(href='/metrics/#{proposal.id}') Return to Metrics
+			a(href='/metrics/#{proposal.Year}/#{proposal.Number}') Return to Metrics
 			|  / 
-			a(href='/proposals/#{proposal.id}') View Proposal
+			a(href='/proposals/#{proposal.Year}/#{proposal.Number}') View Proposal
 			
 			p= questions.impact[1]
 			.rowMetrics

@@ -55,6 +55,7 @@ module.exports = function(sequelize, DataTypes) {
 		HumanResources: DataTypes.TEXT('medium'),
 		TechnologyResources: DataTypes.TEXT('medium'),
 		FinancialResources: DataTypes.TEXT('medium'),
+		Protection: DataTypes.TEXT('medium'),
 		Status: 'TINYINT',
 		LetterStatus: 'TINYINT',
 		VotingDisplay: 'TINYINT',

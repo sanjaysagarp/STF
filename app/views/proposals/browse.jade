@@ -56,7 +56,7 @@ block content
 							else
 								td #{proposal.Number}
 							if proposal.Status == 0
-								td: a(href='/proposals/update/#{proposal.id}') #{proposal.ProposalTitle} 
+								td: a(href='/proposals/update/#{proposal.Year}/#{proposal.Number}') #{proposal.ProposalTitle} 
 								td #{proposal.FastTrack ? "[FT] ": ""}#{proposal.UAC ? "[UAC] ": ""}Unsubmitted
 							if proposal.Status == 1
 								td: a(href='/proposals/#{proposal.Year}/#{proposal.Number}') #{proposal.ProposalTitle} 

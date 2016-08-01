@@ -62,12 +62,15 @@ router.get('/proposals/myproposals', shib.ensureAuth('/login'), function myPropo
 
 //sign a proposal
 router.post('/proposal/sign', shib.ensureAuth('/login'), function signProposal(req, res) {
-	if (!req.body['id']) {
+	if (!req.body['year'] && !req.body['number']) {
 		h.displayErrorPage(res, 'Bad Page', 'Access Denied');
 	} else {
 		var ProposalId = req.body['id'];
 		db.Proposal.find({
-			where: {id: ProposalId} 
+			where: {
+				Year: req.body['year'],
+				Number: req.body['number']
+			}
 		}).then(function(proposal) {
 			if (h.approvedEditor(res, req.user, proposal)) {
 
@@ -100,16 +103,19 @@ router.post('/proposal/sign', shib.ensureAuth('/login'), function signProposal(r
 });
 
 
-router.get('/proposal/submit/:id', shib.ensureAuth('/login'), function submitProposal(req, res) {
+router.get('/proposal/submit/:year/:number', shib.ensureAuth('/login'), function submitProposal(req, res) {
 	db.Proposal.find({
-		where: {id: req.params.id}
+		where: {
+			Year: req.params.year,
+			Number: req.params.number
+		}
 	}).then(function(proposal) {
 		if (h.approvedEditor(res, req.user, proposal)) {
 			if (allSigned) {
 				proposal.update({
 					Status: 1
 				}).then(function() {
-					res.redirect('/proposals/' + proposal.id);
+					res.redirect('/proposals/' + proposal.Year + "/" + proposal.Number);
 				});
 			} else {
 				h.displayErrorPage(res, 'Not all signees have signed this proposal', 'Submittance Refused')
@@ -118,34 +124,12 @@ router.get('/proposal/submit/:id', shib.ensureAuth('/login'), function submitPro
 	})
 });
 
-//CHANGE AFTER FUNDING CYCLE
-// router.get('/proposal/submit/:year/:number', shib.ensureAuth('/login'), function submitProposal(req, res) {
-// 	db.Proposal.find({
-// 		where: {
-// 			year: req.params.year,
-// 			number: req.params.number
-// 		}
-// 	}).then(function(proposal) {
-// 		if (h.approvedEditor(res, req.user, proposal)) {
-// 			if (allSigned) {
-// 				proposal.update({
-// 					Status: 1
-// 				}).then(function() {
-// 					res.redirect('/proposals/' + proposal.year + "/" + proposal.number);
-// 				});
-// 			} else {
-// 				h.displayErrorPage(res, 'Not all signees have signed this proposal', 'Submittance Refused')
-// 			}
-// 		}
-// 	})
-// });
-
-
 //change a proposal's data
-router.post('/proposals/:id', shib.ensureAuth('/login'), function postProposal(req, res) {
+router.post('/proposals/:year/:number', shib.ensureAuth('/login'), function postProposal(req, res) {
 	db.Proposal.find({
 		where: {
-			id: req.params.id
+			Year: req.params.year,
+			Number: req.params.number
 		}
 	}).then(function(proposal) {
 		if (proposal.length == 0) {
@@ -157,7 +141,6 @@ router.post('/proposals/:id', shib.ensureAuth('/login'), function postProposal(r
 				ProposalTitle: req.body["title"],
 				Category: req.body["category"],
 				Department: req.body["department"],
-				FastTrack: (req.body["fastTrack"] == 'on' ? 1 : 0),
 				UAC: (req.body["UAC"] == 'on' ? 1 : 0),
 				PrimaryName: req.body["PrimaryName"],
 				PrimaryTitle: req.body["primary-title"],
@@ -203,7 +186,8 @@ router.post('/proposals/:id', shib.ensureAuth('/login'), function postProposal(r
 				ProposalTimeline: req.body["ProposalTimeline"],
 				HumanResources: req.body["HumanResources"],
 				TechnologyResources: req.body["TechnologyResources"],
-				FinancialResources: req.body["FinancialResources"]
+				FinancialResources: req.body["FinancialResources"],
+				Protection: req.body["Protection"]
 			}
 
 			if(fromForm.Hours===''){
@@ -212,7 +196,8 @@ router.post('/proposals/:id', shib.ensureAuth('/login'), function postProposal(r
 
 			db.Proposal.update(fromForm, {
 				where: {
-					id: req.params.id
+					Year: req.params.year,
+					Number: req.params.number
 				}
 			}).then(function(e) {
 				res.json({
@@ -282,6 +267,7 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 	var HumanResources = req.body["HumanResources"];
 	var TechnologyResources = req.body["TechnologyResources"];
 	var FinancialResources = req.body["FinancialResources"];
+	var Protection = req.body["Protection"];
 
 	//need to find current number/year for proposal
 	
@@ -336,7 +322,8 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 			ProposalTimeline: ProposalTimeline,
 			HumanResources: HumanResources,
 			TechnologyResources: TechnologyResources,
-			FinancialResources: FinancialResources
+			FinancialResources: FinancialResources,
+			Protection: Protection
 		})
 		.then(function(proposal) {
 			var newNumber = 1 + settings.CurrentNumber;
@@ -362,6 +349,7 @@ router.get('/proposals/browse', function(req, res) {
 			}
 		}).then(function(legProposals) {
 			legProposals.reverse();
+			proposals.reverse();
 			proposals.push.apply(proposals, legProposals);
 			res.render('proposals/browse',{
 				proposals: proposals,
@@ -478,10 +466,11 @@ router.get('/proposals/department/:cat', function(req, res) {
 
 
 //get the update page for a proposal
-router.get('/proposals/update/:id', shib.ensureAuth('/login'), function(req, res) {
+router.get('/proposals/update/:year/:number', shib.ensureAuth('/login'), function(req, res) {
 	db.Proposal.find({
 		where: {
-			id: req.params.id
+			Year: req.params.year,
+			Number: req.params.number
 		}
 	}).then(function(proposal) {
 
@@ -489,7 +478,7 @@ router.get('/proposals/update/:id', shib.ensureAuth('/login'), function(req, res
 
 			db.Item.findAll({
 				where: {
-					ProposalId: req.params.id,
+					ProposalId: proposal.id,
 					PartialId: null
 				}
 			}).then(function(item){
@@ -563,126 +552,10 @@ router.get('/proposals/update/:year/:number', shib.ensureAuth('/login'), functio
 });
 
 //Show the 'submitted' proposal view page
-router.get('/proposals/:id', function(req, res) {
-	db.Proposal.find({
-		where: {
-			id: req.params.id
-		}
-	}).then(function(proposal) {
-		db.Item.findAll({
-			where: {
-				ProposalId: req.params.id
-			}
-		}).then(function(items){
-			db.Endorsement.findAll({
-				where: {
-					ProposalID: req.params.id
-				}
-			}).then(function(endorsements) {
-				db.Partial.findAll({
-					where: {
-						ProposalId: req.params.id
-					}
-				}).then(function(partials) {
-
-					//assign user ids to the partials they made
-					var userPartialIds = [];
-					for (partial in partials) {
-						userPartialIds.push(partials[partial].AuthorId);
-					}
-					//Implement supplemental after partials
-					db.Supplemental.findAll({
-						where : {
-							ProposalId: req.params.id
-						}
-					}).then(function(supplementals) {
-						//need to get users of supplementals (creators)
-						var userSupplementalIds = [];
-						for (supplemental in supplementals) {
-							userSupplementalIds.push(supplementals[supplemental].AuthorId);
-						}
-						db.User.findAll({
-							where : {
-								id: userSupplementalIds
-							}
-						}).then(function(usersSupplementalRaw) {
-							// re-orient data (supplementals)
-							var usersSupplemental = {};
-							for(userSupplementalRaw in usersSupplementalRaw) {
-								usersSupplemental[usersSupplementalRaw[userSupplementalRaw].id] = usersSupplementalRaw[userSupplementalRaw];
-							}
-							db.User.findAll({
-								where: {
-									id: userPartialIds
-								}
-							}).then(function(usersPartialRaw) {
-								db.Award.find({
-									where: {
-										ProposalId: req.params.id
-									}
-								}).then(function(award) {
-									//re-orient data
-									db.Rejection.find({
-										where: {
-											ProposalId: req.params.id
-										}
-									}).then(function(rejection) {
-										var usersPartial = {};
-										for (userPartialRaw in usersPartialRaw) {
-											usersPartial[usersPartialRaw[userPartialRaw].id] = usersPartialRaw[userPartialRaw];
-										}
-										db.Report.findAll({
-											where: {
-												ProposalId: proposal.id
-											}
-										}).then(function(rawReports) {
-											var reports = [];
-											for(rawReport in rawReports) {
-												reports.push(rawReports[rawReport]);
-											}
-											//create written date
-											var cr = new Date(proposal.createdAt);
-											var months = ["January", "February", "March", "April", "May", "June", "July", 
-														"August", "September", "October", "November", "December"];
-											var day = months[cr.getMonth()] +" "+ cr.getDate() +", "+ cr.getFullYear();
-											var editor = false;
-											var reporter = false;
-											var loggedIn = false;
-											if (req.user) {
-												editor = h.approvedEditor(res, req.user, proposal, false);
-												reporter = h.approvedReporter(res, req.user, proposal, false);
-												loggedIn = true;
-											}
-
-											res.render('proposals/view', {
-												title: proposal.ProposalTitle,
-												proposal: proposal,
-												partials: partials,
-												supplementals: supplementals,
-												usersPartial: usersPartial,
-												usersSupplemental: usersSupplemental,
-												created: day,
-												items: items,
-												loggedIn: loggedIn,
-												endorsements: endorsements,
-												categories: categories,
-												editor: editor,
-												reporter: reporter,
-												award: award,
-												status: h.proposalStatus(proposal.Status),
-												rejection: rejection,
-												reports: reports
-											});
-										
-										});
-									});
-								});
-							});
-						});
-					});
-				});
-			});
-		});
+router.get('/proposals/:number', function(req, res) {
+	db.Settings.find({where:{id: 1}})
+	.then(function(settings) {
+		res.redirect('/proposals/' + settings.CurrentYear + "/" + proposal.Number);
 	});
 });
 
@@ -768,7 +641,7 @@ router.get('/proposals/:year/:number', function(req, res) {
 					"'><p><b>" + legProposal.Decision + "</b></p></div>"
 							});
 						} else {
-							//item not found from proposalid, so it is a 2012+ proposal
+							//item not found from proposalid, so it is a 2013+ proposal
 							//will only retrieve originalItems
 							db.Legacy_Item.findAll({
 								where: {
