@@ -9,6 +9,7 @@ $(document).ready(function(){
 	$('#qDate2').val(new Date().toDateInputValue());
 	$('#qDate3').val(new Date().toDateInputValue());
 	$('#aDate').val(new Date().toDateInputValue());
+	$('#bDate').val(new Date().toDateInputValue());
 
 	$("#qDate1").change(function() {
 		refreshDates();
@@ -22,6 +23,10 @@ $(document).ready(function(){
 	$("#aDate").change(function() {
 		refreshDates();
 	});
+	$("#bDate").change(function() {
+		refreshDates();
+	});
+
 
 	$('.dates').html('<li>Quarterly - ' + moment().utc().format('MMMM D[,] YYYY') + '</li><li>Quarterly - ' + moment().utc().format('MMMM D[,] YYYY') + '</li><li>Quarterly - ' + moment().utc().format('MMMM D[,] YYYY') + '</li>');
 
