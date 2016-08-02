@@ -40,28 +40,8 @@ router.get('/admin', function(req, res) {
 
 //display award creation page
 router.get('/admin/award', function(req, res) {
-	var awardDate = moment().format();
-	var budgetMonth = moment().month(awardDetails.BudgetMonth).format('MMMM YYYY');
-	var oversightOver = moment().month(awardDetails.OversightOver).add(3, 'years').format('YYYY');
-	var oversightUnder = moment().month(awardDetails.OversightUnder).add(7, 'years').format('YYYY');
-	
-	awardDate = moment(awardDate).format('MMMM Do YYYY');
-	oversightOver = moment(new Date(oversightOver)).format('MMMM YYYY');
-	oversightUnder = moment(new Date(oversightUnder)).format('MMMM YYYY');
-	var quarterly = [];
-	var annual = []
-	quarterly.push(moment.utc(moment().year() + awardDetails.QuarterlyDate1).format('MMMM D[,] YYYY'));
-	quarterly.push(moment.utc(moment().year() + awardDetails.QuarterlyDate2).add(1, 'years').format('MMMM D[,] YYYY'));
-	quarterly.push(moment.utc(moment().year() + awardDetails.QuarterlyDate3).add(1, 'years').format('MMMM D[,] YYYY'));
-	annual.push(moment.utc(moment().year() + awardDetails.AnnualDate).add(1, 'years').format('MMMM D[,] YYYY'));
 	res.render('admin/award', {
-		title: "STF Admin",
-		awardDate: awardDate,
-		budgetMonth: budgetMonth,
-		oversightOver: oversightOver,
-		oversightUnder: oversightUnder,
-		quarterly: quarterly,
-		annual: annual
+		title: "STF Admin"
 	});
 });
 
@@ -219,18 +199,13 @@ router.post('/admin/resetYear', function(req, res) {
 });
 
 //update proposal settings (open/close submissions for rfp). Retrieves true and false data under parser
-//(submissions / fastrack)
+//(submissions)
 router.post('/admin/updateSettings', function(req, res) {
 	var submissions, fasttrack;
 	if(req.body.submissions == 'true') {
 		submissions = 1;
 	} else {
 		submissions = 0;
-	}
-	if(req.body.fasttrack == 'true') {
-		fasttrack = 1;
-	} else {
-		fasttrack = 0;
 	}
 	db.Admin.find({
 		where: {id: 1}
@@ -239,7 +214,6 @@ router.post('/admin/updateSettings', function(req, res) {
 		if(settings) {
 			settings.updateAttributes({
 				ProposalSubmissions: submissions,
-				FastTrack: fasttrack,
 				updatedAt: Date.now
 			})
 			.then(function() {

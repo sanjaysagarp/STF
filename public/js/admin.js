@@ -205,8 +205,7 @@ $(document).ready(function(){
 				method: 'POST',
 				url: "/admin/updateSettings",
 				data: {
-					submissions: $('[name="submissions"]').prop('checked'),
-					fasttrack: $('[name="fasttrack"]').prop('checked')
+					submissions: $('[name="submissions"]').prop('checked')
 				},
 				dataType: 'json',
 				success: function(data) {

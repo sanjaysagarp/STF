@@ -26,12 +26,6 @@ block content
 				else
 					input(name="submissions", type="checkbox", id="toggle-trigger", data-on="Opened", data-off="Closed", data-toggle="toggle", data-size="small")
 				label Request for Proposals (RFP) submissions
-			fieldset.form-group
-				if settings.FastTrack == 1
-					input(name="fasttrack", type="checkbox", id="toggle-trigger", checked, data-on="Opened", data-off="Closed",data-toggle="toggle", data-size="small")
-				else
-					input(name="fasttrack", type="checkbox", id="toggle-trigger", data-on="Opened", data-off="Closed", data-toggle="toggle", data-size="small")
-				label Fast Track option
 		button#updateSettingsButton Update
 		
 		div#submissionNotification
