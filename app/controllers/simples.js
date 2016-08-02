@@ -78,10 +78,10 @@ router.get('/contact', function serveContact(req, res) {
 		
 		contacts : [{
 			title : 'Chair',
-			name : 'Bryce Knolton',
+			name : 'Bryce Kolton',
 			email : 'STFChair@uw.edu'
 		}, {	
-			title : 'Operations and Finance Manager',
+			title : 'Operations Manager',
 			name : 'Rajiv Raina',
 			email : 'TechFee@uw.edu'
 		}, {
