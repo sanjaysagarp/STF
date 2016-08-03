@@ -10,6 +10,7 @@ $(document).ready(function(){
 	$('#qDate3').val(new Date().toDateInputValue());
 	$('#aDate').val(new Date().toDateInputValue());
 	$('#bDate').val(new Date().toDateInputValue());
+	$('#bCloseDate').val(new Date().toDateInputValue());
 
 	$("#qDate1").change(function() {
 		refreshDates();
@@ -27,10 +28,13 @@ $(document).ready(function(){
 		refreshDates();
 	});
 
+	$("#bCloseDate").change(function() {
+		refreshDates();
+	});
 
-	$('.dates').html('<li>Quarterly - ' + moment().utc().format('MMMM D[,] YYYY') + '</li><li>Quarterly - ' + moment().utc().format('MMMM D[,] YYYY') + '</li><li>Quarterly - ' + moment().utc().format('MMMM D[,] YYYY') + '</li>');
+	$('.dates').html('<li>Quarterly 1 - ' + moment().utc().format('MMMM D[,] YYYY') + '</li><li>Quarterly 2 - ' + moment().utc().format('MMMM D[,] YYYY') + '</li><li>Quarterly 3 - ' + moment().utc().format('MMMM D[,] YYYY') + '</li>');
 
-	$('.budget').html('<p>STF will create a unique budget number for this proposal upon the request of your budget coordinator in early <strong>' + moment().utc().format('MMMM YYYY') + '</strong>. Funds must be spent from this account only on items indicated in your proposal and all purchases must be made using this unique budget number. Budgets must be ready to close by May 10th of the following year.</p>')
+	$('.budget').html('<p>STF will create a unique budget number for this proposal upon the request of your budget coordinator in early <strong>' + moment().utc().format('MMMM YYYY') + '</strong>. Funds must be spent from this account only on items indicated in your proposal and all purchases must be made using this unique budget number. Budgets must be ready to close by <strong>' + moment().utc().format('MMMM D[,] YYYY') + '</strong></p>')
 
 	$('#submitAwardButton').on('click', function(e) {
 		e.preventDefault();
@@ -46,6 +50,7 @@ $(document).ready(function(){
 					quarterlyDate3: $('[name="quarterlyDate3"]').val(),
 					annualDate: $('[name="annualDate"]').val(),
 					budgetDate: $('[name="budgetDate"]').val(),
+					budgetCloseDate: $('[name="budgetDate"]').val(),
 					awardNotes: $('[name="awardNotes"]').val()
 				},
 				dataType: 'json',
@@ -107,17 +112,17 @@ $(document).ready(function(){
 						if(data.message == "Success") {
 							$("#notification").css("display", "block");
 							$("#notification").addClass("alert alert-success");
-							$("#notification").html("Rejection letter successfully created for " + $('[name="rejectionProposalNumber"]').val() + '-' + $('[name="rejectionProposalNumber"]').val() + "!");
+							$("#notification").html("Rejection letter successfully created for " + $('[name="rejectionProposalYear"]').val() + '-' + $('[name="rejectionProposalNumber"]').val() + "!");
 							$("#notification").fadeOut( 3000 );
 						} else if (data.message == "Award exists") {
 							$("#notification").css("display", "block");
 							$("#notification").addClass("alert alert-danger");
-							$("#notification").html("Proposal " + $('[name="rejectionProposalNumber"]').val() + '-' + $('[name="rejectionProposalNumber"]').val() + " has an award letter!");
+							$("#notification").html("Proposal " + $('[name="rejectionProposalYear"]').val() + '-' + $('[name="rejectionProposalNumber"]').val() + " has an award letter!");
 							$("#notification").fadeOut( 3000 );
 						} else if (data.message == "Duplicate") {
 							$("#notification").css("display", "block");
 							$("#notification").addClass("alert alert-danger");
-							$("#notification").html("Proposal " + $('[name="rejectionProposalNumber"]').val() + '-' + $('[name="rejectionProposalNumber"]').val() + " already has a rejection letter!");
+							$("#notification").html("Proposal " + $('[name="rejectionProposalYear"]').val() + '-' + $('[name="rejectionProposalNumber"]').val() + " already has a rejection letter!");
 							$("#notification").fadeOut( 3000 );
 						}
 					} else {
@@ -142,13 +147,13 @@ $(document).ready(function(){
 		var val = $("#reportType").val();
 
 		if(val == 0) {
-			$('.dates').html('<li>Quarterly - ' + moment($('#qDate1').val()).format('MMMM D[,] YYYY') + '</li><li>Quarterly - ' + moment($('#qDate2').val()).format('MMMM D[,] YYYY') + '</li><li>Quarterly - ' + moment($('#qDate3').val()).format('MMMM D[,] YYYY') + '</li>');
+			$('.dates').html('<li>Quarterly 1 - ' + moment($('#qDate1').val()).format('MMMM D[,] YYYY') + '</li><li>Quarterly 2 - ' + moment($('#qDate2').val()).format('MMMM D[,] YYYY') + '</li><li>Quarterly 3 - ' + moment($('#qDate3').val()).format('MMMM D[,] YYYY') + '</li>');
 		} else if(val == 1) {
 			$('.dates').html('<li>Annually - ' + moment($('#aDate').val()).format('MMMM D[,] YYYY') + '</li>');
 		} else {
-			$('.dates').html('<li>Quarterly - ' + moment($('#qDate1').val()).format('MMMM D[,] YYYY') + '</li><li>Quarterly - ' + moment($('#qDate2').val()).format('MMMM D[,] YYYY') + '</li><li>Quarterly - ' + moment($('#qDate3').val()).format('MMMM D[,] YYYY') + '</li><li>Annually - ' + moment($('#aDate').val()).format('MMMM D[,] YYYY'));
+			$('.dates').html('<li>Quarterly 1 - ' + moment($('#qDate1').val()).format('MMMM D[,] YYYY') + '</li><li>Quarterly 2 - ' + moment($('#qDate2').val()).format('MMMM D[,] YYYY') + '</li><li>Quarterly 3 - ' + moment($('#qDate3').val()).format('MMMM D[,] YYYY') + '</li><li>Annually - ' + moment($('#aDate').val()).format('MMMM D[,] YYYY'));
 		}
 
-		$('.budget').html('<p>STF will create a unique budget number for this proposal upon the request of your budget coordinator in early <strong>' + moment($('#bDate').val()).format('MMMM YYYY') + '</strong>. Funds must be spent from this account only on items indicated in your proposal and all purchases must be made using this unique budget number. Budgets must be ready to close by May 10th of the following year.</p>');
+		$('.budget').html('<p>STF will create a unique budget number for this proposal upon the request of your budget coordinator in early <strong>' + moment($('#bDate').val()).format('MMMM YYYY') + '</strong>. Funds must be spent from this account only on items indicated in your proposal and all purchases must be made using this unique budget number. Budgets must be ready to close by <strong>' + moment($('#bCloseDate').val()).format('MMMM D[,] YYYY') + '</strong></p>');
 	}
 });

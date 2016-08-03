@@ -99,7 +99,7 @@ router.get('/proposals/award/:year/:number', function(req, res) {
 				if(award) {
 					db.Proposal.find({
 						where: {
-							id: req.params.id
+							id: proposal.id
 						}
 					})
 					.then(function(proposal) {
@@ -108,6 +108,18 @@ router.get('/proposals/award/:year/:number', function(req, res) {
 						var budgetMonth = moment.utc(award.BudgetDate).format('MMMM YYYY');
 						var oversightOver = moment.utc(award.OversightOver).format('MMMM YYYY');
 						var oversightUnder = moment.utc(award.OversightUnder).format('MMMM YYYY');
+						var quarterly = [];
+						var annual = [];
+
+						if (award.ReportType == 0 || award.ReportType == 2) {
+							quarterly.push(moment.utc(award.QuarterlyDate1).format('MMMM D[,] YYYY'));
+							quarterly.push(moment.utc(award.QuarterlyDate2).format('MMMM D[,] YYYY'));
+							quarterly.push(moment.utc(award.QuarterlyDate3).format('MMMM D[,] YYYY'));
+						}
+						
+						if (award.ReportType == 1 || award.ReportType == 2) {
+							annual.push(moment.utc(award.AnnualDate).format('MMMM D[,] YYYY'));
+						}
 						var total = award.FundedAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 						res.render('proposals/award', {
 							title: "Award Letter",
@@ -115,6 +127,9 @@ router.get('/proposals/award/:year/:number', function(req, res) {
 							award: award,
 							awardDate: awardDate,
 							budgetMonth: budgetMonth,
+							quarterly: quarterly,
+							annual: annual,
+							budgetCloseDate: moment.utc(award.BudgetCloseDate).format('MMMM D[,] YYYY'),
 							oversightOver: oversightOver,
 							oversightUnder: oversightUnder,
 							total: total
@@ -152,20 +167,29 @@ router.get('/proposals/award/:year/:number', function(req, res) {
 
 //finds rejection letter if exists and renders page
 router.get('/proposals/rejection/:id', function(req, res) {
+	db.Admin.find({where: {id:1}})
+	.then(function(settings) {
+		res.redirect('/proposals/rejection/' + settings.CurrentYear + '/' + req.params.id);
+	});
+});
+
+//finds rejection letter if exists and renders page
+router.get('/proposals/rejection/:year/:number', function(req, res) {
 	db.Proposal.find({
 		where: {
-			id: req.params.id
+			Year: req.params.year,
+			Number: req.params.number
 		}
 	})
 	.then(function(proposal) {
 		db.Rejection.find({
-		where: {
-			ProposalId: req.params.id
-		}
+			where: {
+				ProposalId: proposal.id
+			}
 		})
 		.then(function(rejection) {
 			if(rejection) {
-				var rejectionDate = moment(new Date(rejection.createdAt)).format('MMMM Do YYYY');
+				var rejectionDate = moment(new Date(rejection.createdAt)).format('MMMM Do[,] YYYY');
 				res.render('proposals/rejection', {
 					title: "Rejection Letter",
 					proposal: proposal,
@@ -178,8 +202,6 @@ router.get('/proposals/rejection/:id', function(req, res) {
 			}
 		});
 	});
-	
-	
 });
 
 //Creates a rejection letter
@@ -295,8 +317,9 @@ router.post('/admin/award', shib.ensureAuth('/login'), function(req, res) {
 											FundedAmount: total,
 											AwardDate: moment().format(),
 											BudgetDate: moment().month(req.body.budgetDate).format('MMMM YYYY'),
-											OversightOver: moment().month().add(3, 'years').format('YYYY'),
-											OversightUnder: moment().month().add(7, 'years').format('YYYY'),
+											BudgetCloseDate: moment().utc(req.body.budgetCloseDate).format('MMMM D[,] YYYY'),
+											OversightOver: moment().add(3, 'years').format('MMMM YYYY'),
+											OversightUnder: moment().add(7, 'years').format('MMMM YYYY'),
 											QuarterlyDate1: moment.utc(req.body.quarterlyDate1).format('MMMM D[,] YYYY'),
 											QuarterlyDate2: moment.utc(req.body.quarterlyDate2).format('MMMM D[,] YYYY'),
 											QuarterlyDate3: moment.utc(req.body.quarterlyDate3).format('MMMM D[,] YYYY'),
@@ -324,6 +347,7 @@ router.post('/admin/award', shib.ensureAuth('/login'), function(req, res) {
 											FundedAmount: total,
 											AwardDate: moment().format(),
 											BudgetDate: moment().month(req.body.budgetDate).format('MMMM YYYY'),
+											BudgetCloseDate: moment().utc().format('MMMM D[,] YYYY'),
 											OversightOver: moment().month().add(3, 'years').format('YYYY'),
 											OversightUnder: moment().month().add(7, 'years').format('YYYY'),
 											AnnualDate: moment.utc(req.body.annualDate).format('MMMM D[,] YYYY'),
@@ -351,6 +375,7 @@ router.post('/admin/award', shib.ensureAuth('/login'), function(req, res) {
 											FundedAmount: total,
 											AwardDate: moment().format(),
 											BudgetDate: moment().month(req.body.budgetDate).format('MMMM YYYY'),
+											BudgetCloseDate: moment().utc().format('MMMM D[,] YYYY'),
 											OversightOver: moment().month(awardDetails.OversightOver).add(3, 'years').format('YYYY'),
 											OversightUnder: moment().month(awardDetails.OversightUnder).add(7, 'years').format('YYYY'),
 											QuarterlyDate1: moment.utc(req.body.quarterlyDate1).format('MMMM D[,] YYYY'),
@@ -382,7 +407,7 @@ router.post('/admin/award', shib.ensureAuth('/login'), function(req, res) {
 								console.log(err);
 								res.render('admin/award', {
 									subject: 'Oops',
-									message: "Proposal " + req.body.proposalId + " does not exist"
+									message: "Proposal " + req.body.awardProposalYear + '-' + req.body.awardProposalNumber + " does not exist"
 								});
 							});
 						}

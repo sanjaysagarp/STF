@@ -47,7 +47,7 @@ block content
 						if rejection
 							tr
 								th Letter
-								td: a(href='/proposals/rejection/#{proposal.id}') View Letter
+								td: a(href='/proposals/rejection/#{proposal.Year}/#{proposal.Number}') View Letter
 
 			.col-sm-12.col-md-8
 				h3 Contact Info
@@ -98,7 +98,7 @@ block content
 						tbody
 							tr
 								th Letter
-								td: a(href='/proposals/award/#{proposal.id}') View
+								td: a(href='/proposals/award/#{proposal.Year}/#{proposal.Number}') View
 								// only for reporter eyes... for now
 								if reporter && (proposal.Status == 4 || proposal.Status == 5)
 									if reports.length > 0

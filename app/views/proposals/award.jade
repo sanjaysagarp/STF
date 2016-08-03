@@ -5,7 +5,7 @@ block content
 		h1 Award Letter for #{proposal.ProposalTitle}
 		p Date: #{awardDate}
 		br
-		p It is a pleasure to inform you that the Student Technology Fee Committee has approved your proposal #{award.ProposalId} for $#{total}. By accepting STF funds, the proposal author and department agree to the requirements of this award letter, as well as stipulations under STF Compliance. 
+		p It is a pleasure to inform you that the Student Technology Fee Committee has approved your proposal #{proposal.Year}-#{proposal.Number} for $#{total}. By accepting STF funds, the proposal author and department agree to the requirements of this award letter, as well as stipulations under STF Compliance. 
 		
 		h2 Reporting Requirements
 		p STF will require reports for this proposal. Reporting documents can be found on your proposal page. Reports are due on the following dates:
@@ -17,7 +17,7 @@ block content
 			li
 				i= 'Annual - ' + annual[0]
 		h2 Budgets and Use of Funds
-		p STF will create a unique budget number for this proposal, which will be emailed to your budget coordinator in early #[strong #{budgetMonth}]. Funds must be spent from this account only on items indicated in your proposal and all purchases must be made using this unique budget number. Budgets must be ready to close by May 10th of the following year.
+		p STF will create a unique budget number for this proposal, which will be emailed to your budget coordinator in early #[strong #{budgetMonth}]. Funds must be spent from this account only on items indicated in your proposal and all purchases must be made using this unique budget number. Budgets must be ready to close by #{budgetCloseDate}.
 		
 		h2 STF Stickers
 		p All equipment purchased with STF funds must be identified with an STF sticker and the phrase "Funded by the Student Technology Fee” must appear in web pages and other printed or electronic material advertising/identifying the resource.  Email #[a(href='mailto:techfee@uw.edu') techfee@uw.edu] if you require stickers.

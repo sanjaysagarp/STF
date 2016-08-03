@@ -105,9 +105,9 @@ block content
 							if myProposals
 								if proposal.LetterStatus != 0
 									if proposal.LetterStatus == 1
-										td: a(href='/proposals/award/#{proposal.id}') View
+										td: a(href='/proposals/award/#{proposal.Year}/#{proposal.Number}') View
 									else
-										td: a(href='/proposals/rejection/#{proposal.id}') View
+										td: a(href='/proposals/rejection/#{proposal.Year}/#{proposal.Number}') View
 								else
 									td N/A
 							

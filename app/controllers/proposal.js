@@ -553,9 +553,9 @@ router.get('/proposals/update/:year/:number', shib.ensureAuth('/login'), functio
 
 //Show the 'submitted' proposal view page
 router.get('/proposals/:number', function(req, res) {
-	db.Settings.find({where:{id: 1}})
+	db.Admin.find({where:{id: 1}})
 	.then(function(settings) {
-		res.redirect('/proposals/' + settings.CurrentYear + "/" + proposal.Number);
+		res.redirect('/proposals/' + settings.CurrentYear + "/" + req.params.number);
 	});
 });
 

@@ -29,11 +29,10 @@ block content
 						input(type='text', name='awardProposalNumber', placeholder='Number', size='10')
 						select(id="reportType" name='reportType') 
 							option(value='0') Quarterly
-							option(value='1') Anually
+							option(value='1') Annually
 							option(value='2') Both
 					.form-group.col-md-12
 						h4 Dates:
-						//- Need to dynamically add these with jQuery
 						.inputDates
 							.row
 								.col-md-2
@@ -55,9 +54,13 @@ block content
 									input(type='date', name="annualDate", id="aDate")
 							.row
 								.col-md-2
-									label Budget Month:
+									label Budget Open Month:
 								.col-md-3
 									input(type='date', name="budgetDate", id="bDate")
+								.col-md-2
+									label Budget Close Date:
+								.col-md-3
+									input(type='date', name="budgetCloseDate", id="bCloseDate")
 
 					.form-group.col-md-12
 						h2 Template:
@@ -66,12 +69,6 @@ block content
 						p STF will require reports for this proposal. Reporting documents can be found on your proposal page. Reports are due on the following dates:
 						ul
 							.dates
-						//- each val, index in quarterly
-						//- 	li
-						//- 		i= 'Quarterly ' + (index + 1) + ' - ' + val
-						//- if annual.length > 0
-						//- 	li
-						//- 		i= 'Annual - ' + annual[0]
 						h3 Budgets and Use of Funds
 						.budget
 								
@@ -107,7 +104,7 @@ block content
 						h3 Additional Notes (Optional):
 						textarea(rows="4")#denialNotes.form-control(name='rejectionNotes')
 						
-						p We urge you to submit a proposal again next cycle. Please direct any questions and feedback about STF processes to the Program Coordinator, Alton Lu, at #[a(href='mailto:techfee@uw.edu') techfee@uw.edu].
+						p We urge you to submit a proposal again next cycle. Please direct any questions and feedback about STF processes to the Program Coordinator at #[a(href='mailto:techfee@uw.edu') techfee@uw.edu].
 					.form-group.col-md-12
 						button#submitRejectionButton Submit
 	.container
