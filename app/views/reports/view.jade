@@ -36,4 +36,7 @@ block content
 			p= report.Impact
 			h3 Sustainability
 			p= report.Sustainability
+		if report.AdditionalNotes
+			h3 Additional Notes
+			p= report.AdditionalNotes
 		p: a(href='/proposals/#{proposal.Year}/#{proposal.Number}') Return to Proposal

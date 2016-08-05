@@ -192,6 +192,7 @@ router.post('/reports/update/:reportid', shib.ensureAuth('/login'), function(req
 							Outreach: req.body.outreach,
 							Impact: req.body.impact,
 							Sustainability: req.body.sustainability,
+							AdditionalNotes: req.body.additionalNotes,
 							ReceiptPath: path
 						};
 						db.Report.update(form, {
@@ -256,6 +257,7 @@ router.post('/reports/submit/:reportid', shib.ensureAuth('/login'), function(req
 							Impact: req.body.impact,
 							Sustainability: req.body.sustainability,
 							ReceiptPath: path,
+							AdditionalNotes: req.body.additionalNotes,
 							SubmittedDate: moment().utc()
 						};
 						db.Report.update(form, {

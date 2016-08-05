@@ -14,6 +14,7 @@ module.exports = function(sequelize, DataTypes) {
 		Outreach: DataTypes.TEXT,
 		Impact: DataTypes.TEXT,
 		Sustainability: DataTypes.TEXT,
+		AdditionalNotes: DataTypes.TEXT,
 		ReceiptPath: DataTypes.STRING(150),
 		DueDate: DataTypes.DATE,
 		SubmittedDate: DataTypes.DATE
