@@ -101,20 +101,31 @@ block content
 								td: a(href='/proposals/award/#{proposal.Year}/#{proposal.Number}') View
 								// only for reporter eyes... for now
 								if reporter && (proposal.Status == 4 || proposal.Status == 5)
+									- var reportNumber = 1;
+									- var annual = false;
 									if reports.length > 0
-										tr
-											th Reports
-											each report, index in reports
-												if report.Status == 0
-													td: a(href='/reports/update/#{report.id}') Edit Report (#{index + 1})
-												else
-													td: a(href='/reports/#{report.id}') View Report (#{index + 1})
-									if (award.ReportType == 0 || award.ReportType == 2)&& reports.length < 3
+										each report, index in reports
+											tr
+												th Report (#{moment(report.DueDate).format('MMM D[,] YYYY')})
+													- reportNumber++;
+													if report.Status == 0
+														if report.Type == 0
+															td: a(href='/reports/update/#{report.id}') Edit Quarterly Report
+														if report.Type == 1
+															td: a(href='/reports/update/#{report.id}') Edit Annual Report
+															- annual = true;
+													else
+														if report.Type == 0
+															td: a(href='/reports/#{report.id}') View Quarterly Report
+														if report.Type == 1
+															td: a(href='/reports/#{report.id}') View Annual Report
+
+									if ((award.ReportType == 0 && reports.length < 4) || (award.ReportType == 2 && reports.length < 5))
 										tr
 											th Quarterly Report
-											td: a(href='/reports/create/quarterly/#{proposal.id}') Create
+											td: a(href='/reports/create/quarterly/#{proposal.id}/' + reportNumber) Create
 									
-									if (award.ReportType == 1 || award.ReportType == 2) && reports.length < 4
+									if ((award.ReportType == 1 || award.ReportType == 2) && !annual)
 										tr
 											th Annual Report
 											td: a(href='/reports/create/annual/#{proposal.id}') Create

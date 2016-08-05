@@ -35,7 +35,9 @@ $(document).ready(function() {
 		formData.append('outreach', $('[name="outreach"]').val());
 		formData.append('impact', $('[name="impact"]').val());
 		formData.append('sustainability', $('[name="sustainability"]').val());
-		formData.append('receipt', $('input[id="receipt"]')[0].files[0]);
+		if($('input[id="receipt"]')[0] != undefined) {
+			formData.append('receipt', $('input[id="receipt"]')[0].files[0]);
+		}
 		
 		$.ajax({
 			data: formData,
@@ -67,7 +69,9 @@ $(document).ready(function() {
 		formData.append('outreach', $('[name="outreach"]').val());
 		formData.append('impact', $('[name="impact"]').val());
 		formData.append('sustainability', $('[name="sustainability"]').val());
-		formData.append('receipt', $('input[id="receipt"]')[0].files[0]);
+		if($('input[id="receipt"]')[0] != undefined) {
+			formData.append('receipt', $('input[id="receipt"]')[0].files[0]);
+		}
 		
 		formData.append('primary-name', $('[name="primary-name"]').val());
 		formData.append('primary-title', $('[name="primary-title"]').val());

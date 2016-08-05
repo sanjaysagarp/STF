@@ -13,6 +13,8 @@ block content
 			p.draft-alert This is a draft report, and has not been submitted yet. Information is subject to change.
 			if reporter
 				p: a(href='/reports/update/#{report.id}') Return to Update Page
+		else
+			p.subtitle Submitted on #{moment(report.SubmittedDate).format('MMMM D[,] YYYY')}
 		if report.Type == 0
 			h3 Timeline Progress
 			p= report.Timeline
@@ -34,3 +36,4 @@ block content
 			p= report.Impact
 			h3 Sustainability
 			p= report.Sustainability
+		p: a(href='/proposals/#{proposal.Year}/#{proposal.Number}') Return to Proposal

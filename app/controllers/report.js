@@ -7,7 +7,7 @@ var	db = require('../models');
 var shib = require('passport-uwshib');
 var categories = require('../../config/categories');
 var h = require('../helper');
-
+var moment = require('moment');
 
 module.exports = function(app) {
 	app.use('/', router);
@@ -28,8 +28,8 @@ var storage = multer.diskStorage({
 });
 var upload = multer({ storage: storage}).single('receipt');
 
-//Creates a quarterly report based on proposalid
-router.get('/reports/create/quarterly/:proposalid', shib.ensureAuth('/login'), function(req, res) {
+//Creates a quarterly report based on proposalid -- number is quarterly report number (1, 2, 3)
+router.get('/reports/create/quarterly/:proposalid/:number', shib.ensureAuth('/login'), function(req, res) {
 	db.Award.find({
 		where: {
 			ProposalId: req.params.proposalid
@@ -44,10 +44,19 @@ router.get('/reports/create/quarterly/:proposalid', shib.ensureAuth('/login'), f
 			})
 			.then(function(proposal) {
 				if (h.approvedReporter(res, req.user, proposal, false)) {
+					var dueDate = '00-00-0000';
+					if(req.params.number == 1) {
+						dueDate = award.QuarterlyDate1;
+					} else if(req.params.number == 2) {
+						dueDate = award.QuarterlyDate2;
+					} else if(req.params.number == 3) {
+						dueDate = award.QuarterlyDate3;
+					}
 					db.Report.create({
 						AwardId: award.id,
 						ProposalId: req.params.proposalid,
-						Type: 0
+						Type: 0,
+						DueDate: dueDate
 					})
 					.then(function(report) {
 						res.redirect('/reports/update/' + report.id);
@@ -86,7 +95,8 @@ router.get('/reports/create/annual/:proposalid', shib.ensureAuth('/login'), func
 					db.Report.create({
 						AwardId: award.id,
 						ProposalId: req.params.proposalid,
-						Type: 1
+						Type: 1,
+						DueDate: award.AnnualDate
 					})
 					.then(function(report) {
 						res.redirect('/reports/update/' + report.id);
@@ -245,7 +255,8 @@ router.post('/reports/submit/:reportid', shib.ensureAuth('/login'), function(req
 							Outreach: req.body.outreach,
 							Impact: req.body.impact,
 							Sustainability: req.body.sustainability,
-							ReceiptPath: path
+							ReceiptPath: path,
+							SubmittedDate: moment().utc()
 						};
 						db.Report.update(form, {
 							where: {
