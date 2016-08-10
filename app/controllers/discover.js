@@ -1,4 +1,5 @@
 var express = require('express');
+var sequelize = require('sequelize');
 var	router = express.Router();
 var fs = require('fs');
 var	db = require('../models');
@@ -34,7 +35,7 @@ router.get('/subdomain/discover/funds', function(req, res) {
 	// Get total requested and total funded in an array for each year (value on clientside will determine the year 2001 - 0, 2002 - 1..)
 	
 	//The data orientation is gonna split into two main queries : 2001 - 2015, 2016+
-	//Only need Department Name, Award Amount
+	//Need Department Name, Award Amount
 	var year_proposal = [];
 	var year = 2001;
 	var i = 0;
@@ -53,38 +54,51 @@ router.get('/subdomain/discover/funds', function(req, res) {
 			}
 			year_proposal[i].push(leg_proposals[leg_proposal]);
 		}
-		//2013+ legacy proposals
-		db.Proposal.findAll({
-			where: {
-				Status: [2,3,4]
-			}
-		})
-		.then(function(proposals) {
-			for(proposal in proposals) {
-				if(year != proposals[proposal].Year) {
+		getProposalsAndAwards(function(props) {
+			for(prop in props) {
+				if(year != props[prop].Year) {
 					i++;
 					year++;
 					year_proposal[i] = [];
 				}
-				db.Award.find({where:{id: proposals[proposal].id}})
-					.then(function(award) {
-						if(award) {
-							proposals[proposal].Award = award.FundedAmount;
-						} else {
-							proposals[proposal].Award = 0;
-						}
-					});
-				year_proposal[i].push(proposals[proposal]);
+				year_proposal[i].push(props[prop]);
 			}
-
-			console.log(year_proposal[3][2]);
 			res.render('discover/funds', {
 				title: "Allocation of Funds",
 				proposals: year_proposal
-			});
+				});
 		});
 	});
-	// res.render('discover/funds', {
-	// 	title: "Allocation of Funds"
-	// });
 });
+
+// sql query for retrieving all proposals 2016+ with award amounts (Not funded, Partially Funded and Fully Funded)
+function getProposalsAndAwards(next) {
+	db.sequelize.query('SELECT * FROM STF.Proposals p LEFT JOIN STF.Awards a ON p.id = a.ProposalId where p.Status = 4 OR p.Status = 5 OR p.Status = 6;')
+	.spread(function(proposals) {
+		var props = [];
+		var year = 2016;
+		for(proposal in proposals) {
+			var p = {};
+			if(year != proposals[proposal].Year) {
+				i++;
+				year++;
+				year_proposal[i] = [];
+			}
+			p.Year = proposals[proposal].Year;
+			p.Number = proposals[proposal].Number;
+			p.UAC = proposals[proposal].UAC;
+			p.Category = proposals[proposal].Category;
+			p.PrimaryNetId = proposals[proposal].PrimaryNetId;
+			p.PrimaryName = proposals[proposal].PrimaryName;
+			p.Department = proposals[proposal].Department;
+			p.Status = proposals[proposal].Status;
+			if(proposals[proposal].FundedAmount) {
+				p.Award = proposals[proposal].FundedAmount;
+			} else {
+				p.Award = 0;
+			}
+			props.push(p);
+		}
+		next(props);
+	})
+}
