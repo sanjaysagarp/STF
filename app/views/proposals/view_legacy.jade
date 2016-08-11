@@ -10,7 +10,7 @@ block content
 	.container
 		h2.title= proposal.Title
 		if proposal.Category
-			p.subtitle In #{proposal.Category}
+			p.subtitle In #{categories[proposal.Category].name}
 		else
 			p.subtitle In Unknown Category
 

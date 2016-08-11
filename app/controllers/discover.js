@@ -4,6 +4,8 @@ var	router = express.Router();
 var fs = require('fs');
 var	db = require('../models');
 var gmConfig = require('../../config/google'); //google key
+var categories = require('../../config/categories');
+
 router.use( require('express-subdomain-handler')({ baseUrl: 'uwstf.org', prefix: 'subdomain', logger: true }) ); //uses subdomain of 'discover'
 
 module.exports = function(app) {
@@ -30,7 +32,6 @@ router.get('/subdomain/discover/map', function(req, res) {
 });
 
 router.get('/subdomain/discover/funds', function(req, res) {
-	//TODO - Need all data necessary for funding expenditure graph
 	// 1. Yearly funding by departments - All Time, 2016, 2015...
 	// Get total requested and total funded in an array for each year (value on clientside will determine the year 2001 - 0, 2002 - 1..)
 	
@@ -63,10 +64,14 @@ router.get('/subdomain/discover/funds', function(req, res) {
 				}
 				year_proposal[i].push(props[prop]);
 			}
-			res.render('discover/funds', {
-				title: "Allocation of Funds",
-				proposals: year_proposal
-				});
+			getDepartments(function(departments) {
+				res.render('discover/funds', {
+					title: "Allocation of Funds",
+					proposals: year_proposal,
+					departments: departments,
+					categories: categories
+					});
+			});
 		});
 	});
 });
@@ -100,5 +105,16 @@ function getProposalsAndAwards(next) {
 			props.push(p);
 		}
 		next(props);
+	})
+}
+
+function getDepartments(next) {
+	db.sequelize.query('SELECT DISTINCT Department FROM STF.Proposals ORDER BY Department ASC;')
+	.spread(function(deps) {
+		var departments = [];
+		for(var i = 0; i < deps.length; i++) {
+			departments.push(deps[i].Department);
+		}
+		next(departments);
 	})
 }

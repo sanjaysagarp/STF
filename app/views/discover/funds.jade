@@ -8,4 +8,24 @@ append css
 
 block content
 	.container
-		.data-chart
+		input#proposals(name='proposals', type='hidden', value='#{proposals}')
+		select(id="department" name='department')
+			option(value='All') All Departments
+			each val, index in departments
+				option(value='#{index}')= val
+		select(id="category" name='category')
+			option(value='All') All Categories
+			each val, index in categories
+				option(value='#{index}')= val.name
+		.data-chart.table-responsive
+			table
+				thead
+					tr
+						th Total Requested
+						th Total Funded
+						th Percent Funded
+				tbody
+					tr
+						td#requested Meow
+						td#funded #{proposals.length}
+						td#percent #{proposals.length}

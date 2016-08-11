@@ -360,53 +360,8 @@ router.get('/proposals/browse', function(req, res) {
 	});
 });
 
-//scale out for proposal browse after this year -- need to add compatability for legacy proposals
-//so proposal authors don't get confuzzled
-// router.get('/proposals/:year', function(req, res) {
-// 	db.Proposal.findAll({
-// 		where: {
-// 			Status: [1, 2, 3, 4, 5, 6],
-// 			Year: req.params.year
-// 		}
-// 	}).then(function(proposals) {
-// 		res.render('proposals/browse',{
-// 			proposals: proposals,
-// 			title: "Browse all Proposals",
-// 			categories: categories
-// 		});
-// 	});
-// });
-
 router.get('/proposals/category/:cat', function(req, res) {
 	var cat = req.params.cat;
-	switch(cat) {
-		case "Computer Labs":
-			cat = "L";
-			break;
-		case "Remote Computing":
-			cat = "R";
-			break;
-		case "Machinery and Research":
-			cat = "M";
-			break;
-		case "Collaborative":
-			cat = "G";
-			break;
-		case "Portable":
-			cat = "P";
-			break;
-		case "Frontier":
-			cat = "F";
-			break;
-		case "Software":
-			cat = "S";
-			break;
-		case "Software Development":
-			cat = "D";
-			break;
-		default:
-			break;
-	}
 	db.Proposal.findAll({
 		where: {
 			Category: cat,
@@ -415,7 +370,7 @@ router.get('/proposals/category/:cat', function(req, res) {
 	}).then(function(proposals) {
 		db.Legacy_Proposal.findAll({
 			where: {
-				Category: categories[proposals[0].Category].name
+				Category: cat
 			}
 		})
 		.then(function(legProposals) {
@@ -432,35 +387,6 @@ router.get('/proposals/category/:cat', function(req, res) {
 			}
 		});
 		
-	});
-});
-
-router.get('/proposals/department/:cat', function(req, res) {
-	db.Proposal.findAll({
-		where: {
-			Department: req.params.cat,
-			Status: [1, 2, 3, 4, 5, 6]
-		}
-	}).then(function(proposals) {
-		//search through legacy proposals and add to list of proposals
-		db.Legacy_Proposal.findAll({
-			where: {
-				Department: req.params.cat
-			}
-		})
-		.then(function(legProposals) {
-			legProposals.reverse();
-			proposals.push.apply(proposals, legProposals);
-			if (proposals.length != 0) {
-				res.render('proposals/browse', {
-					proposals: proposals,
-					title: proposals[0].Department + ": Proposals",
-					categories: categories
-				});
-			} else {
-				h.displayErrorPage(res, 'The department specified could not be found', 'Unknown Department')
-			}
-		});
 	});
 });
 
@@ -631,6 +557,7 @@ router.get('/proposals/:year/:number', function(req, res) {
 							res.render('proposals/view_legacy', {
 								title: legProposal.Title,
 								proposal: legProposal,
+								categories: categories,
 								supplementalItems: SupplementalItems,
 								fundedItems: FundedItems,
 								originalItems: OriginalItems,
@@ -694,6 +621,7 @@ router.get('/proposals/:year/:number', function(req, res) {
 								res.render('proposals/view_legacy', {
 									title: legProposal.Title,
 									proposal: legProposal,
+									categories: categories,
 									supplementalItems: SupplementalItems,
 									fundedItems: FundedItems,
 									originalItems: OriginalItems,
