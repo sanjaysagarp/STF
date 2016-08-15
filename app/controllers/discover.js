@@ -48,12 +48,22 @@ router.get('/subdomain/discover/funds', function(req, res) {
 	})
 	.then(function(leg_proposals) {
 		for(leg_proposal in leg_proposals) {
+			var p = {};
 			if(year != leg_proposals[leg_proposal].Year) {
 				i++;
 				year++;
 				year_proposal[i] = [];
 			}
-			year_proposal[i].push(leg_proposals[leg_proposal]);
+			p.Year = leg_proposals[leg_proposal].Year;
+			p.Number = leg_proposals[leg_proposal].Year;
+			p.Award = leg_proposals[leg_proposal].Award;
+			p.Status = leg_proposals[leg_proposal].Decision;
+			if(leg_proposals[leg_proposal].Category) {
+				p.Category = leg_proposals[leg_proposal].Category;
+			} else {
+				p.Category = "Unknown";
+			}
+			year_proposal[i].push(p);
 		}
 		getProposalsAndAwards(function(props) {
 			for(prop in props) {
@@ -91,12 +101,20 @@ function getProposalsAndAwards(next) {
 			}
 			p.Year = proposals[proposal].Year;
 			p.Number = proposals[proposal].Number;
-			p.UAC = proposals[proposal].UAC;
+			//p.UAC = proposals[proposal].UAC;
 			p.Category = proposals[proposal].Category;
-			p.PrimaryNetId = proposals[proposal].PrimaryNetId;
-			p.PrimaryName = proposals[proposal].PrimaryName;
-			p.Department = proposals[proposal].Department;
-			p.Status = proposals[proposal].Status;
+			// p.PrimaryNetId = proposals[proposal].PrimaryNetId;
+			// p.PrimaryName = proposals[proposal].PrimaryName;
+			// p.Department = proposals[proposal].Department;
+			switch(proposals[proposal].Status) {
+				case 4:
+					p.Status = "Funded";
+				case 5:
+					p.Status = "Partially Funded";
+				case 6:
+					p.Status = "Not Funded";
+			}
+			//p.Status = proposals[proposal].Status;
 			if(proposals[proposal].FundedAmount) {
 				p.Award = proposals[proposal].FundedAmount;
 			} else {

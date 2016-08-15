@@ -8,7 +8,7 @@ append css
 
 block content
 	.container
-		input#proposals(name='proposals', type='hidden', value='#{proposals}')
+		input#proposals(name='proposals', type='hidden', value='#{JSON.stringify(proposals)}')
 		select(id="department" name='department')
 			option(value='All') All Departments
 			each val, index in departments

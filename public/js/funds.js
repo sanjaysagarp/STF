@@ -31,21 +31,20 @@ var randomColor = (function(){
 
 $(document).ready(function(){
 	//gets proposals
-	var proposals = $('#proposals').val();
+	var proposals = JSON.parse($('#proposals').val());
 	var totalProposals = 0;
 	var fundedProposals = 0;
 	var funded = 0.0;
-	console.log(proposals);
 	for(year in proposals) {
-		for (proposal in proposals[year]) {
-			if(proposal.Award != 0) {
+		for(num in proposals[year]) {
+			if(proposals[year][num].Award != 0) {
 				fundedProposals++;
 			}
-			funded += proposal.Award;
+			funded += proposals[year][num].Award;
 		}
 		totalProposals += proposals[year].length;
 	}
 	$('#requested').html("NOOO");
-	$('#funded').html(funded);
-	$('#percent').html(fundedProposals + "/" + totalProposals);
+	$('#funded').html("$" + funded.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+	$('#percent').html((100*(fundedProposals/totalProposals)).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "%");
 });

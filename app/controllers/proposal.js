@@ -336,7 +336,7 @@ router.post('/proposals', shib.ensureAuth('/login'), function(req, res, next) {
 });
 
 
-//show all submitted and unclosed proposals
+//show all submitted and unclosed proposals -- ($gte is used to properly display proposals in sorted order)
 router.get('/proposals/browse', function(req, res) {
 	db.Proposal.findAll({
 		where: {
@@ -345,6 +345,9 @@ router.get('/proposals/browse', function(req, res) {
 	}).then(function(proposals) {
 		db.Legacy_Proposal.findAll({
 			where: {
+				Year: {
+					$gte: 2001
+				},
 				Decision: ["Rejected","Funded","Partially Funded"]
 			}
 		}).then(function(legProposals) {
@@ -360,7 +363,7 @@ router.get('/proposals/browse', function(req, res) {
 	});
 });
 
-router.get('/proposals/category/:cat', function(req, res) {
+router.get('/proposal/category/:cat', function(req, res) {
 	var cat = req.params.cat;
 	db.Proposal.findAll({
 		where: {
@@ -387,6 +390,35 @@ router.get('/proposals/category/:cat', function(req, res) {
 			}
 		});
 		
+	});
+});
+
+router.get('/proposals/department/:cat', function(req, res) {
+	db.Proposal.findAll({
+		where: {
+			Department: req.params.cat,
+			Status: [1, 2, 3, 4, 5, 6]
+		}
+	}).then(function(proposals) {
+		//search through legacy proposals and add to list of proposals
+		db.Legacy_Proposal.findAll({
+			where: {
+				Department: req.params.cat
+			}
+		})
+		.then(function(legProposals) {
+			legProposals.reverse();
+			proposals.push.apply(proposals, legProposals);
+			if (proposals.length != 0) {
+				res.render('proposals/browse', {
+					proposals: proposals,
+					title: proposals[0].Department + ": Proposals",
+					categories: categories
+				});
+			} else {
+				h.displayErrorPage(res, 'The department specified could not be found', 'Unknown Department')
+			}
+		});
 	});
 });
 
@@ -584,19 +616,21 @@ router.get('/proposals/:year/:number', function(req, res) {
 									//supplementals and partials are interchanagable for legacy view
 									if(items2[item].ObjectId == legProposal.OriginalSupplementalId) {
 										OriginalItems.push(items2[item]);
-									} else if (items2[item].SupplementalItemId != null){
-										SupplementalItems.push(items2[item]);
-									} else if (items2[item].PartialItemId != null) {
-										SupplementalItems.push(items2[item]);
 									} else {
-										if(items2[item].Approved == 1 && items2[item].Quantity != 0) {
-											FundedItems.push(items2[item]);
+										if (items2[item].Approved == 1 ) {
+											if (items2[item].SupplementalItemId != null){
+												SupplementalItems.push(items2[item]);
+											} else if (items2[item].PartialItemId != null && items2[item].ObjectId != legProposal.PartialId) {
+												SupplementalItems.push(items2[item]);
+											} else {
+												if(items2[item].ObjectId == legProposal.PartialId) {
+													FundedItems.push(items2[item]);
+												}
+												
+											}
 										}
-									}
+									} 
 									
-									if(items2[item].ObjectId == legProposal.PartialId) {
-										FundedItems.push(items2[item]);
-									}
 								}
 								var cr = new Date(legProposal.SubmittedDate);
 								var months = ["January", "February", "March", "April", "May", "June", "July", 
