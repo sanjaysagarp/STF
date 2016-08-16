@@ -112,7 +112,10 @@ block content
 									td N/A
 							
 							if isAdmin || isCommitteeMember
-								td #{moment(proposal.updatedAt).format('YYYY-MM-DD')}
+								if proposal.Revision
+									td #{moment(proposal.SubmittedDate).format('YYYY-MM-DD')}
+								else
+									td #{moment(proposal.updatedAt).format('YYYY-MM-DD')}
 							
 			else 
 				p There are no proposals yet!

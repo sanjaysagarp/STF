@@ -581,6 +581,7 @@ router.get('/proposals/:year/:number', function(req, res) {
 								status = 5;
 							} else if (legProposal.Decision == "Funded") {
 								status = 4
+								FundedItems = OriginalItems;
 							}
 							
 							
