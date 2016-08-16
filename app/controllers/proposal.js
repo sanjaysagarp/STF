@@ -613,25 +613,36 @@ router.get('/proposals/:year/:number', function(req, res) {
 								var SupplementalItems = [];
 								var OriginalItems = [];
 								var FundedItems = [];
+								var MultipleSupplementalFunded = [];
+								var supplementals = false;
 								for(item in items2) {
 									//supplementals and partials are interchanagable for legacy view
+									if(items2[item].Approved == 0 && items2[item].PartialItemId != null) {
+										supplementals = true;
+									}
 									if(items2[item].ObjectId == legProposal.OriginalSupplementalId) {
 										OriginalItems.push(items2[item]);
 									} else {
-										if (items2[item].Approved == 1 ) {
+										if (items2[item].Approved == 1) {
 											if (items2[item].SupplementalItemId != null){
 												SupplementalItems.push(items2[item]);
 											} else if (items2[item].PartialItemId != null && items2[item].ObjectId != legProposal.PartialId) {
 												SupplementalItems.push(items2[item]);
 											} else {
-												if(items2[item].ObjectId == legProposal.PartialId) {
+												if(items2[item].ObjectId == legProposal.PartialId && items2[item].Quantity != 0) {
 													FundedItems.push(items2[item]);
 												}
-												
 											}
 										}
-									} 
-									
+									}
+									if(items2[item].SupplementalItemId == null && items2[item].PartialItemId == null && items2[item].Quantity != 0) {
+										MultipleSupplementalFunded.push(items2[item]);
+									}
+								}
+								//if multiple supplementals exist, change funded and supplemental items to it
+								if(supplementals && MultipleSupplementalFunded.length > 0) {
+									SupplementalItems = MultipleSupplementalFunded;
+									FundedItems = MultipleSupplementalFunded;
 								}
 								var cr = new Date(legProposal.SubmittedDate);
 								var months = ["January", "February", "March", "April", "May", "June", "July", 
