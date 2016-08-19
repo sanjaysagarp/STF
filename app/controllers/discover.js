@@ -58,6 +58,9 @@ router.get('/subdomain/discover/funds', function(req, res) {
 			p.Number = leg_proposals[leg_proposal].Year;
 			p.Award = leg_proposals[leg_proposal].Award;
 			p.Status = leg_proposals[leg_proposal].Decision;
+			p.Requested = leg_proposals[leg_proposal].RequestedAmount;
+			p.Department = leg_proposals[leg_proposal].Department;
+			p.Decision = leg_proposals[leg_proposal].Decision;
 			if(leg_proposals[leg_proposal].Category) {
 				p.Category = leg_proposals[leg_proposal].Category;
 			} else {
@@ -88,7 +91,7 @@ router.get('/subdomain/discover/funds', function(req, res) {
 
 // sql query for retrieving all proposals 2016+ with award amounts (Not funded, Partially Funded and Fully Funded)
 function getProposalsAndAwards(next) {
-	db.sequelize.query('SELECT * FROM STF.Proposals p LEFT JOIN STF.Awards a ON p.id = a.ProposalId where p.Status = 4 OR p.Status = 5 OR p.Status = 6;')
+	db.sequelize.query('SELECT p.id, p.Year, p.Number, p.ProposalTitle, p.Category, p.Department, p.Status, SUM(i.Price * i.Quantity) as Requested, a.FundedAmount FROM STF.Proposals p LEFT JOIN STF.Awards a  ON p.id = a.ProposalId LEFT JOIN STF.Items i ON p.id = i.Proposalid WHERE (p.Status = 4 OR p.Status = 5 OR p.Status = 6) AND (i.PartialId IS NULL AND i.SupplementalId IS NULL) GROUP BY p.id;')
 	.spread(function(proposals) {
 		var props = [];
 		var year = 2016;
@@ -103,18 +106,18 @@ function getProposalsAndAwards(next) {
 			p.Number = proposals[proposal].Number;
 			//p.UAC = proposals[proposal].UAC;
 			p.Category = proposals[proposal].Category;
+			p.Requested = proposals[proposal].Requested;
 			// p.PrimaryNetId = proposals[proposal].PrimaryNetId;
 			// p.PrimaryName = proposals[proposal].PrimaryName;
-			// p.Department = proposals[proposal].Department;
-			switch(proposals[proposal].Status) {
-				case 4:
-					p.Status = "Funded";
-				case 5:
-					p.Status = "Partially Funded";
-				case 6:
-					p.Status = "Not Funded";
+			p.Department = proposals[proposal].Department;
+			if(proposals[proposal].Status == 4) {
+				p.Decision = "Funded";
+			} else if(proposals[proposal].Status == 5) {
+				p.Decision = "Partially Funded";
+			} else if(proposals[proposal].Status == 6) {
+				p.Decision = "Not Funded";
 			}
-			//p.Status = proposals[proposal].Status;
+			
 			if(proposals[proposal].FundedAmount) {
 				p.Award = proposals[proposal].FundedAmount;
 			} else {

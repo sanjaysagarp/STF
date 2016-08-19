@@ -182,25 +182,30 @@ router.get('/proposals/rejection/:year/:number', function(req, res) {
 		}
 	})
 	.then(function(proposal) {
-		db.Rejection.find({
-			where: {
-				ProposalId: proposal.id
-			}
-		})
-		.then(function(rejection) {
-			if(rejection) {
-				var rejectionDate = moment(new Date(rejection.createdAt)).format('MMMM Do[,] YYYY');
-				res.render('proposals/rejection', {
-					title: "Rejection Letter",
-					proposal: proposal,
-					rejection: rejection,
-					rejectionDate: rejectionDate
-				});
-			} else {
-				h.displayErrorPage(res, 'Rejection letter does not exist',
-					"Not Found");
-			}
-		});
+		if(proposal) {
+			db.Rejection.find({
+				where: {
+					ProposalId: proposal.id
+				}
+			})
+			.then(function(rejection) {
+				if(rejection) {
+					var rejectionDate = moment(new Date(rejection.createdAt)).format('MMMM Do[,] YYYY');
+					res.render('proposals/rejection', {
+						title: "Rejection Letter",
+						proposal: proposal,
+						rejection: rejection,
+						rejectionDate: rejectionDate
+					});
+				} else {
+					h.displayErrorPage(res, 'Rejection letter does not exist',
+						"Not Found");
+				}
+			});
+		} else {
+		h.displayErrorPage(res, 'Rejection letter does not exist',
+						"Not Found");
+		}
 	});
 });
 

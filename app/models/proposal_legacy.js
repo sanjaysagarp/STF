@@ -37,6 +37,7 @@ module.exports = function(sequelize, DataTypes) {
 		Decision: DataTypes.STRING(40),
 		PartialId: DataTypes.INTEGER,
 		Metric: DataTypes.STRING(250),
+		RequestedAmount: DataTypes.DECIMAL(14,2),
 		Award: DataTypes.DECIMAL(14,2),
 		AwardText: DataTypes.TEXT,
 		Background: DataTypes.TEXT,

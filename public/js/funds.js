@@ -32,19 +32,50 @@ var randomColor = (function(){
 $(document).ready(function(){
 	//gets proposals
 	var proposals = JSON.parse($('#proposals').val());
+	var departments = JSON.parse($('#allDepartments').val());
+	var categories = JSON.parse($('#allCategories').val());
 	var totalProposals = 0;
 	var fundedProposals = 0;
 	var funded = 0.0;
+	var requested = 0.0;
 	for(year in proposals) {
 		for(num in proposals[year]) {
 			if(proposals[year][num].Award != 0) {
 				fundedProposals++;
 			}
 			funded += proposals[year][num].Award;
+			requested += proposals[year][num].Requested;
 		}
 		totalProposals += proposals[year].length;
 	}
-	$('#requested').html("NOOO");
+	$('#requested').html("$" + requested.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 	$('#funded').html("$" + funded.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 	$('#percent').html((100*(fundedProposals/totalProposals)).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "%");
+
+	$("#department").change(function() {
+		var dept = $(this).val();
+		totalProposals = 0;
+		fundedProposals = 0;
+		funded = 0.0;
+		requested = 0.0;
+		for(year in proposals) {
+			for(num in proposals[year]) {
+				if(proposals[year][num].Department == departments[dept] || departments[dept] == "All") {
+					if(proposals[year][num].Decision == "Funded") {
+						fundedProposals++;
+					}
+					funded += proposals[year][num].Award;
+					requested += proposals[year][num].Requested;
+					totalProposals++;
+				}
+			}
+		}
+		if(totalProposals == 0) {
+			totalProposals++;
+		}
+		$('#requested').html("$" + requested.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+		$('#funded').html("$" + funded.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+		$('#percent').html((100*(fundedProposals/totalProposals)).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "%");
+		
+	});
 });
