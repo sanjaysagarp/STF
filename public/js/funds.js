@@ -34,35 +34,34 @@ $(document).ready(function(){
 	var proposals = JSON.parse($('#proposals').val());
 	var departments = JSON.parse($('#allDepartments').val());
 	var categories = JSON.parse($('#allCategories').val());
-	var totalProposals = 0;
-	var fundedProposals = 0;
-	var funded = 0.0;
-	var requested = 0.0;
-	for(year in proposals) {
-		for(num in proposals[year]) {
-			if(proposals[year][num].Award != 0) {
-				fundedProposals++;
-			}
-			funded += proposals[year][num].Award;
-			requested += proposals[year][num].Requested;
-		}
-		totalProposals += proposals[year].length;
-	}
-	$('#requested').html("$" + requested.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-	$('#funded').html("$" + funded.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-	$('#percent').html((100*(fundedProposals/totalProposals)).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "%");
-
+	var cat = "All";
+	var dept = "All";
+	refreshTable();
 	$("#department").change(function() {
-		var dept = $(this).val();
-		totalProposals = 0;
-		fundedProposals = 0;
-		funded = 0.0;
-		requested = 0.0;
+		dept = $(this).val();
+		refreshTable();
+	});
+
+	$("#category").change(function() {
+		cat = $(this).val();
+		refreshTable();
+	});
+
+	function refreshTable() {
+		var totalProposals = 0;
+		var fundedProposals = 0;
+		var partialFunded = 0;
+		var funded = 0.0;
+		var requested = 0.0;
 		for(year in proposals) {
 			for(num in proposals[year]) {
-				if(proposals[year][num].Department == departments[dept] || departments[dept] == "All") {
-					if(proposals[year][num].Decision == "Funded") {
-						fundedProposals++;
+				if((cat == "All" || ( categories[proposals[year][num].Category] && categories[proposals[year][num].Category].name == categories[cat].name)) && (dept == "All" || proposals[year][num].Department == departments[dept])) {
+					if(proposals[year][num].Decision != "Not Funded") {
+						if(proposals[year][num].Decision == "Funded") {
+							fundedProposals++;
+						} else {
+							partialFunded++;
+						}
 					}
 					funded += proposals[year][num].Award;
 					requested += proposals[year][num].Requested;
@@ -75,7 +74,20 @@ $(document).ready(function(){
 		}
 		$('#requested').html("$" + requested.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 		$('#funded').html("$" + funded.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-		$('#percent').html((100*(fundedProposals/totalProposals)).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "%");
-		
-	});
+		$('#percent').html((100*((fundedProposals + partialFunded)/totalProposals)).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "%");
+		var pie = new d3pie("pieChart", {
+			header: {
+				title: {
+					text: "Breakdown"
+				}
+			},
+			data: {
+				content: [
+					{ label: "Partially Funded", value: partialFunded },
+					{ label: "Funded", value: fundedProposals },
+					{ label: "Not Funded", value: (totalProposals - (fundedProposals + partialFunded))},
+				]
+			}
+		});
+	}
 });
