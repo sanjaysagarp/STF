@@ -47,6 +47,9 @@ $(document).ready(function(){
 		refreshTable();
 	});
 
+	$("#refreshButton").click(function() {
+		$("#pieChart").empty();
+	});
 	function refreshTable() {
 		var totalProposals = 0;
 		var fundedProposals = 0;
@@ -55,38 +58,89 @@ $(document).ready(function(){
 		var requested = 0.0;
 		for(year in proposals) {
 			for(num in proposals[year]) {
-				if((cat == "All" || ( categories[proposals[year][num].Category] && categories[proposals[year][num].Category].name == categories[cat].name)) && (dept == "All" || proposals[year][num].Department == departments[dept])) {
+				if((cat == "All" || ( categories[proposals[year][num].Category] != null && categories[proposals[year][num].Category].name == categories[cat].name)) && (dept == "All" || proposals[year][num].Department == departments[dept])) {
 					if(proposals[year][num].Decision != "Not Funded") {
 						if(proposals[year][num].Decision == "Funded") {
 							fundedProposals++;
 						} else {
 							partialFunded++;
 						}
+						funded += proposals[year][num].Award;
 					}
-					funded += proposals[year][num].Award;
 					requested += proposals[year][num].Requested;
 					totalProposals++;
 				}
 			}
 		}
-		if(totalProposals == 0) {
-			totalProposals++;
-		}
 		$('#requested').html("$" + requested.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 		$('#funded').html("$" + funded.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-		$('#percent').html((100*((fundedProposals + partialFunded)/totalProposals)).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "%");
+		if(totalProposals != 0) {
+			$('#percent').html((100*((fundedProposals + partialFunded)/totalProposals)).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "%");
+		} else {
+			$('#percent').html("0%");
+		}
+		
+
+		var catName = cat;
+		var deptName = dept + " Departments";
+		if(cat != "All") {
+			catName = categories[cat].name;
+		}
+		if(dept != "All") {
+			deptName = departments[dept];
+		}
+
+		$('#title').html(deptName + ", Category: " + catName);
 		var pie = new d3pie("pieChart", {
 			header: {
 				title: {
-					text: "Breakdown"
+					text: deptName,
+					fontSize: 12,
+					font: "open sans"
+				},
+				subtitle: {
+					text: "Category: " + catName +", Total Proposals: " + totalProposals,
+					color: "#999999",
+					fontSize: 10,
+					font: "open sans"
+				},
+				location: "top-center",
+				titleSubtitlePadding: 7
+			},
+			size: {
+				canvasHeight: 400,
+				canvasWidth: 500,
+				pieOuterRadius: "88%"
+			},
+			labels: {
+				inner: {
+					format: "none"
 				}
+			},
+			effects: {
+				load: {
+					effect: "default", // none / default
+					speed: 1000
+				},
+				pullOutSegmentOnClick: {
+					effect: "bounce", // none / linear / bounce / elastic / back
+					speed: 300,
+					size: 10
+				},
+				highlightSegmentOnMouseover: true,
+				highlightLuminosity: -0.2
 			},
 			data: {
 				content: [
-					{ label: "Partially Funded", value: partialFunded },
-					{ label: "Funded", value: fundedProposals },
-					{ label: "Not Funded", value: (totalProposals - (fundedProposals + partialFunded))},
+					{ label: "Partially Funded", value: partialFunded, color: "#333F74" },
+					{ label: "Funded", value: fundedProposals, color: "#2D7E45"},
+					{ label: "Not Funded", value: (totalProposals - (fundedProposals + partialFunded)), color: "#285B6A"},
 				]
+			},
+			tooltips: {
+				enabled: true,
+				type: "placeholder",
+				string: "{label}, Proposals: {value}, {percentage}%"
 			}
 		});
 	}

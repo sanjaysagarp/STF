@@ -8,6 +8,7 @@ append css
 
 block content
 	.container
+		h2#title All Departments and Categories
 		input#proposals(name='proposals', type='hidden', value='#{JSON.stringify(proposals)}')
 		input#allDepartments(name='allDepartments', type='hidden', value='#{JSON.stringify(departments)}')
 		input#allCategories(name='allCategories', type='hidden', value='#{JSON.stringify(categories)}')
@@ -19,8 +20,9 @@ block content
 			option(value='All') All Categories
 			each val, index in categories
 				option(value='#{index}')= val.name
-		.data-chart.table-responsive
-			table
+		button#refreshButton Clear All
+		.data-chart
+			table.table.table-striped
 				thead
 					tr
 						th Total Requested

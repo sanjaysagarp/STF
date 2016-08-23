@@ -43,7 +43,7 @@ router.get('/subdomain/discover/funds', function(req, res) {
 	year_proposal[i] = [];
 	db.Legacy_Proposal.findAll({
 		where : {
-			Decision: ["Rejected","Funded","Partially Funded"]
+			Decision: ["Not Funded","Funded","Partially Funded"]
 		}
 	})
 	.then(function(leg_proposals) {
@@ -77,7 +77,7 @@ router.get('/subdomain/discover/funds', function(req, res) {
 				}
 				year_proposal[i].push(props[prop]);
 			}
-			getDepartments(function(departments) {
+			getAllDepartments(function(departments) {
 				res.render('discover/funds', {
 					title: "Allocation of Funds",
 					proposals: year_proposal,
@@ -129,8 +129,9 @@ function getProposalsAndAwards(next) {
 	})
 }
 
-function getDepartments(next) {
-	db.sequelize.query('SELECT DISTINCT Department FROM STF.Proposals ORDER BY Department ASC;')
+//Gets all departments from both legacy and current proposal tables
+function getAllDepartments(next) {
+	db.sequelize.query('SELECT Department FROM (SELECT DISTINCT lp.Department FROM STF.Legacy_Proposals lp LEFT JOIN (SELECT p.Department FROM STF.Proposals p) p ON lp.Department = p.Department WHERE lp.Department IS null OR p.Department IS null UNION SELECT DISTINCT lp.Department FROM STF.Proposals lp LEFT JOIN (SELECT p.Department FROM STF.Legacy_Proposals p) p ON lp.Department = p.Department WHERE lp.Department IS null OR p.Department IS null UNION SELECT DISTINCT lp.Department FROM STF.Proposals lp JOIN (SELECT p.Department FROM STF.Legacy_Proposals p) p ON lp.Department = p.Department) Dept WHERE Department is not null ORDER BY Department ASC;')
 	.spread(function(deps) {
 		var departments = [];
 		for(var i = 0; i < deps.length; i++) {
