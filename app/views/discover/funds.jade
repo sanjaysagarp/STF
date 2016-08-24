@@ -8,19 +8,33 @@ append css
 
 block content
 	.container
-		h2#title All Departments and Categories
+		h1 Funding Breakdown
+		p Select a department and/or category to view a proposal breakdown of expenditure.
 		input#proposals(name='proposals', type='hidden', value='#{JSON.stringify(proposals)}')
 		input#allDepartments(name='allDepartments', type='hidden', value='#{JSON.stringify(departments)}')
 		input#allCategories(name='allCategories', type='hidden', value='#{JSON.stringify(categories)}')
-		select(id="department" name='department')
-			option(value='All') All Departments
-			each val, index in departments
-				option(value='#{index}')= val
-		select(id="category" name='category')
-			option(value='All') All Categories
-			each val, index in categories
-				option(value='#{index}')= val.name
-		button#refreshButton Clear All
+		.inline
+			select(id="department" name='department')
+				option(value='All') All Departments
+				each val, index in departments
+					option(value='#{index}')= val
+			select(id="category" name='category')
+				option(value='All') All Categories
+				each val, index in categories
+					option(value='#{index}')= val.name
+		.inline
+			select(id="startYear" name='startYear')
+				each val, index in proposals
+					option(value='#{index + proposals[0][0].Year}')= index + proposals[0][0].Year
+			select(id="endYear" name='endYear')
+				each val, index in proposals
+					option(value='#{(proposals.length - index) + proposals[0][0].Year}')= (proposals.length - index) + proposals[0][0].Year
+		.inline
+			select(id="chartType" name='chartType')
+				option(value='1') Pie
+				option(value='2') Line
+				option(value='3') Bar
+		h3#title All, Category: All
 		.data-chart
 			table.table.table-striped
 				thead
@@ -33,4 +47,4 @@ block content
 						td#requested ...
 						td#funded ...
 						td#percent ...
-		#pieChart
+		#chart
