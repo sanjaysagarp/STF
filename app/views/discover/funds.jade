@@ -28,12 +28,12 @@ block content
 					option(value='#{index + proposals[0][0].Year}')= index + proposals[0][0].Year
 			select(id="endYear" name='endYear')
 				each val, index in proposals
-					option(value='#{(proposals.length - index) + proposals[0][0].Year}')= (proposals.length - index) + proposals[0][0].Year
+					option(value='#{((proposals.length - 1) - index) + proposals[0][0].Year}')= ((proposals.length  - 1) - index) + proposals[0][0].Year
 		.inline
 			select(id="chartType" name='chartType')
-				option(value='1') Pie
-				option(value='2') Line
-				option(value='3') Bar
+				option(value='pie') Pie
+				option(value='line') Line
+				option(value='bar') Bar
 		h3#title All, Category: All
 		.data-chart
 			table.table.table-striped
