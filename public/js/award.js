@@ -44,18 +44,19 @@ $(document).ready(function(){
 				data: {
 					awardProposalNumber: $('[name="awardProposalNumber"]').val(),
 					awardProposalYear: $('[name="awardProposalYear"]').val(),
-					reportType: $('[name="reportType"]').val(),
-					quarterlyDate1: $('[name="quarterlyDate1"]').val(),
-					quarterlyDate2: $('[name="quarterlyDate2"]').val(),
-					quarterlyDate3: $('[name="quarterlyDate3"]').val(),
-					annualDate: $('[name="annualDate"]').val(),
-					budgetDate: $('[name="budgetDate"]').val(),
-					budgetCloseDate: $('[name="budgetDate"]').val(),
+					reportType: $("#reportType").val(),
+					quarterlyDate1: $('#qDate1').val(),
+					quarterlyDate2: $('#qDate2').val(),
+					quarterlyDate3: $('#qDate3').val(),
+					annualDate: $('#aDate').val(),
+					budgetDate: $('#bDate').val(),
+					budgetCloseDate: $('#bCloseDate').val(),
 					awardNotes: $('[name="awardNotes"]').val()
 				},
 				dataType: 'json',
 				success: function(data) {
 					if(data) {
+						console.log(data);
 						if(data.message == "Success") {
 							$("#notification").css("display", "block");
 							$("#notification").addClass("alert alert-success");
