@@ -27,13 +27,13 @@ $(document).ready(function(){
 	//change functions update table and chart
 	$("#department").change(function() {
 		dept = $(this).val();
-		refreshTable();
 	});
 
 	$("#category").change(function() {
 		cat = $(this).val();
 		refreshTable();
 	});
+
 	$("#endYear").change(function() {
 		yearAxis = ['x'];
 		for(year in proposals) {
@@ -44,6 +44,7 @@ $(document).ready(function(){
 		}
 		refreshTable();
 	});
+
 	$("#startYear").change(function() {
 		yearAxis = ['x'];
 		for(year in proposals) {
@@ -57,16 +58,17 @@ $(document).ready(function(){
 
 	$("#chartType").change(function() {
 		type = $(this).val();
-		if(type == "pie") {
-			chart = c3.generate({
+		chart = c3.generate({
 				bindto: '#chart',
 				data: {
+					x: 'x',
 					columns: [
-						["Not Funded", (totalProposals - (fundedProposals+partialFunded))],
-						["Partially Funded", partialFunded],
-						["Funded", fundedProposals],
+						yearAxis,
+						notFunded,
+						partiallyFunded,
+						fundedArr,
 					],
-					type : "pie",
+					type : type,
 				},
 				size: {
 					height: 600,
@@ -78,56 +80,24 @@ $(document).ready(function(){
 				tooltip: {
 					format: {
 						value: function (value, ratio, id) {
-							return value + " Proposals";
+							return "$" + value.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 						}
 					}
 				},
-				pie: {
-					expand: true
-				}
-			});
-		} else {
-			chart = c3.generate({
-					bindto: '#chart',
-					data: {
-						x: 'x',
-						columns: [
-							yearAxis,
-							notFunded,
-							partiallyFunded,
-							fundedArr,
-						],
-						type : type,
-					},
-					size: {
-						height: 600,
-						width: 800
-					},
-					padding: {
-						top: 50
-					},
-					tooltip: {
-						format: {
-							value: function (value, ratio, id) {
-								return "$" + value.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-							}
+				axis : {
+					x : {
+						type : 'timeseries',
+						tick: {
+							format: function (x) { return x.getFullYear(); }
 						}
 					},
-					axis : {
-						x : {
-							type : 'timeseries',
-							tick: {
-								format: function (x) { return x.getFullYear(); }
-							}
-						},
-						y : {
-							tick: {
-								format: d3.format("$,")
-							}
+					y : {
+						tick: {
+							format: d3.format("$,")
 						}
 					}
-				});
-		}
+				}
+			});
 	});
 
 	
@@ -139,12 +109,15 @@ $(document).ready(function(){
 		requested = 0.0;
 
 		if(chart == undefined) {
-			//initialize pie
+			//initialize bar graph to all funded?
 			chart = c3.generate({
 				bindto: '#chart',
 				data: {
-					columns: [],
-					type : "pie",
+					x: 'x',
+					columns: [
+						yearAxis
+					],
+					type : type,
 				},
 				size: {
 					height: 600,
@@ -156,102 +129,92 @@ $(document).ready(function(){
 				tooltip: {
 					format: {
 						value: function (value, ratio, id) {
-							return value + " Proposal(s)";
+							return "$" + value.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 						}
 					}
 				},
-				pie: {
-					expand: true
+				axis : {
+					x : {
+						type : 'timeseries',
+						tick: {
+							format: function (x) { return x.getFullYear(); }
+						}
+					},
+					y : {
+						tick: {
+							format: d3.format("$,")
+						}
+					}
 				}
 			});
 		}
 		
 		var startYear = $('#startYear').val();
 		var endYear = $('#endYear').val();
-		fundedArr = ["Funded"];
-		partiallyFunded = ["Partially Funded"];
-		notFunded = ["Not Funded"];
+		currArray = [dept];
 
+		// TODO - only get dollar amounts for comparisons
 		for(year in proposals) {
 			var currFund = 0, currPartial = 0, currNotFund = 0;
 			if(proposals[year][0].Year >= startYear && proposals[year][0].Year <= endYear) {
 				for(num in proposals[year]) {
 					if((cat == "All" || ( categories[proposals[year][num].Category] != null && categories[proposals[year][num].Category].name == categories[cat].name)) && (dept == "All" || proposals[year][num].Department == departments[dept])) {
 						if(proposals[year][num].Decision != "Not Funded") {
-							if(proposals[year][num].Decision == "Funded") {
-								fundedProposals++;
-								currFund += proposals[year][num].Award;
-							} else {
-								partialFunded++;
-								currPartial += proposals[year][num].Award;
-							}
 							funded += proposals[year][num].Award;
-						} else {
-							currNotFund += proposals[year][num].Requested;
 						}
-						requested += proposals[year][num].Requested;
 						totalProposals++;
 					}
 				}
-				fundedArr.push(currFund);
-				partiallyFunded.push(currPartial);
-				notFunded.push(currNotFund);
+				currArray.push(funded);
 			}
-			//gives that loading effect
-			//if bar, pie, line
-			if(type == 'pie') {
-				chart.load({
-					unload: ["Not Funded", "Partially Funded", "Funded"],
-					columns: [
-						["Not Funded", (totalProposals - (fundedProposals+partialFunded))],
-						["Partially Funded", partialFunded],
-						["Funded", fundedProposals],
-					]
-				});
-			} 
 		}
-		if(type != 'pie') {
-			chart = c3.generate({
-					bindto: '#chart',
-					data: {
-						x: 'x',
-						columns: [
-							yearAxis,
-							notFunded,
-							partiallyFunded,
-							fundedArr,
-						],
-						type : type,
-					},
-					size: {
-						height: 600,
-						width: 800
-					},
-					padding: {
-						top: 50
-					},
-					tooltip: {
-						format: {
-							value: function (value, ratio, id) {
-								return "$" + value.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-							}
-						}
-					},
-					axis : {
-						x : {
-							type : 'timeseries',
-							tick: {
-								format: function (x) { return x.getFullYear(); }
-							}
-						},
-						y : {
-							tick: {
-								format: d3.format("$,")
-							}
-						}
-					}
-				});
-		}
+
+		chart.load({
+			columns:[
+				currArray
+			]
+		});
+
+		//need to keep track with whatever is loaded -- Display which departments are in the graph with an x icon to get rid of it
+
+		// chart = c3.generate({
+		// 		bindto: '#chart',
+		// 		data: {
+		// 			x: 'x',
+		// 			columns: [
+		// 				yearAxis,
+		// 				currArray,
+		// 			],
+		// 			type : type,
+		// 		},
+		// 		size: {
+		// 			height: 600,
+		// 			width: 800
+		// 		},
+		// 		padding: {
+		// 			top: 50
+		// 		},
+		// 		tooltip: {
+		// 			format: {
+		// 				value: function (value, ratio, id) {
+		// 					return "$" + value.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		// 				}
+		// 			}
+		// 		},
+		// 		axis : {
+		// 			x : {
+		// 				type : 'timeseries',
+		// 				tick: {
+		// 					format: function (x) { return x.getFullYear(); }
+		// 				}
+		// 			},
+		// 			y : {
+		// 				tick: {
+		// 					format: d3.format("$,")
+		// 				}
+		// 			}
+		// 		}
+		// 	});
 
 		$('#requested').html("$" + requested.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 		$('#funded').html("$" + funded.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));

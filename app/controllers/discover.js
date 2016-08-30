@@ -31,6 +31,7 @@ router.get('/subdomain/discover/map', function(req, res) {
 	});
 });
 
+//fund expenditure breakdown of rfp cycles
 router.get('/subdomain/discover/funds', function(req, res) {
 	// 1. Yearly funding by departments - All Time, 2016, 2015...
 	// Get total requested and total funded in an array for each year (value on clientside will determine the year 2001 - 0, 2002 - 1..)
@@ -79,6 +80,60 @@ router.get('/subdomain/discover/funds', function(req, res) {
 			}
 			getAllDepartments(function(departments) {
 				res.render('discover/funds', {
+					title: "Allocation of Funds",
+					proposals: year_proposal,
+					departments: departments,
+					categories: categories
+					});
+			});
+		});
+	});
+});
+
+//funding comparison between departments
+router.get('/subdomain/discover/funds/compare', function(req, res) {
+	var year_proposal = [];
+	var year = 2001;
+	var i = 0;
+	year_proposal[i] = [];
+	db.Legacy_Proposal.findAll({
+		where : {
+			Decision: ["Not Funded","Funded","Partially Funded"]
+		}
+	})
+	.then(function(leg_proposals) {
+		for(leg_proposal in leg_proposals) {
+			var p = {};
+			if(year != leg_proposals[leg_proposal].Year) {
+				i++;
+				year++;
+				year_proposal[i] = [];
+			}
+			p.Year = leg_proposals[leg_proposal].Year;
+			p.Number = leg_proposals[leg_proposal].Year;
+			p.Award = leg_proposals[leg_proposal].Award;
+			p.Status = leg_proposals[leg_proposal].Decision;
+			p.Requested = leg_proposals[leg_proposal].RequestedAmount;
+			p.Department = leg_proposals[leg_proposal].Department;
+			p.Decision = leg_proposals[leg_proposal].Decision;
+			if(leg_proposals[leg_proposal].Category) {
+				p.Category = leg_proposals[leg_proposal].Category;
+			} else {
+				p.Category = "Unknown";
+			}
+			year_proposal[i].push(p);
+		}
+		getProposalsAndAwards(function(props) {
+			for(prop in props) {
+				if(year != props[prop].Year) {
+					i++;
+					year++;
+					year_proposal[i] = [];
+				}
+				year_proposal[i].push(props[prop]);
+			}
+			getAllDepartments(function(departments) {
+				res.render('discover/compare', {
 					title: "Allocation of Funds",
 					proposals: year_proposal,
 					departments: departments,

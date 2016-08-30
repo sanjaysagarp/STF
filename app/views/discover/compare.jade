@@ -1,0 +1,50 @@
+extends head
+
+append js
+	script(src='/js/compare.js')
+
+append css
+	link(rel='stylesheet', href='/css/funds.css')
+
+block content
+	.container
+		h1 Compare Funding by Department
+		p Select a department and/or category to view a proposal breakdown of expenditure.
+		input#proposals(name='proposals', type='hidden', value='#{JSON.stringify(proposals)}')
+		input#allDepartments(name='allDepartments', type='hidden', value='#{JSON.stringify(departments)}')
+		input#allCategories(name='allCategories', type='hidden', value='#{JSON.stringify(categories)}')
+		.inline
+			select(id="department" name='department')
+				option(value='All') All Departments
+				each val, index in departments
+					option(value='#{index}')= val
+			button(id="addDepartment") + Add Department
+		.inline
+			select(id="startYear" name='startYear')
+				each val, index in proposals
+					option(value='#{index + proposals[0][0].Year}')= index + proposals[0][0].Year
+			select(id="endYear" name='endYear')
+				each val, index in proposals
+					option(value='#{((proposals.length - 1) - index) + proposals[0][0].Year}')= ((proposals.length  - 1) - index) + proposals[0][0].Year
+		.inline
+			select(id="category" name='category')
+				option(value='All') All Categories
+				each val, index in categories
+					option(value='#{index}')= val.name
+			select(id="chartType" name='chartType')
+				option(value='line') Line
+				option(value='bar') Bar
+		h3#title All, Category: All
+		.data-chart
+			table.table.table-striped
+				thead
+					tr
+						th Total Requested
+						th Total Funded
+						th Percent Proposals Funded
+				tbody
+					tr
+						td#requested ...
+						td#funded ...
+						td#percent ...
+		#chart
