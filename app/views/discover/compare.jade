@@ -9,7 +9,7 @@ append css
 block content
 	.container
 		h1 Compare Funding by Department
-		p Select a department and/or category to view a proposal breakdown of expenditure.
+		p View the amount of funding given to each department with the given filter. Select a department to add to the chart below. To clear all entries, click the "Clear All" button.
 		input#proposals(name='proposals', type='hidden', value='#{JSON.stringify(proposals)}')
 		input#allDepartments(name='allDepartments', type='hidden', value='#{JSON.stringify(departments)}')
 		input#allCategories(name='allCategories', type='hidden', value='#{JSON.stringify(categories)}')
@@ -18,14 +18,16 @@ block content
 				option(value='All') All Departments
 				each val, index in departments
 					option(value='#{index}')= val
-			button(id="addDepartment") + Add Department
+			button.btn.btn-primary.btn-sm#addDepartment + Add Department
 		.inline
 			select(id="startYear" name='startYear')
 				each val, index in proposals
 					option(value='#{index + proposals[0][0].Year}')= index + proposals[0][0].Year
 			select(id="endYear" name='endYear')
 				each val, index in proposals
-					option(value='#{((proposals.length - 1) - index) + proposals[0][0].Year}')= ((proposals.length  - 1) - index) + proposals[0][0].Year
+					if index < proposals.length - 1
+						option(value='#{index + proposals[0][0].Year}')= index + proposals[0][0].Year
+				option(value='#{proposals[0][0].Year + proposals.length - 1}' selected)= proposals[0][0].Year + proposals.length - 1
 		.inline
 			select(id="category" name='category')
 				option(value='All') All Categories
@@ -34,17 +36,6 @@ block content
 			select(id="chartType" name='chartType')
 				option(value='line') Line
 				option(value='bar') Bar
-		h3#title All, Category: All
-		.data-chart
-			table.table.table-striped
-				thead
-					tr
-						th Total Requested
-						th Total Funded
-						th Percent Proposals Funded
-				tbody
-					tr
-						td#requested ...
-						td#funded ...
-						td#percent ...
+		.inline
+			button.btn.btn-warning.btn-sm#clearAll Clear All
 		#chart

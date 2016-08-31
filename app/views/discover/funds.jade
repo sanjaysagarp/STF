@@ -28,7 +28,9 @@ block content
 					option(value='#{index + proposals[0][0].Year}')= index + proposals[0][0].Year
 			select(id="endYear" name='endYear')
 				each val, index in proposals
-					option(value='#{((proposals.length - 1) - index) + proposals[0][0].Year}')= ((proposals.length  - 1) - index) + proposals[0][0].Year
+					if index < proposals.length - 1
+						option(value='#{index + proposals[0][0].Year}')= index + proposals[0][0].Year
+				option(value='#{proposals[0][0].Year + proposals.length - 1}' selected)= proposals[0][0].Year + proposals.length - 1
 		.inline
 			select(id="chartType" name='chartType')
 				option(value='pie') Pie
