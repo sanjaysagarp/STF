@@ -9,8 +9,8 @@ var categories = require('../../config/categories');
 var questions = require('../../config/metricsquestions');
 var h = require('../helper');
 var moment = require('moment');
-var awardDetails = require('../../config/awarddetails');
-
+//var awardDetails = require('../../config/awarddetails');
+var gmConfig = require('../../config/google'); //google key
 
 module.exports = function(app) {
 	app.use('/', router);
@@ -44,8 +44,6 @@ router.get('/admin/award', function(req, res) {
 		title: "STF Admin"
 	});
 });
-
-
 
 //display a view of all users and permissions
 router.get('/admin/users', function(req, res) {
@@ -246,3 +244,28 @@ router.get('/admin/editProposal', function(req, res) {
 		res.send({message:"empty box"});
 	}
 });
+
+
+//displays location changer for departments
+router.get('/admin/departments', function(req, res) {
+	getAllDepartments(function(departments) {
+		res.render('admin/departments', {
+			title: "Departments",
+			departments: departments,
+			mapKey: gmConfig.key
+		});
+	});
+});
+
+
+//Gets all departments from both legacy and current proposal tables
+function getAllDepartments(next) {
+	db.sequelize.query('SELECT Department FROM (SELECT DISTINCT lp.Department FROM STF.Legacy_Proposals lp LEFT JOIN (SELECT p.Department FROM STF.Proposals p) p ON lp.Department = p.Department WHERE lp.Department IS null OR p.Department IS null UNION SELECT DISTINCT lp.Department FROM STF.Proposals lp LEFT JOIN (SELECT p.Department FROM STF.Legacy_Proposals p) p ON lp.Department = p.Department WHERE lp.Department IS null OR p.Department IS null UNION SELECT DISTINCT lp.Department FROM STF.Proposals lp JOIN (SELECT p.Department FROM STF.Legacy_Proposals p) p ON lp.Department = p.Department) Dept WHERE Department is not null ORDER BY Department ASC;')
+	.spread(function(deps) {
+		var departments = [];
+		for(var i = 0; i < deps.length; i++) {
+			departments.push(deps[i].Department);
+		}
+		next(departments);
+	})
+}
