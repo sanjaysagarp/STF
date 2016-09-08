@@ -13,40 +13,53 @@ block content
 		input#proposals(name='proposals', type='hidden', value='#{JSON.stringify(proposals)}')
 		input#allDepartments(name='allDepartments', type='hidden', value='#{JSON.stringify(departments)}')
 		input#allCategories(name='allCategories', type='hidden', value='#{JSON.stringify(categories)}')
-		.inline
-			select(id="department" name='department')
-				option(value='All') All Departments
-				each val, index in departments
-					option(value='#{index}')= val
-			select(id="category" name='category')
-				option(value='All') All Categories
-				each val, index in categories
-					option(value='#{index}')= val.name
-		.inline
-			select(id="startYear" name='startYear')
-				each val, index in proposals
-					option(value='#{index + proposals[0][0].Year}')= index + proposals[0][0].Year
-			select(id="endYear" name='endYear')
-				each val, index in proposals
-					if index < proposals.length - 1
-						option(value='#{index + proposals[0][0].Year}')= index + proposals[0][0].Year
-				option(value='#{proposals[0][0].Year + proposals.length - 1}' selected)= proposals[0][0].Year + proposals.length - 1
-		.inline
-			select(id="chartType" name='chartType')
-				option(value='pie') Pie
-				option(value='line') Line
-				option(value='bar') Bar
-		h3#title All, Category: All
-		.data-chart
-			table.table.table-striped
-				thead
-					tr
-						th Total Requested
-						th Total Funded
-						th Percent Proposals Funded
-				tbody
-					tr
-						td#requested ...
-						td#funded ...
-						td#percent ...
-		#chart
+		.well
+			.row
+				.col-xs-12.col-md-12
+					.col-md-6
+						select(class="form-control", id="department", name='department')
+							option(value='All') All Departments
+							each val, index in departments
+								option(value='#{index}')= val
+					.col-md-4
+						select(class="form-control", id="category", name='category')
+							option(value='All') All Categories
+							each val, index in categories
+								option(value='#{index}')= val.name
+			.row
+				.col-xs-12.col-md-12
+					.col-md-1
+						select(class="form-control", id="chartType", name='chartType')
+							option(value='pie') Pie
+							option(value='line') Line
+							option(value='bar') Bar
+					.col-md-2.col-md-offset-1
+							label.control-label Start Year:
+					.col-md-2
+						select(class="form-control", id="startYear", name='startYear')
+							each val, index in proposals
+								option(value='#{index + proposals[0][0].Year}')= index + proposals[0][0].Year
+					.col-md-2
+							label.control-label End Year:
+					.col-md-2
+						select(class="form-control", id="endYear", name='endYear')
+							each val, index in proposals
+								if index < proposals.length - 1
+									option(value='#{index + proposals[0][0].Year}')= index + proposals[0][0].Year
+							option(value='#{proposals[0][0].Year + proposals.length - 1}' selected)= proposals[0][0].Year + proposals.length - 1
+			.row
+				.col-xs-12.col-md-12
+					h3#title All, Category: All
+			.data-chart
+				table.table.table-striped
+					thead
+						tr
+							th Total Requested
+							th Total Funded
+							th Percent Proposals Funded
+					tbody
+						tr
+							td#requested ...
+							td#funded ...
+							td#percent ...
+			#chart
