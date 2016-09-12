@@ -248,7 +248,7 @@ router.get('/admin/editProposal', function(req, res) {
 
 //displays location changer for departments
 router.get('/admin/departments', function(req, res) {
-	getAllDepartments(function(departments) {
+	getAllDepartmentsLocation(function(departments) {
 		res.render('admin/departments', {
 			title: "Departments",
 			departments: departments,
@@ -257,14 +257,34 @@ router.get('/admin/departments', function(req, res) {
 	});
 });
 
+router.post('/v1/update/department', function(req, res) {
+	db.Departments.find({
+		where : {
+			Name: req.body.department
+		}
+	})
+	.then(function(department) {
+		if(department) {
+			//update location of existing department --TODO
+		} else {
+			//create a new department/location entry --TODO
+		}
 
-//Gets all departments from both legacy and current proposal tables
-function getAllDepartments(next) {
-	db.sequelize.query('SELECT Department FROM (SELECT DISTINCT lp.Department FROM STF.Legacy_Proposals lp LEFT JOIN (SELECT p.Department FROM STF.Proposals p) p ON lp.Department = p.Department WHERE lp.Department IS null OR p.Department IS null UNION SELECT DISTINCT lp.Department FROM STF.Proposals lp LEFT JOIN (SELECT p.Department FROM STF.Legacy_Proposals p) p ON lp.Department = p.Department WHERE lp.Department IS null OR p.Department IS null UNION SELECT DISTINCT lp.Department FROM STF.Proposals lp JOIN (SELECT p.Department FROM STF.Legacy_Proposals p) p ON lp.Department = p.Department) Dept WHERE Department is not null ORDER BY Department ASC;')
+	});
+});
+
+//Gets all departments from both legacy and current proposal tables, as well as location
+function getAllDepartmentsLocation(next) {
+	db.sequelize.query('SELECT Department, d.id, d.Address, d.Lat, d.Lng FROM (SELECT DISTINCT lp.Department FROM STF.Legacy_Proposals lp LEFT JOIN (SELECT p.Department FROM STF.Proposals p) p ON lp.Department = p.Department WHERE lp.Department IS null OR p.Department IS null UNION SELECT DISTINCT lp.Department FROM STF.Proposals lp LEFT JOIN (SELECT p.Department FROM STF.Legacy_Proposals p) p ON lp.Department = p.Department WHERE lp.Department IS null OR p.Department IS null UNION SELECT DISTINCT lp.Department FROM STF.Proposals lp JOIN (SELECT p.Department FROM STF.Legacy_Proposals p) p ON lp.Department = p.Department) Dept LEFT JOIN (SELECT * FROM STF.Departments d) d on Dept.Department = d.Name WHERE Department is not null ORDER BY Department ASC;')
 	.spread(function(deps) {
 		var departments = [];
 		for(var i = 0; i < deps.length; i++) {
-			departments.push(deps[i].Department);
+			var dept = {};
+			dept.Department = deps[i].Department;
+			dept.Address = deps[i].Address;
+			dept.Lat = deps[i].Lat;
+			dept.Lng = deps[i].Lng;
+			departments.push(dept);
 		}
 		next(departments);
 	})
