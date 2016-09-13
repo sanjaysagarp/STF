@@ -15,7 +15,7 @@ block content
 			p Edit and change things others can't!
 	.container
 		input#allDepartments(name='allDepartments', type='hidden', value='#{JSON.stringify(departments)}')
-		form.form-horizontal(data-toggle='formcache', name='departmentForm', method='post', action='/v1/update/department')
+		form.form-horizontal(data-toggle='formcache', id='departmentForm', method='post', action='/v1/update/department')
 			h1 Manage Departments
 			.col-xs-12
 				.col-md-12.well
@@ -23,9 +23,10 @@ block content
 						label.col-md-4.control-label(for='department') Department
 						.col-md-4
 							select.form-control(id="department", name='department', style="margin: 0px;")
+								option(value='default') Select a department
 								each val, index in departments
 									option(value='#{index}')= val.Department
-							span.help-block#location Location has not been set for this department
+							span.help-block#notification
 					.form-group
 						label.col-md-4.control-label(for='address') Address
 						.col-md-5

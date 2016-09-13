@@ -257,8 +257,9 @@ router.get('/admin/departments', function(req, res) {
 	});
 });
 
+//creates/updates department default location
 router.post('/v1/update/department', function(req, res) {
-	db.Departments.find({
+	db.Department.find({
 		where : {
 			Name: req.body.department
 		}
@@ -266,8 +267,25 @@ router.post('/v1/update/department', function(req, res) {
 	.then(function(department) {
 		if(department) {
 			//update location of existing department --TODO
+			department.update({
+				Address: req.body.address,
+				Lat: req.body.latitude,
+				Lng: req.body.longitude
+			})
+			.then(function() {
+				res.send({message:"updated"});
+			});
 		} else {
 			//create a new department/location entry --TODO
+			db.Department.create({
+				Name: req.body.department,
+				Address: req.body.address,
+				Lat: req.body.latitude,
+				Lng: req.body.longitude
+			})
+			.then(function() {
+				res.send({message:"updated"});
+			});
 		}
 
 	});
