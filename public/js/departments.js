@@ -24,7 +24,7 @@ $(document).ready(function(){
 		var deptIndex = $(this).val();
 
 		if(deptIndex != "default") {
-			console.log(departments[deptIndex]);
+			//console.log(departments[deptIndex]);
 
 			if(departments[deptIndex].Lat == null || departments[deptIndex].Lng == null) {
 				$('#notification').html('Location not set for this department.');
@@ -76,7 +76,11 @@ $(document).ready(function(){
 			success: function(data) {
 				if(data) {
 					$('#notification').html('Default location has been updated to ' + $('#address').val());
+					//console.log(departments[$('#department').val()]);
 					departments[$('#department').val()].Address = $('#address').val();
+					departments[$('#department').val()].Lat = parseFloat($('#latitude').val());
+					departments[$('#department').val()].Lng = parseFloat($('#longitude').val());
+					//console.log(departments[$('#department').val()]);
 					$('#notification').css('color', 'green');
 				} else {
 					$('#notification').html('Something went wrong. Try again');

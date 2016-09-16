@@ -5,7 +5,8 @@ module.exports = function(sequelize, DataTypes) {
 		ProposalId: 'INT',
 		Address: DataTypes.STRING,
 		Lat: DataTypes.FLOAT(10, 6),
-		Lng: DataTypes.FLOAT(10, 6)
+		Lng: DataTypes.FLOAT(10, 6),
+		Description: DataTypes.STRING
 	});
 
 	return Location;

@@ -17,6 +17,7 @@ block content
 		input#allDepartments(name='allDepartments', type='hidden', value='#{JSON.stringify(departments)}')
 		form.form-horizontal(data-toggle='formcache', id='departmentForm', method='post', action='/v1/update/department')
 			h1 Manage Departments
+			p Set default location for departments to showcase where equipment/proposals could be on the technology map.
 			.col-xs-12
 				.col-md-12.well
 					.form-group

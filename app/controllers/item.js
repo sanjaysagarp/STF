@@ -6,6 +6,7 @@ var	router = express.Router();
 var	db = require('../models');
 var shib = require('passport-uwshib');
 var h = require('../helper');
+var gmConfig = require('../../config/google'); //google key
 
 module.exports = function(app) {
 	app.use('/', router);
@@ -91,6 +92,99 @@ router.get('/item/delete/:id', function(req, res) {
 	});
 });
 
+//renders location map page for an item
+router.get('/item/location/:id', function(req, res) {
+	db.Item.find({where: {id: req.params.id}})
+	.then(function(item) {
+		if(item) {
+			db.Proposal.find({where: {id: item.ProposalId}})
+			.then(function(proposal) {
+				db.Item.findAll({
+					where: {
+						ProposalId: item.ProposalId,
+						PartialId: null,
+						SupplementalId: null
+					}
+				})
+				.then(function(items) {
+					db.Location.find({
+						where: {
+							ItemId: item.id
+						}
+					})
+					.then(function(location) {
+						if (res.locals.isAdmin || h.approvedEditor(res, req.user, proposal) ||  h.approvedReporter(res, req.user, proposal)) {
+							res.render('items/locationview', {
+								title: item.ItemName,
+								location: location,
+								item: item,
+								items: items,
+								proposal: proposal,
+								mapKey: gmConfig.key
+							});
+						} else {
+							displayErrorPage(res, 'You are not an Approved reporter of this Proposal', 'Access Denied');
+						}
+					})
+				});
+			});
+		} else {
+			displayErrorPage(res, "Item does not exists", "Bad Request");
+		}
+	});
+});
+
+//saves location for item
+router.post('/v1/update/location', function(req, res) {
+	// find location to see if it exists
+	db.Location.find({
+		where : {
+			ItemId: req.body.itemId
+		}
+	})
+	.then(function(location) {
+		if(!location) {
+			// create location
+			db.Location.create({
+				ItemId: req.body.itemId,
+				ProposalId: req.body.proposalId,
+				Address: req.body.address,
+				Lat: req.body.latitude,
+				Lng: req.body.longitude,
+				Description: req.body.description
+			})
+			.then(function(loc) {
+				db.Item.update({
+					LocationId: loc.id
+				},
+				{
+					where : {
+						id: req.body.itemId
+					}
+				})
+				.then(function() {
+					res.send({message: "updated"});
+				});
+			});
+		} else {
+			//update location
+			db.Location.update({
+				Address: req.body.address,
+				Lat: req.body.latitude,
+				Lng: req.body.longitude,
+				Description: req.body.description
+			},
+			{
+				where: {
+					ItemId: req.body.itemId
+				}
+			})
+			.then(function() {
+				res.send({message: "updated"});
+			});
+		}
+	});
+});
 
 //Get an item's items page from its id
 router.get('/item/:id', function(req,res) {
@@ -100,13 +194,14 @@ router.get('/item/:id', function(req,res) {
 		}
 	}).then(function(item) {
 
-		//make sure the item is not in  a partial
-		if (item.PartialId == null) {	
+		//make sure the item is not in a partial / supplemental
+		if (item.PartialId == null && item.SupplementalId == null) {
 			//get the rest of the items
 			db.Item.findAll({
 				where: {
 					ProposalId: item.ProposalId,
-					PartialId: null
+					PartialId: null,
+					SupplementalId: null
 				}
 			}).then(function(items) {
 				db.Proposal.find({
@@ -121,13 +216,19 @@ router.get('/item/:id', function(req,res) {
 							items: items,
 							proposal: proposal
 						});
+					} else {
+						displayErrorPage(res, 'You are not an Approved reporter of this Proposal', 'Access Denied');
 					}
 				});
 			});
 
-		//This item is in a partial, redirect
+		//This item is in a partial / supplemental, redirect
 		} else {
-			res.redirect('/partial/' + item.PartialId + '/' + item.id);
+			if(item.PartialId == null) {
+				res.redirect('/partial/' + item.PartialId + '/' + item.id);
+			} else {
+				res.redirect('/supplemental/' + item.SupplementalId + '/' + item.id);
+			}
 		}
 	});
 });
@@ -152,6 +253,8 @@ router.post('/item/:id', function(req, res) {
 			}).then(function(item) {
 				 res.redirect('/item/' + req.params.id)
 			});
+		} else {
+			displayErrorPage(res, 'You are not an Approved reporter of this Proposal', 'Access Denied');
 		}
 
 	});

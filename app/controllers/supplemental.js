@@ -59,9 +59,13 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 					}
 				})
 				.then(function(user) {
+					var id;
+					if(!user) {
+						id = 0;
+					}
 					db.Vote.find({
 						where: {
-							VoterId: user.id,
+							VoterId: id,
 							SupplementalId: req.params.supplemental
 						}
 					})
