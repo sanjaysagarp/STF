@@ -45,7 +45,36 @@ router.get('/partials/new/:id', function(req, res) {
 						i.updatedAt = null;
 						i.PartialId = partial.id;
 						console.log(i);
-						db.Item.create(i);
+						db.Item.create(i).then(function(newItem) {
+							//find old location row and creates location for new item
+							if(newItem.LocationId) {
+								db.Location.find({
+									where : {
+										id: newItem.LocationId
+									}
+								})
+								.then(function(location) {
+									//creates new location if found
+									db.Location.create({
+										ItemId: newItem.id,
+										ProposalId: location.ProposalId,
+										Address: location.Address,
+										Lat: location.Lat,
+										Lng: location.Lng,
+										Description: location.Description
+									})
+									.then(function(newLocation) {
+										db.Item.update({
+											LocationId: newLocation.id
+										}, {
+											where: {
+												id: newItem.id
+											}
+										});
+									});
+								});
+							}
+						});
 					}
 					redirect = partial.id;
 
@@ -152,7 +181,6 @@ router.post('/partial/:partial/:item', function(req, res) {
 						});
 					} else {
 						if (req.body['delete'] == 'true') {
-								console.log("WHY!!!!");
 								res.redirect('/proposals/' + partial.ProposalId);
 								partial.destroy()
 							

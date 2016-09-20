@@ -324,45 +324,165 @@ router.get('/supplemental/view/:supplemental', function(req, res) {
 router.get('/supplementals/new/:id', function(req, res) {
 	if (res.locals.isAdmin || res.locals.isCommitteeMember || h.approvedReporter(res, res.user, db.Proposal.find({where:{id: req.params.id}}))) {
 
-		//get all funded items from the original proposal
-		db.Item.findAll({
+		db.Proposal.find({
 			where: {
-				ProposalId: req.params.id,
-				SupplementalId: null,
-				PartialId: null
+				id: req.params.id
 			}
-		}).then(function(items) {
-			var redirect;
+		})
+		.then(function(proposal) {
+			//check if partial has been funded
+			if(proposal.PartialFunded) {
+				db.Item.findAll({
+					where: {
+						ProposalId: proposal.id,
+						SupplementalId: null,
+						PartialId: proposal.PartialFunded
+					}
+				})
+				.then(function(items) {
+					var redirect;
 
-			//create the supplemental
-			db.Supplemental.create({
-				Author: res.locals.netId,
-				ProposalId: req.params.id
-			})
-			.then(function(supplemental) {
-				
-				//create each duplicated item, bound to the supplemental -- Do we want this?
-				for (item in items) {
-					var i = items[item].dataValues;
-					i.id = null;
-					i.createdAt = null;
-					i.updatedAt = null;
-					i.SupplementalId = supplemental.id;
-					db.Item.create(i);
-				}
-				redirect = supplemental.id;
+					//create the supplemental
+					db.Supplemental.create({
+						Author: res.locals.netId,
+						ProposalId: req.params.id
+					})
+					.then(function(supplemental) {
+						
+						//create each duplicated item, bound to the supplemental
+						for (item in items) {
+							var i = items[item].dataValues;
+							var originalItem = items[item].dataValues;
+							var oldId = i.id;
+							i.id = null; // auto increments
+							i.LocationId = null;
+							i.createdAt = null; // auto
+							i.updatedAt = null; // auto
+							i.SupplementalId = supplemental.id;
+							db.Item.create(i).then(function(newItem) {
+								//find old location row
+								if(newItem.LocationId) {
+									db.Location.find({
+										where : {
+											id: newItem.LocationId
+										}
+									})
+									.then(function(location) {
+										db.Location.create({
+											ItemId: newItem.id,
+											ProposalId: location.ProposalId,
+											Address: location.Address,
+											Lat: location.Lat,
+											Lng: location.Lng,
+											Description: location.Description
+										})
+										.then(function(newLocation) {
+											db.Item.update({
+												LocationId: newLocation.id
+											}, {
+												where: {
+													id: newItem.id
+												}
+											});
+										});
+									});
+								}
+							});
+						}
+						redirect = supplemental.id;
+					})
+					.then(function() {
+						//redirect to new supplemental
+						res.redirect('/supplemental/' + redirect + '/0');
+					});
+				});
+			} else {
+				db.Item.findAll({
+					where: {
+						ProposalId: proposal.id,
+						SupplementalId: null,
+						PartialId: null
+					}
+				})
+				.then(function(items) {
+					var redirect;
 
-			//redirect to new supplemental
-			})
-			.then(function() {
-				res.redirect('/supplemental/' + redirect + '/0');
-			});
+					//create the supplemental
+					db.Supplemental.create({
+						Author: res.locals.netId,
+						ProposalId: req.params.id
+					})
+					.then(function(supplemental) {
+						//create each duplicated item, bound to the supplemental
+						for (item in items) {
+							var i = items[item].dataValues;
+							i.id = null; // auto increments
+							i.createdAt = null; // auto
+							i.updatedAt = null; // auto
+							i.SupplementalId = supplemental.id;
+							db.Item.create(i).then(function(newItem) {
+								//find old location row and creates replica location for new item
+								if(newItem.LocationId) {
+									db.Location.find({
+										where : {
+											id: newItem.LocationId
+										}
+									})
+									.then(function(location) {
+										db.Location.create({
+											ItemId: newItem.id,
+											ProposalId: location.ProposalId,
+											Address: location.Address,
+											Lat: location.Lat,
+											Lng: location.Lng,
+											Description: location.Description
+										})
+										.then(function(newLocation) {
+											db.Item.update({
+												LocationId: newLocation.id
+											}, {
+												where: {
+													id: newItem.id
+												}
+											});
+										});
+									});
+								}
+							});
+						}
+						redirect = supplemental.id;
+					})
+					.then(function() {
+						//redirect to new supplemental
+						res.redirect('/supplemental/' + redirect + '/0');
+					});
+				});
+			}
 		});
 	} else {
 		h.displayErrorPage(res, 'The requested supplemental could not be found or you are not the author',
 						'Requested does not Exist');
 	}
 });
+
+function copyItemLocation(newItem, oldId) {
+	//create new location for item if it has a location id
+	db.Location.find({
+		where : {
+			id: oldId
+		}
+	})
+	.then(function(location) {
+		db.Location.create({
+			ItemId: newItem.id,
+			ProposalId: newItem.ProposalId,
+			Address: newItem.Address,
+			Lat: newItem.Lat,
+			Lng: newItem.Lng,
+			Description: newItem.Description
+		});
+	});
+}
 
 
 router.get('/supplemental/:supplemental/:item', function(req, res) {
@@ -448,7 +568,10 @@ router.post('/supplemental/delete/:supplemental', function(req, res) {
 				}
 			})
 			.then(function() {
-				res.redirect('/proposals/' + supplemental.ProposalId);
+				db.Proposal.find({where: {id: supplemental.ProposalId}})
+				.then(function(proposal) {
+					res.redirect('/proposals/' + proposal.Year + '/' + proposal.Number);
+				});
 			});
 		}
 	});

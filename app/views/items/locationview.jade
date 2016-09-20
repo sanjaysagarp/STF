@@ -34,6 +34,11 @@ block content
 						.col-md-5.col-md-offset-4
 							div#location-picker(style="width: 600px; height: 400px;")
 					.form-group
+						label.col-md-4.control-label(for='description') Description (Optional)
+						.col-md-5
+							textarea(rows="3")#description.form-control(name='description') #{location.Description} 
+							#descriptionHelp.span.help-block Any additional notes regarding this item location
+					.form-group
 						.col-md-2.col-md-offset-4
 							button.btn.btn-default.form-control.form-button#save Save
 						.col-md-2
