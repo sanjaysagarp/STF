@@ -114,6 +114,7 @@ router.get('/partial/:partial/:item', function(req, res) {
 						db.Item.findAll({
 							where: {
 								PartialId: partial.id,
+								SupplementalId: null
 							}
 						}).then(function(items) {
 							if (req.params.item != 0) {

@@ -325,7 +325,10 @@ block content
 mixin item(item)
 	tr.item-info.info-first-line
 		if editor
-			td <h4>#{item.ItemName}</h4> (<a href='/item/#{item.id}'>edit</a>)
+			if item.LocationId
+				td <h4>#{item.ItemName}</h4> (<a href='/item/#{item.id}'>edit</a> / <a href='/item/location/#{item.id}'>edit location</a>)
+			else
+				td <h4>#{item.ItemName}</h4> (<a href='/item/#{item.id}'>edit</a> / <a href='/item/location/#{item.id}'>add location</a>)
 		else 
 			td: h4= item.ItemName
 		td= item.Group
