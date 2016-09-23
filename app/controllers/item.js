@@ -74,16 +74,21 @@ router.get('/item/delete/:id', function(req, res) {
 		var supplemental = item.SupplementalId;
 		db.Proposal.find({ where: {id: item.ProposalId} }).then(function(proposal) {
 			if (res.locals.isAdmin || h.approvedEditor(res, req.user, proposal) ||  h.approvedReporter(res, req.user, proposal)) {
-				item.destroy().then(function() {
-					if (partial != null) {
-						res.redirect('/partial/' + partial + '/0')
-					} else if (supplemental != null) {
-						res.redirect('/supplemental/' + supplemental + '/0')
-					} else if (proposal.Status != 0) { //if a proposal is submitted, goto showpage
-						res.redirect('/proposals/' + proposal.id);
-					} else { //go back to the edit proposal page
-						res.redirect('/proposals/update/' + proposal.id + '#step-7');
+				db.Location.find({where: {id: item.LocationId}}).then(function(location) {
+					if(location) {
+						location.destroy();
 					}
+					item.destroy().then(function() {
+						if (partial != null) {
+							res.redirect('/partial/' + partial + '/0')
+						} else if (supplemental != null) {
+							res.redirect('/supplemental/' + supplemental + '/0')
+						} else if (proposal.Status != 0) { //if a proposal is submitted, goto showpage
+							res.redirect('/proposals/' + proposal.id);
+						} else { //go back to the edit proposal page
+							res.redirect('/proposals/update/' + proposal.id + '#step-7');
+						}
+					});
 				});
 			} else {
 				displayErrorPage(res, 'You are not an Approved reporter of this Proposal', 'Access Denied');

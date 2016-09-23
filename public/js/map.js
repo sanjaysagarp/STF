@@ -2,7 +2,13 @@ window.addEventListener('load', function() {
 
 	var map;
 	var infowindow;
+	var items = JSON.parse($('#itemLocations').val());
 	initMap();
+
+	$("#searchButton").on('click', function() {
+		//on search click, form ajax post - return list of itemnames from search terms
+	});
+
 	function initMap() {
 		infowindow = new google.maps.InfoWindow();
 		var uw = new google.maps.LatLng(47.6553, -122.3035);
@@ -10,38 +16,33 @@ window.addEventListener('load', function() {
 			center: uw,
 			zoom: 16
 		});
-		var service = new google.maps.places.PlacesService(map);
-		
-		service.nearbySearch({
-			location: uw,
-			radius: '800',
-			type: ['school']
-		}, callback);
-
-	}
-
-	function callback(results, status) {
-		if (status === google.maps.places.PlacesServiceStatus.OK) {
-			for (var i = 0; i < results.length; i++) {
-				createMarker(results[i]);
-			}
+		for(item in items) {
+			//have a limit? showing all would be overwhelming
+			console.log(items[item]);
+			createMarker(items[item]);
 		}
 	}
-	//need location of departments or proposals? -- are we gonna specify which proposals come from which departments
-	//currently using nearby radius for location.
-	// HUB: 47.655464, -122.305131
 	
-	// This query is limited to 20 places
-	function createMarker(place) {
-		var placeLoc = place.geometry.location;
+	function createMarker(item) {
 		var marker = new google.maps.Marker({
 			map: map,
 			animation: google.maps.Animation.DROP,
-			position: place.geometry.location
+			position: {lat: item.Lat, lng: item.Lng}
 		});
 
 		google.maps.event.addListener(marker, 'click', function() {
-			infowindow.setContent(place.name);
+			if (item.Description) {
+				infowindow.setContent(
+					'<h3>' + item.ItemName + '</h3>'
+					+ '<p>' + item.Description + '</p>'
+				);
+			} else {
+				infowindow.setContent(
+				'<h3>' + item.ItemName + '</h3>'
+				);
+			}
+			//  put some jquery here for the sidewindow?
+			//$('#itemList')
 			infowindow.open(map, this);
 		});
 	}

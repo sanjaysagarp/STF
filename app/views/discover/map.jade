@@ -9,15 +9,19 @@ append css
 
 block content
 	.container-fluid
+		input#itemLocations(name='allCategories', type='hidden', value='#{JSON.stringify(items)}')
 		.navigator
 			.container
-				.title
-					h2 Proposal List
-				.list
-					ul
-						li Blah
-						li Blah
-						li Blah
-						li Blah
+				.row
+					.title
+						.col-lg-4
+							.input-group.form(method='post' action='/v1/retrieve/items')
+								input.form-control(type="text", placeholder="Search for...")#searchInput
+								span.input-group-btn
+									button.btn.btn-default(type='button')#searchButton
+										span.glyphicon.glyphicon-search
+				.row
+					.list
+						ul#itemList
 				
 		.map_canvas

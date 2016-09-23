@@ -13,6 +13,11 @@
 	padding: 0;
 }
 
+.title {
+	padding-top: 25px;
+	padding-bottom: 25px;
+}
+
 @media (min-width: 768px) {
 	.navigator {
 		z-index: 9;

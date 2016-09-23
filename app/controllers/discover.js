@@ -25,9 +25,13 @@ router.get('/subdomain/discover/find', function(req, res){
 });
 
 router.get('/subdomain/discover/map', function(req, res) {
-	res.render('discover/map', {
-		title: "Technology Map",
-		mapKey: gmConfig.key
+	//find all the locations from the location table
+	getFundedItemLocations("", function(items) {
+		res.render('discover/map', {
+			title: "Technology Map",
+			mapKey: gmConfig.key,
+			items: items
+		});
 	});
 });
 
@@ -144,6 +148,13 @@ router.get('/subdomain/discover/funds/compare', function(req, res) {
 	});
 });
 
+//searches database for given search term - TODO TEST THIS
+router.post('/subdomain/discover/api/v1/get/items', function(req, res) {
+	getFundedItemsLocations(req.body.searchTerm, function(items) {
+		res.send(items);
+	});
+});
+
 // sql query for retrieving all proposals 2016+ with award amounts (Not funded, Partially Funded and Fully Funded)
 function getProposalsAndAwards(next) {
 	db.sequelize.query('SELECT p.id, p.Year, p.Number, p.ProposalTitle, p.Category, p.Department, p.Status, SUM(i.Price * i.Quantity) as Requested, a.FundedAmount FROM STF.Proposals p LEFT JOIN STF.Awards a  ON p.id = a.ProposalId LEFT JOIN STF.Items i ON p.id = i.Proposalid WHERE (p.Status = 4 OR p.Status = 5 OR p.Status = 6) AND (i.PartialId IS NULL AND i.SupplementalId IS NULL) GROUP BY p.id;')
@@ -193,5 +204,17 @@ function getAllDepartments(next) {
 			departments.push(deps[i].Department);
 		}
 		next(departments);
+	})
+}
+
+//MAY BE VULNERABLE
+function getFundedItemLocations(searchTerm, next) {
+	db.sequelize.query('SELECT p.Year, p.Number, p.ProposalTitle, i.ItemName, l.ProposalId, l.Address, l.Lat, l.Lng, l.Description FROM STF.Locations l JOIN STF.Items i ON i.id = l.ItemId JOIN STF.Proposals p ON p.id = i.ProposalId JOIN STF.Supplementals s ON p.id = s.ProposalId WHERE ((p.Status = 4 AND i.PartialId is null AND i.SupplementalId is null) OR (p.Status = 4 AND i.PartialId is null AND s.id is not null AND s.id = i.SupplementalId) OR (p.Status = 5 AND p.PartialFunded = i.PartialId)) AND i.ItemName LIKE ?;', {replacements: [searchTerm +'%'], type: sequelize.QueryTypes.SELECT})
+	.spread(function(itm) {
+		var items = [];
+		for(var i = 0; i < itm.length; i++) {
+			items.push(itm[i]);
+		}
+		next(items);
 	})
 }

@@ -5,7 +5,8 @@ module.exports = function(sequelize, DataTypes) {
 		Author: DataTypes.STRING,
 		Title: DataTypes.STRING,
 		Abstract: DataTypes.TEXT,
-		Status: 'TINYINT'
+		Status: 'TINYINT',
+		Submitted: 'TINYINT'
 	});
 
 	return Supplemental;
@@ -17,3 +18,7 @@ module.exports = function(sequelize, DataTypes) {
 //0 = open for voting
 //1 = approved
 //2 = denied
+
+//Submitted
+//0 = Not submitted
+//1 = submitted

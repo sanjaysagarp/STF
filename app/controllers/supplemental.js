@@ -13,6 +13,20 @@ module.exports = function(app) {
 //ensure login on all supplemental pages
 router.all('/supplemental*', shib.ensureAuth('/login'), function(req, res, next) {next()} );
 
+router.get('/supplementals/browse', function(req, res) {
+	if(res.locals.isCommitteeMember || res.locals.isAdmin) {
+		getSupplementalProposals(function(supplementals) {
+			res.render('proposals/browse_supplementals',{
+				title: 'Browse Open Supplementals',
+				supplementals: supplementals
+			});
+		})
+	} else {
+		h.displayErrorPage(res, 'The requested page is unavailable for you', 'No Access');
+	}
+});
+
+
 //renders the supplemental view/voting page
 router.get('/supplemental/view/:supplemental', function(req, res) {
 	db.Supplemental.find({
@@ -499,7 +513,7 @@ router.get('/supplemental/:supplemental/:item', function(req, res) {
 						'Supplemental not found!');
 		} else {
 			//check if user is author of supplemental or an admin
-			if (res.locals.netId == supplemental.Author || res.locals.isAdmin) {
+			if ((res.locals.netId == supplemental.Author && supplemental.Submitted == 0) || res.locals.isAdmin) {
 				//retrieve items and render page!
 				db.Proposal.find({
 						where: {
@@ -544,7 +558,7 @@ router.get('/supplemental/:supplemental/:item', function(req, res) {
 						});
 					});
 			} else {
-				h.displayErrorPage(res, 'You are not the author of this supplemental',
+				h.displayErrorPage(res, 'The supplemental is already submitted or you may not have access',
 						'You do not have permission!');
 			}
 		}
@@ -562,18 +576,49 @@ router.post('/supplemental/delete/:supplemental', function(req, res) {
 						'Supplemental not found!');
 		} else {
 			supplemental.destroy();
-			db.Item.destroy({
+			db.Item.findAll({
 				where: {
 					SupplementalId: req.params.supplemental
 				}
 			})
-			.then(function() {
-				db.Proposal.find({where: {id: supplemental.ProposalId}})
-				.then(function(proposal) {
-					res.redirect('/proposals/' + proposal.Year + '/' + proposal.Number);
+			.then(function(items) {
+				for(item in items) {
+					//deletes location associated with item
+					if(items[item].LocationId) {
+						db.Location.destroy({
+							where: {
+								id: items[item].LocationId
+							}
+						});
+					}
+				}
+			
+				db.Item.destroy({
+					where: {
+						SupplementalId: req.params.supplemental
+					}
+				})
+				.then(function() {
+					db.Proposal.find({where: {id: supplemental.ProposalId}})
+					.then(function(proposal) {
+						res.redirect('/proposals/' + proposal.Year + '/' + proposal.Number);
+					});
 				});
 			});
 		}
+	});
+});
+
+//submits a supplemental
+router.post('/supplemental/submit/:supplemental', function(req, res) {
+	db.Supplemental.update({
+		Submitted: 1
+	},
+	{
+		where: {id:req.params.supplemental}
+	})
+	.then(function() {
+		res.redirect('/supplemental/view/' + req.params.supplemental);
 	});
 });
 
@@ -714,4 +759,15 @@ function getDeletedItems(singleItem, itemArray) {
 		}
 	}
 	return singleItem;
+}
+
+function getSupplementalProposals(next) {
+	db.sequelize.query('SELECT p.Year, p.Number, s.id, s.Author, s.Title, s.updatedAt FROM STF.Supplementals s JOIN STF.Proposals p on s.ProposalId = p.id where s.Submitted = 1 and s.Status = 0;')
+	.spread(function(sups) {
+		var supplementals = [];
+		for(var i = 0; i < sups.length; i++) {
+			supplementals.push(sups[i]);
+		}
+		next(supplementals);
+	})
 }
