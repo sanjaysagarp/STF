@@ -24,6 +24,9 @@ block content
 						th Proposal
 				tbody
 					- each supplemental in supplementals
-						td: a(href='/supplemental/view/#{supplemental.id}') #{supplemental.Title}
-						td #{supplemental.Author}
-						td: a(href='/proposals/#{supplemental.Year}/#{supplemental.Number}') View
+						tr
+							td: a(href='/supplemental/view/#{supplemental.id}') #{supplemental.Title}
+							td #{supplemental.Author}
+							td: a(href='/proposals/#{supplemental.Year}/#{supplemental.Number}') View
+			else
+				p There are currently no submitted supplementals

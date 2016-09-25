@@ -56,7 +56,6 @@ $(document).ready(function() {
 	$('#submitButton').click(function(e) {
 		e.preventDefault();
 		var receipt = "";
-		console.log("clicked");
 		if($('input[id="receipt"]').length > 0) {
 			receipt = $('input[id="receipt"]')[0].files[0];
 		}

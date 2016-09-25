@@ -558,8 +558,13 @@ router.get('/supplemental/:supplemental/:item', function(req, res) {
 						});
 					});
 			} else {
-				h.displayErrorPage(res, 'The supplemental is already submitted or you may not have access',
+				if((res.locals.netId == supplemental.Author && supplemental.Submitted == 1)) {
+					h.displayErrorPage(res, 'Your supplemental is submitted',
+						'Supplemental has already been submitted');
+				} else {
+					h.displayErrorPage(res, 'You do not have access to editing this supplemental',
 						'You do not have permission!');
+				}
 			}
 		}
 	});

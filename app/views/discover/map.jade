@@ -10,18 +10,22 @@ append css
 block content
 	.container-fluid
 		input#itemLocations(name='allCategories', type='hidden', value='#{JSON.stringify(items)}')
-		.navigator
+		.navigator#flipped
 			.container
 				.row
 					.title
 						.col-lg-4
-							.input-group.form(method='post' action='/v1/retrieve/items')
-								input.form-control(type="text", placeholder="Search for...")#searchInput
-								span.input-group-btn
-									button.btn.btn-default(type='button')#searchButton
-										span.glyphicon.glyphicon-search
+							h3 Search Items
 				.row
-					.list
-						ul#itemList
+					.col-lg-4
+						.input-group.form(method='get' action='/api/v1/get/items')#searchForm
+							input.form-control(type="text", placeholder="Search for...")#searchInput
+							span.input-group-btn
+								button.btn.btn-default(type='button')#searchButton
+									span.glyphicon.glyphicon-search
+				.row
+					.col-lg-4
+						.list
+							ul#itemList
 				
 		.map_canvas

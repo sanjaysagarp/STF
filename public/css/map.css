@@ -12,26 +12,58 @@
 	margin: 0;
 	padding: 0;
 }
-
 .title {
 	padding-top: 25px;
 	padding-bottom: 25px;
 }
 
+#flipped {
+	direction: ltr;
+}
+
+.listItem {
+	background:none;
+	border:none;
+	margin:0;
+	padding:0;
+	
+}
+
+#itemList {
+	direction: ltr;
+	padding: 0;
+	padding-left: 1%;
+}
+
+button {
+	color: #4b2e83;
+}
+button:hover {
+    color: #4b3a83;
+}
+
+#searchForm {
+	padding-bottom: 5%;
+}
+
+
 @media (min-width: 768px) {
 	.navigator {
 		z-index: 9;
-		width: 725px;
+		width: 400px;
 		height: 50%;
 		background-color: #fff;
 		position: absolute;
 		top: 65%;
 		margin-top: -410px;
-		right: -340px;
+		right: 0px;
 		padding: 0;
 		-webkit-box-shadow: 0px 0px 0px 3px rgba(220,217,220,1);
 		-moz-box-shadow: 0px 0px 0px 3px rgba(220,217,220,1);
 		box-shadow: 0px 0px 0px 3px rgba(220,217,220,1);
+		direction: rtl;
+		overflow-x: hidden;
+		overflow-y: scroll;
 	}
 }
 

@@ -148,10 +148,10 @@ router.get('/subdomain/discover/funds/compare', function(req, res) {
 	});
 });
 
-//searches database for given search term - TODO TEST THIS
-router.post('/subdomain/discover/api/v1/get/items', function(req, res) {
-	getFundedItemsLocations(req.body.searchTerm, function(items) {
-		res.send(items);
+//searches database for given search term
+router.get('/subdomain/discover/api/v1/get/items', function(req, res) {
+	getFundedItemLocations(req.query.searchTerm, function(items) {
+		res.send({data: items});
 	});
 });
 
@@ -204,17 +204,17 @@ function getAllDepartments(next) {
 			departments.push(deps[i].Department);
 		}
 		next(departments);
-	})
+	});
 }
 
-//MAY BE VULNERABLE
+//gets all funded item locations that are found -- THIS is only for items, not department locations
 function getFundedItemLocations(searchTerm, next) {
-	db.sequelize.query('SELECT p.Year, p.Number, p.ProposalTitle, i.ItemName, l.ProposalId, l.Address, l.Lat, l.Lng, l.Description FROM STF.Locations l JOIN STF.Items i ON i.id = l.ItemId JOIN STF.Proposals p ON p.id = i.ProposalId JOIN STF.Supplementals s ON p.id = s.ProposalId WHERE ((p.Status = 4 AND i.PartialId is null AND i.SupplementalId is null) OR (p.Status = 4 AND i.PartialId is null AND s.id is not null AND s.id = i.SupplementalId) OR (p.Status = 5 AND p.PartialFunded = i.PartialId)) AND i.ItemName LIKE ?;', {replacements: [searchTerm +'%'], type: sequelize.QueryTypes.SELECT})
+	db.sequelize.query('SELECT DISTINCT p.Year, p.Number, p.ProposalTitle, i.ItemName, l.ProposalId, l.Address, l.Lat, l.Lng, l.Description FROM STF.Locations l JOIN STF.Items i ON i.id = l.ItemId JOIN STF.Proposals p ON p.id = i.ProposalId JOIN STF.Supplementals s ON p.id = s.ProposalId WHERE ((p.Status = 4 AND i.PartialId is null AND i.SupplementalId is null) OR (p.Status = 4 AND i.PartialId is null AND s.id is not null AND s.id = i.SupplementalId) OR (p.Status = 5 AND p.PartialFunded = i.PartialId)) AND i.ItemName LIKE ?;', {replacements: [searchTerm +'%']})
 	.spread(function(itm) {
 		var items = [];
 		for(var i = 0; i < itm.length; i++) {
 			items.push(itm[i]);
 		}
 		next(items);
-	})
+	});
 }
