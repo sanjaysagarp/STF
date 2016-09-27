@@ -46,7 +46,7 @@ function itemMaker(req, res) {
 			res.redirect('/item/' + item.id)
 		});
 	} else {
-		displayErrorPage(res, 'You are not able to create an item', 'Access Denied');
+		h.displayErrorPage(res, 'You are not able to create an item', 'Access Denied');
 	}
 }
 
@@ -61,7 +61,7 @@ router.post('/items/new', function(req, res) {
 			});
 		});
 	} else {
-		displayErrorPage(res, 'You are not able to create an item', 'Access Denied');
+		h.displayErrorPage(res, 'You are not able to create an item', 'Access Denied');
 	}
 });
 
@@ -91,13 +91,13 @@ router.get('/item/delete/:id', function(req, res) {
 					});
 				});
 			} else {
-				displayErrorPage(res, 'You are not an Approved reporter of this Proposal', 'Access Denied');
+				h.displayErrorPage(res, 'You are not an Approved reporter of this Proposal', 'Access Denied');
 			}
 		});
 	});
 });
 
-//renders location map page for an item
+//renders location map page for an item -- only compatable for current items
 router.get('/item/location/:id', function(req, res) {
 	db.Item.find({where: {id: req.params.id}})
 	.then(function(item) {
@@ -118,23 +118,21 @@ router.get('/item/location/:id', function(req, res) {
 						}
 					})
 					.then(function(location) {
-						if (res.locals.isAdmin || h.approvedEditor(res, req.user, proposal) ||  h.approvedReporter(res, req.user, proposal)) {
-							res.render('items/locationview', {
-								title: item.ItemName,
-								location: location,
-								item: item,
-								items: items,
-								proposal: proposal,
-								mapKey: gmConfig.key
-							});
-						} else {
-							displayErrorPage(res, 'You are not an Approved reporter of this Proposal', 'Access Denied');
-						}
+						res.render('items/locationview', {
+							title: item.ItemName,
+							location: location,
+							item: item,
+							items: items,
+							proposal: proposal,
+							mapKey: gmConfig.key,
+							editor: res.locals.isAdmin || h.approvedEditor(res, req.user, proposal) || h.approvedReporter(res, req.user, proposal)
+						});
+					
 					})
 				});
 			});
 		} else {
-			displayErrorPage(res, "Item does not exists", "Bad Request");
+			h.displayErrorPage(res, "Item does not exists", "Bad Request");
 		}
 	});
 });
@@ -222,7 +220,7 @@ router.get('/item/:id', function(req,res) {
 							proposal: proposal
 						});
 					} else {
-						displayErrorPage(res, 'You are not an Approved reporter of this Proposal', 'Access Denied');
+						h.displayErrorPage(res, 'You are not an Approved reporter of this Proposal', 'Access Denied');
 					}
 				});
 			});
@@ -259,7 +257,7 @@ router.post('/item/:id', function(req, res) {
 				 res.redirect('/item/' + req.params.id)
 			});
 		} else {
-			displayErrorPage(res, 'You are not an Approved reporter of this Proposal', 'Access Denied');
+			h.displayErrorPage(res, 'You are not an Approved reporter of this Proposal', 'Access Denied');
 		}
 
 	});

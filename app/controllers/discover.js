@@ -19,8 +19,11 @@ router.get('/subdomain/discover', function(req, res){
 });
 
 router.get('/subdomain/discover/find', function(req, res){
-	res.render('discover/find', {
-		title: "Find a resource"
+	getAllFundedItems(function(items) {
+		res.render('discover/find', {
+			title: "Find a Resource",
+			items: items
+		});
 	});
 });
 
@@ -214,6 +217,17 @@ function getFundedItemLocations(searchTerm, next) {
 		var items = [];
 		for(var i = 0; i < itm.length; i++) {
 			items.push(itm[i]);
+		}
+		next(items);
+	});
+}
+
+function getAllFundedItems(next) {
+	db.sequelize.query('(SELECT distinct p.Year, p.Number, i.ItemName, p.ProposalTitle, i.id FROM STF.Items i JOIN STF.Proposals p ON p.id = i.ProposalId LEFT JOIN STF.Supplementals s ON p.id = s.ProposalId WHERE ((p.Status = 4 AND i.PartialId is null AND i.SupplementalId is null) OR (p.Status = 4 AND i.PartialId is null AND s.id is not null AND s.id = i.SupplementalId) OR (p.Status = 5 AND p.PartialFunded = i.PartialId)) AND i.ItemName not like "%Tax%" AND i.ItemName not like "%Warranty%") UNION (SELECT lp.Year, lp.Number, li.Title, lp.Title, null FROM STF.Legacy_Items li JOIN STF.Legacy_Proposals lp ON li.LegacyId = lp.LegacyId WHERE li.Approved = 1 AND li.Title not like "%Tax%" AND li.Title not like "%Warranty%" ORDER BY lp.YEAR DESC) UNION (SELECT lp.Year, lp.Number, li.Title, lp.Title, null FROM STF.Legacy_Items li JOIN STF.Legacy_Proposals lp ON li.ProposalId = lp.id WHERE li.Approved = 1 AND li.Title not like "%Tax%" AND li.Title not like "%Warranty%" ORDER BY YEAR DESC);')
+	.spread(function(rawItems) {
+		var items = [];
+		for(var i = 0; i < rawItems.length; i++) {
+			items.push(rawItems[i]);
 		}
 		next(items);
 	});

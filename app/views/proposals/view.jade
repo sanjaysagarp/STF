@@ -329,8 +329,11 @@ mixin item(item)
 				td <h4>#{item.ItemName}</h4> (<a href='/item/#{item.id}'>edit</a> / <a href='/item/location/#{item.id}'>edit location</a>)
 			else
 				td <h4>#{item.ItemName}</h4> (<a href='/item/#{item.id}'>edit</a> / <a href='/item/location/#{item.id}'>add location</a>)
-		else 
-			td: h4= item.ItemName
+		else
+			if item.LocationId
+				td <h4>#{item.ItemName}</h4>(<a href='/item/location/#{item.id}'>view location</a>)
+			else 
+				td: h4= item.ItemName
 		td= item.Group
 		td= "$" + item.Price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 

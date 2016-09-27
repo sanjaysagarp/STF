@@ -1,12 +1,35 @@
 extends head
 
+append css
+	link(rel='stylesheet' href='/css/dynatable.css')
+
+append js
+	script(src='/js/dynatable.js')
+	script(type='text/javascript')
+			$(document).ready(function() {
+			$('#dynatable').dynatable();
+			});
+
 block content
 	.container
-		br
-		.row
-			.col-lg-12
-				.input-group(style="margin-right:5px;")
-					input(type="text", placeholder="Search for...", style="height: 120%; font-size: 22pt;").form-control
-					span.input-group-btn
-						button.btn.btn-default(style="height: 130%; width: 150%;")
-							span.glyphicon.glyphicon-search
+			.proposals-header
+				h2(style='float:left;')= title 
+	.container
+		table.table-striped.table#dynatable
+			if items.length != 0
+				thead
+					tr
+						th Item
+						th Proposal
+						th Location
+				tbody
+					- each item in items
+						tr
+							td #{item.ItemName}
+							td: a(href='http://uwstf.org/proposals/#{item.Year}/#{item.Number}') #{item.ProposalTitle}
+							if item.id == null
+								td N/A
+							else
+								td: a(href='http://uwstf.org/item/location/#{item.id}') view
+			else
+				p Items could not be found. Try reloading page. If this problem persists, email us

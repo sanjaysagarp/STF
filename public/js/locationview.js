@@ -6,42 +6,74 @@ $(document).ready(function(){
 
 	var location = JSON.parse($('#location').val());
 	var proposal = JSON.parse($('#proposal').val());
-
-	if(location != null) {
-		$('#notification').html('Location for item is set to ' + location.Address);
-		$('#notification').css('color', '#737373');
-		$("#location-picker").locationpicker({
-			location: {latitude: location.Lat, longitude: location.Lng},
-			radius: 0,
-			zoom: 17,
-			inputBinding: {
-				locationNameInput: $('#address'),
-				latitudeInput: $('#latitude'),
-				longitudeInput: $('#longitude')
-			},
-			enableAutocomplete: true,
-			onchanged: function(currentLocation, radius, isMarkerDropped) {
-				console.log("Location changed to (" + currentLocation.latitude + ", " + currentLocation.longitude + ")");
-			}
-		});
+	if($("#location-picker").length) {
+		if(location != null) {
+			$('#notification').html('Location for item is set to ' + location.Address);
+			$('#notification').css('color', '#737373');
+			$("#location-picker").locationpicker({
+				location: {latitude: location.Lat, longitude: location.Lng},
+				radius: 0,
+				zoom: 17,
+				inputBinding: {
+					locationNameInput: $('#address'),
+					latitudeInput: $('#latitude'),
+					longitudeInput: $('#longitude')
+				},
+				enableAutocomplete: true,
+				onchanged: function(currentLocation, radius, isMarkerDropped) {
+					console.log("Location changed to (" + currentLocation.latitude + ", " + currentLocation.longitude + ")");
+				}
+			});
+		} else {
+			$('#notification').html('Location has not been set for this item');
+			$('#notification').css('color', 'red');
+			$("#location-picker").locationpicker({
+			location: {latitude: 47.655381783443865, longitude: -122.30515264816285},
+				radius: 0,
+				zoom: 17,
+				inputBinding: {
+					locationNameInput: $('#address'),
+					latitudeInput: $('#latitude'),
+					longitudeInput: $('#longitude')
+				},
+				enableAutocomplete: true,
+				onchanged: function(currentLocation, radius, isMarkerDropped) {
+					console.log("Location changed to (" + currentLocation.latitude + ", " + currentLocation.longitude + ")");
+				}
+			});
+		}
 	} else {
-		$('#notification').html('Location has not been set for this item');
-		$('#notification').css('color', 'red');
-		$("#location-picker").locationpicker({
-		location: {latitude: 47.655381783443865, longitude: -122.30515264816285},
-			radius: 0,
-			zoom: 17,
-			inputBinding: {
-				locationNameInput: $('#address'),
-				latitudeInput: $('#latitude'),
-				longitudeInput: $('#longitude')
-			},
-			enableAutocomplete: true,
-			onchanged: function(currentLocation, radius, isMarkerDropped) {
-				console.log("Location changed to (" + currentLocation.latitude + ", " + currentLocation.longitude + ")");
-			}
-		});
+		if(location != null) {
+			$('#locationDescription').html(location.Description);
+			$("#location-picker-disabled").locationpicker({
+				location: {latitude: 47.655381783443865, longitude: -122.30515264816285},
+					radius: 0,
+					zoom: 17,
+					inputBinding: {
+						locationNameInput: $('#address'),
+						latitudeInput: $('#latitude'),
+						longitudeInput: $('#longitude')
+					},
+					markerDraggable: false,
+			});
+		} else {
+			$('#locationDescription').html('This location has yet to be set');
+			$('#locationDescription').css('color', 'red');
+			$("#location-picker-disabled").locationpicker({
+				location: {latitude: 47.655381783443865, longitude: -122.30515264816285},
+					radius: 0,
+					zoom: 17,
+					inputBinding: {
+						locationNameInput: $('#address'),
+						latitudeInput: $('#latitude'),
+						longitudeInput: $('#longitude')
+					},
+					markerDraggable: false,
+					markerVisible : false
+			});
+		}
 	}
+	
 
 
 	// ajax call for updating item location

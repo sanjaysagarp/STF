@@ -7,54 +7,78 @@ append js
 
 block content
 	.col-xs-12
-		.col-md-3
-				div#itemsList
-					h3 All Items
-					ol
-						- each itemN in items
-							li 
-								if proposal.Status < 2
-									if itemN.ItemName !== null && itemN.ItemName.length != 0
-										a(href='/item/#{itemN.id}') #{itemN.ItemName}
-									else 
-										a(href='/item/#{itemN.id}') (No Item Name)
+		if editor
+			.col-md-3
+					div#itemsList
+						h3 All Items
+						ol
+							- each itemN in items
+								li 
+									if proposal.Status < 2
+										if itemN.ItemName !== null && itemN.ItemName.length != 0
+											a(href='/item/#{itemN.id}') #{itemN.ItemName}
+										else 
+											a(href='/item/#{itemN.id}') (No Item Name)
+									else
+										if itemN.ItemName !== null && itemN.ItemName.length != 0
+											a(href='/item/location/#{itemN.id}') #{itemN.ItemName}
+										else 
+											a(href='/item/location/#{itemN.id}') (No Item Name)
+			.col-md-9.well
+				h1 Add a location for #{item.ItemName}
+				p Drag the marker or input address of where this piece of equipment will be located. This is optional if you want to opt in to our technology map where students can locate available STF resources.
+				input#item(name='item', type='hidden', value='#{JSON.stringify(item)}')
+				input#location(name='location', type='hidden', value='#{JSON.stringify(location)}')
+				input#proposal(name='proposal', type='hidden', value='#{JSON.stringify(proposal)}')
+				form.form-horizontal#editLocationForm(name='editItemLocation', method='post')
+						.form-group
+							label.col-md-4.control-label(for='address') Address
+							.col-md-5
+								input.form-control#address(placeholder="4001 E Stevens Way NE, Seattle, WA 98195")
+								span.help-block#notification 
+								input#longitude(type='hidden')
+								input#latitude(type='hidden')
+						.form-group
+							.col-md-5.col-md-offset-4
+								div#location-picker(style="width: 600px; height: 400px;")
+						.form-group
+							label.col-md-4.control-label(for='description') Description (Optional)
+							.col-md-5
+								if location
+									textarea(rows="3")#description.form-control(name='description') #{location.Description}
 								else
-									if itemN.ItemName !== null && itemN.ItemName.length != 0
-										a(href='/item/location/#{itemN.id}') #{itemN.ItemName}
-									else 
-										a(href='/item/location/#{itemN.id}') (No Item Name)
-		.col-md-9.well
-			h1 Add a location for #{item.ItemName}
-			p Drag the marker or input address of where this piece of equipment will be located. This is optional if you want to opt in to our technology map where students can locate available STF resources.
-			input#item(name='item', type='hidden', value='#{JSON.stringify(item)}')
-			input#location(name='location', type='hidden', value='#{JSON.stringify(location)}')
-			input#proposal(name='proposal', type='hidden', value='#{JSON.stringify(proposal)}')
-			form.form-horizontal#editLocationForm(name='editItemLocation', method='post')
-					.form-group
-						label.col-md-4.control-label(for='address') Address
-						.col-md-5
-							input.form-control#address(placeholder="4001 E Stevens Way NE, Seattle, WA 98195")
-							span.help-block#notification 
-							input#longitude(type='hidden')
-							input#latitude(type='hidden')
-					.form-group
-						.col-md-5.col-md-offset-4
-							div#location-picker(style="width: 600px; height: 400px;")
-					.form-group
-						label.col-md-4.control-label(for='description') Description (Optional)
-						.col-md-5
-							if location
-								textarea(rows="3")#description.form-control(name='description') #{location.Description}
-							else
-								textarea(rows="3")#description.form-control(name='description')
-							#descriptionHelp.span.help-block Any additional notes regarding this item location
-					.form-group
-						.col-md-2.col-md-offset-4
-							button.btn.btn-default.form-control.form-button#save Save
-						.col-md-2
-							if proposal.Status < 2
-								a(href='/item/#{item.id}')
-									button.btn.btn-default.form-control(type='button') Return to Item
-							else
-								a(href='/proposals/#{proposal.Year}/#{proposal.Number}')
-									button.btn.btn-default.form-control(type='button') Return to Proposal
+									textarea(rows="3")#description.form-control(name='description')
+								#descriptionHelp.span.help-block Any additional notes regarding this item location
+						.form-group
+							.col-md-2.col-md-offset-4
+								button.btn.btn-default.form-control.form-button#save Save
+							.col-md-2
+								if proposal.Status < 2
+									a(href='/item/#{item.id}')
+										button.btn.btn-default.form-control(type='button') Return to Item
+								else
+									a(href='/proposals/#{proposal.Year}/#{proposal.Number}')
+										button.btn.btn-default.form-control(type='button') Return to Proposal
+		else
+			.col-md-offset-2.col-md-8.well
+				h1 Location for #{item.ItemName}
+				input#item(name='item', type='hidden', value='#{JSON.stringify(item)}')
+				input#location(name='location', type='hidden', value='#{JSON.stringify(location)}')
+				input#proposal(name='proposal', type='hidden', value='#{JSON.stringify(proposal)}')
+				.form-group
+					label.col-md-4.control-label(for='description') Description
+					.col-md-5
+						p#locationDescription This location has not been set
+				.form-group
+					label.col-md-4.control-label(for='address') Address
+					.col-md-5
+						input.form-control#address(disabled)
+						input#longitude(type='hidden')
+						input#latitude(type='hidden')
+				.form-group
+					.col-md-5.col-md-offset-4
+						div#location-picker-disabled(style="width: 600px; height: 400px;")
+				.form-group
+					.col-md-offset-4.col-md-2
+							a(href='/proposals/#{proposal.Year}/#{proposal.Number}')
+								button.btn.btn-default.form-control(type='button') Return to Proposal
